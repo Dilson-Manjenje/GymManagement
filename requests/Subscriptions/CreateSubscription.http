@@ -1,0 +1,32 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
+
+
+###
+POST http://localhost:5105/Subscriptions
+Content-Type: application/json
+
+{
+    "SubscriptionType": "Basic", 
+    "AdminId": "{{adminId}}"
+}
+
+###
+POST http://{{host}}/Subscriptions
+Content-Type: {{jsonContentType}}
+
+{
+    "SubscriptionType": "Plus", 
+    "AdminId": "{{adminId}}"
+}
+
+# {
+#     "AdminId": "{{adminId}}", 
+#     "SubscriptionType": "Basic",  // Basic, Plus, Premium
+# }
+
+
