@@ -1,8 +1,9 @@
 using GymManagement.Application.Subscriptions.Commands.CreateSubscription;
 using GymManagement.Application.Subscriptions.Queries.GetSubscription;
 using GymManagement.Contracts.Subscriptions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
+using ErrorOr;
 
 namespace GymManagement.Api.Controllers;
 
@@ -19,12 +20,16 @@ public class SubscriptionsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateSubscription(CreateSubscriptionRequest request)
     {
-        var createSubscriptionResult = await _mediator.Send(new CreateSubscriptionCommand(request.SubscriptionType.ToString(),
-                                                                                request.AdminId));
+        var createSubscriptionResult = await _mediator.Send(new CreateSubscriptionCommand(
+                                                                    request.SubscriptionType.ToString(),
+                                                                    request.AdminId));
 
         return createSubscriptionResult.MatchFirst(
-            //success => CreatedAtAction(nameof(GetSubscription), new { id = success }, null),
-            guid => Ok(new SubscriptionResponse(createSubscriptionResult.Value,request.SubscriptionType)), 
+            // subscription => Ok(new SubscriptionResponse(subscription.Id,
+            //                                             Enum.Parse<SubstriptionType>(subscription.SubscriptionType))), 
+            subscription => CreatedAtAction(actionName: nameof(GetSubscription),
+                                            routeValues: new { id = subscription.Id },
+                                            value: subscription), // Pass null or the created resource            
             errors => Problem()
         );
     }
@@ -32,8 +37,11 @@ public class SubscriptionsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetSubscription(Guid id)
     {
-        var subscription = await _mediator.Send(new GetSubscriptionQuery(id));
-        
-        return Ok(subscription);
+        var result = await _mediator.Send(new GetSubscriptionQuery(id));
+
+        return result.MatchFirst(
+          subscription => Ok(new SubscriptionResponse(subscription.Id, Enum.Parse<SubstriptionType>(subscription.SubscriptionType))),
+          error => Problem(title: error.Code, detail: error.Description, statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
+      );        
     }    
 }

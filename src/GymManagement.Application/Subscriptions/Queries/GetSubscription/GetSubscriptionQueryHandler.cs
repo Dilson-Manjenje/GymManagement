@@ -1,18 +1,26 @@
+using ErrorOr;
+using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Subscriptions;
 using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Queries.GetSubscription;
 
-public class GetSubscriptionQueryHandler : IRequestHandler<GetSubscriptionQuery, Subscription>
+public class GetSubscriptionQueryHandler : IRequestHandler<GetSubscriptionQuery, ErrorOr<Subscription>>
 {
-    public async Task<Subscription> Handle(GetSubscriptionQuery request, CancellationToken cancellationToken)
+    private readonly ISubscriptionsRepository _subscriptionsRepository;
+
+    public GetSubscriptionQueryHandler(ISubscriptionsRepository subscriptionsRepository)
     {
-        // TODO: Implemente data retrieval logic here
-        return await Task.FromResult(new Subscription
-        {
-            Id = request.Id,
-            SubscriptionType = string.Empty,
-            //SubscriptionType = request.SubscriptionType,
-        });
+        _subscriptionsRepository = subscriptionsRepository;
+    }
+    
+    public async Task<ErrorOr<Subscription>> Handle(GetSubscriptionQuery request, CancellationToken cancellationToken = default)
+    {
+        var subscription = await _subscriptionsRepository.GetSubscriptionById(request.Id);
+        
+        if (subscription is null)
+            return Error.NotFound(code: "Subscription.NotFound", description: $"Subscription with ID '{request.Id}' not found.");
+
+       return subscription;        
     }
 }

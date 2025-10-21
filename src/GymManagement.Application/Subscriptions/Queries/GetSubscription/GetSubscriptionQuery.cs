@@ -1,6 +1,7 @@
+using ErrorOr;
 using GymManagement.Domain.Subscriptions;
 using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Queries.GetSubscription;
 
-public record GetSubscriptionQuery(Guid Id): IRequest<Subscription>;
+public record GetSubscriptionQuery(Guid Id): IRequest<ErrorOr<Subscription>>;
