@@ -4,7 +4,7 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 @adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@subscriptionId = f2ec9f25-5edc-4a62-846f-70dd0241a1cb
+@subscriptionId = 2e9ea885-fdfb-4398-9262-05cd23a963f1
 
 ###
 GET  http://{{host}}/Subscriptions/{{subscriptionId}}

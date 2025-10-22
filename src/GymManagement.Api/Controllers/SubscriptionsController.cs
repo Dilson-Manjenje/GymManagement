@@ -25,23 +25,23 @@ public class SubscriptionsController : ControllerBase
                                                                     request.AdminId));
 
         return createSubscriptionResult.MatchFirst(
-            // subscription => Ok(new SubscriptionResponse(subscription.Id,
-            //                                             Enum.Parse<SubstriptionType>(subscription.SubscriptionType))), 
             subscription => CreatedAtAction(actionName: nameof(GetSubscription),
-                                            routeValues: new { id = subscription.Id },
+                                            routeValues: new { subscriptionId = subscription.Id },
                                             value: subscription), // Pass null or the created resource            
             errors => Problem()
         );
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetSubscription(Guid id)
+    [HttpGet("{subscriptionId:guid}")]
+    public async Task<IActionResult> GetSubscription(Guid subscriptionId)
     {
-        var result = await _mediator.Send(new GetSubscriptionQuery(id));
+        var result = await _mediator.Send(new GetSubscriptionQuery(subscriptionId));
 
         return result.MatchFirst(
-          subscription => Ok(new SubscriptionResponse(subscription.Id, Enum.Parse<SubstriptionType>(subscription.SubscriptionType))),
-          error => Problem(title: error.Code, detail: error.Description, statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
+          subscription => Ok(new SubscriptionResponse(subscription.Id,
+                                                     Enum.Parse<SubstriptionType>(subscription.SubscriptionType))),
+          error => Problem(title: error.Code, detail: error.Description,
+                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
       );        
     }    
 }
