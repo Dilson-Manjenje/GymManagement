@@ -1,0 +1,3 @@
+namespace GymManagement.Contracts.Subscriptions;
+
+public record SubscriptionsListResponse(IEnumerable<SubscriptionResponse> Subscriptions);

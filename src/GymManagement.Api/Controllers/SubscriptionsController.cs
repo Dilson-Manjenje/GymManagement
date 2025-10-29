@@ -4,6 +4,8 @@ using GymManagement.Contracts.Subscriptions;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using ErrorOr;
+using DomainSubscriptionType = GymManagement.Domain.Subscriptions.SubscriptionType;
+using GymManagement.Application.Subscriptions.Queries.GetAllSubscriptions;
 
 namespace GymManagement.Api.Controllers;
 
@@ -20,14 +22,22 @@ public class SubscriptionsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateSubscription(CreateSubscriptionRequest request)
     {
-        var createSubscriptionResult = await _mediator.Send(new CreateSubscriptionCommand(
-                                                                    request.SubscriptionType.ToString(),
-                                                                    request.AdminId));
+        if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
+                                                out var subscriptionType))
+        {
+            //return BadRequest($"Invalid subscription type: {request.SubscriptionType}");
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                detail: $"Subscription type '{request.SubscriptionType}' is invalid.");
+        }
 
-        return createSubscriptionResult.MatchFirst(
+        var cmd = new CreateSubscriptionCommand(subscriptionType, request.AdminId);
+        var result = await _mediator.Send(cmd);
+        
+        return result.MatchFirst(
             subscription => CreatedAtAction(actionName: nameof(GetSubscription),
                                             routeValues: new { subscriptionId = subscription.Id },
-                                            value: subscription), // Pass null or the created resource            
+                                            value: new { subscription.Id, subscriptionType = subscription.SubscriptionType.Name }), // Pass null or the created resource            
             errors => Problem()
         );
     }
@@ -39,9 +49,24 @@ public class SubscriptionsController : ControllerBase
 
         return result.MatchFirst(
           subscription => Ok(new SubscriptionResponse(subscription.Id,
-                                                     Enum.Parse<SubstriptionType>(subscription.SubscriptionType))),
+                                                     Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))),
           error => Problem(title: error.Code, detail: error.Description,
                            statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
-      );        
+      );
+    }    
+    
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAllSubscriptions()
+    {
+        var result = await _mediator.Send(new GetAllSubscriptionsQuery());
+        
+        return result.MatchFirst(
+          subscriptions => Ok(new SubscriptionsListResponse(subscriptions
+                                                                .Select(subscription => new SubscriptionResponse(
+                                                                                        subscription.Id,
+                                                                                        Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))))),
+          error => Problem(title: error.Code, detail: error.Description,
+                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
+      );
     }    
 }

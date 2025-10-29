@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Subscriptions.Persistence;
 
-public class SubscriptionsRepository : ISubscriptionsRepository
+internal class SubscriptionsRepository : ISubscriptionsRepository
 {
     private readonly GymManagementDbContext _dbContext;
 
@@ -14,13 +14,21 @@ public class SubscriptionsRepository : ISubscriptionsRepository
         _dbContext = dbContext;
     }
 
+    async Task<IEnumerable<Subscription>?> ISubscriptionsRepository.GetAllAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Subscriptions
+                         .AsNoTracking()
+                         .ToListAsync(cancellationToken);
+                        
+    }
+
     async Task ISubscriptionsRepository.AddSubscriptionAsync(Subscription subscription, CancellationToken cancellationToken)
     {
-        await _dbContext.Subscriptions.AddAsync(subscription);
+        await _dbContext.Subscriptions.AddAsync(subscription, cancellationToken);
     }
 
     async Task<Subscription?> ISubscriptionsRepository.GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Subscriptions.FindAsync(subscriptionId);
+        return await _dbContext.Subscriptions.FindAsync(subscriptionId, cancellationToken);
     }
 }

@@ -4,5 +4,5 @@ using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Commands.CreateSubscription;
 public record CreateSubscriptionCommand(
-    string SubscriptionType,
+    SubscriptionType SubscriptionType,
     Guid AdminId) : IRequest<ErrorOr<Subscription>>;

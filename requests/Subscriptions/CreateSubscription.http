@@ -4,7 +4,7 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 @adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@subscriptionId = 057b3673-403c-4148-aecf-88b55a369526
+
 ###
 POST http://localhost:5105/Subscriptions
 Content-Type: application/json
@@ -19,7 +19,7 @@ POST http://{{host}}/Subscriptions
 Content-Type: {{jsonContentType}}
 
 {
-    "SubscriptionType": "Plus", 
+    "SubscriptionType": "Premium", 
     "AdminId": "{{adminId}}"
 }
 

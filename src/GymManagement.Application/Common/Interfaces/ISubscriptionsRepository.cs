@@ -8,6 +8,7 @@ namespace GymManagement.Application.Common.Interfaces;
 
 public interface ISubscriptionsRepository
 {
-    Task AddSubscriptionAsync(Subscription subscription, CancellationToken cancellationToken = default);   
+    Task AddSubscriptionAsync(Subscription subscription, CancellationToken cancellationToken = default);
     Task<Subscription?> GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken = default);   
+    Task<IEnumerable<Subscription>?> GetAllAsync(CancellationToken cancellationToken = default);           
 }

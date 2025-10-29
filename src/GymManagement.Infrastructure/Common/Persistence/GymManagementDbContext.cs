@@ -17,4 +17,10 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
     {
         await base.SaveChangesAsync(cancellationToken);
     }
+
+    override protected void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(GymManagementDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
 }

@@ -4,8 +4,17 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 @adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@subscriptionId = 2e9ea885-fdfb-4398-9262-05cd23a963f1
+@subscriptionId1 = F06AEEEE-C9F4-4790-ABED-86C43BE499AD
+@subscriptionId2 = AC210AA8-1E84-425C-88F4-8118D7978AEC
 
 ###
-GET  http://{{host}}/Subscriptions/{{subscriptionId}}
+GET  http://{{host}}/Subscriptions/{{subscriptionId1}}
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Subscriptions/{{subscriptionId2}}
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Subscriptions/GetAll
 Content-Type: {{jsonContentType}}
