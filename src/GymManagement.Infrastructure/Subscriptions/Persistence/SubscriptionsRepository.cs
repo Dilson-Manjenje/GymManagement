@@ -14,7 +14,7 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
         _dbContext = dbContext;
     }
 
-    async Task<IEnumerable<Subscription>?> ISubscriptionsRepository.GetAllAsync(CancellationToken cancellationToken)
+    async Task<IEnumerable<Subscription>?> ISubscriptionsRepository.ListAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Subscriptions
                          .AsNoTracking()
@@ -29,6 +29,27 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
 
     async Task<Subscription?> ISubscriptionsRepository.GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken)
     {
+        //return await _dbContext.Subscriptions.FirstOrDefaultAsync(subscription => subscription.Id == subscriptionId, cancellationToken);
         return await _dbContext.Subscriptions.FindAsync(subscriptionId, cancellationToken);
     }
+
+    async Task ISubscriptionsRepository.RemoveSubscription(Subscription subscription, CancellationToken cancellationToken)
+    {
+        await Task.FromResult(_dbContext.Subscriptions.Remove(subscription));        
+    }
+
+    async Task ISubscriptionsRepository.UpdateAsync(Subscription subscription, CancellationToken cancellationToken)
+    {
+        _dbContext.Update(subscription);
+
+        await Task.CompletedTask;
+    }
+
+    async Task<bool> ISubscriptionsRepository.ExistsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Subscriptions
+            .AsNoTracking()
+            .AnyAsync(subscription => subscription.Id == id);
+    }
+
 }

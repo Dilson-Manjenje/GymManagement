@@ -1,0 +1,15 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
+@subscriptionId = 2E9EA885-FDFB-4398-9262-05CD23A963F1
+
+###
+PUT http://{{host}}/Subscriptions/{{subscriptionId}}
+Content-Type: {{jsonContentType}}
+
+{
+    "SubscriptionType": "Plus"
+}

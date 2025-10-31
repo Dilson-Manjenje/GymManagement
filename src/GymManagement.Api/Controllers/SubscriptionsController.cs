@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using ErrorOr;
 using DomainSubscriptionType = GymManagement.Domain.Subscriptions.SubscriptionType;
-using GymManagement.Application.Subscriptions.Queries.GetAllSubscriptions;
+using GymManagement.Application.Subscriptions.Queries.ListSubscriptions;
+using GymManagement.Application.Subscriptions.Commands.DeleteSubscription;
+using GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
 
 namespace GymManagement.Api.Controllers;
 
@@ -53,13 +55,13 @@ public class SubscriptionsController : ControllerBase
           error => Problem(title: error.Code, detail: error.Description,
                            statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
       );
-    }    
-    
-    [HttpGet("GetAll")]
-    public async Task<IActionResult> GetAllSubscriptions()
+    }
+
+    [HttpGet("List")]
+    public async Task<IActionResult> ListSubscriptions()
     {
-        var result = await _mediator.Send(new GetAllSubscriptionsQuery());
-        
+        var result = await _mediator.Send(new ListSubscriptionsQuery());
+
         return result.MatchFirst(
           subscriptions => Ok(new SubscriptionsListResponse(subscriptions
                                                                 .Select(subscription => new SubscriptionResponse(
@@ -68,5 +70,38 @@ public class SubscriptionsController : ControllerBase
           error => Problem(title: error.Code, detail: error.Description,
                            statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
       );
-    }    
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteSubscription(Guid id)
+    {
+        var result = await _mediator.Send(new DeleteSubscriptionCommand(id));
+
+        return result.MatchFirst<IActionResult>(
+          subscription => NoContent(),
+          error => Problem(title: error.Code, detail: error.Description,
+                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
+      );
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateSubscription([FromRoute] Guid id, UpdateSubscriptionRequest request)
+    {
+        if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
+                                                out var subscriptionType))
+        {            
+            return Problem(
+                statusCode: StatusCodes.Status400BadRequest,
+                detail: $"Subscription type '{request.SubscriptionType}' is invalid.");
+        }
+
+        var result = await _mediator.Send(new UpdateSubscriptionCommand(id, subscriptionType));
+
+        return result.MatchFirst(
+          subscription => Ok(new SubscriptionResponse(subscription.Id,
+                                                     Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))),
+          error => Problem(title: error.Code, detail: error.Description,
+                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
+      );
+    }
 }

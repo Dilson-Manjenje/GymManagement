@@ -8,5 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.SmartEnum" Version="8.2.0" />
+    <PackageReference Include="ErrorOr" Version="2.1.0" />
   </ItemGroup>
 </Project>
