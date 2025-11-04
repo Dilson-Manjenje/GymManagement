@@ -1,0 +1,31 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
+
+@gymIdQuibuma = 221bb04b-1f47-4d91-a148-582f3f59bc82
+@gymIdFightSociety = a1002392-18dd-4338-ab4d-b88fafc0c9e6
+
+###
+POST http://localhost:5105/Rooms
+Content-Type: application/json
+
+{
+    "Name": "Musculação", 
+    "Capacity": 30,
+    //"IsAvailable": true,
+    "GymId": "{{gymIdQuibuma}}"
+}
+
+###
+POST http://localhost:5105/Rooms
+Content-Type: application/json
+
+{
+    "Name": "KickBoxing Room1", 
+    "Capacity": 15,
+    //"IsAvailable": true,
+    "GymId": "{{gymIdFightSociety}}"
+}

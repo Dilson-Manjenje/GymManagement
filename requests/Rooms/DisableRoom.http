@@ -1,0 +1,12 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
+@roomId = cabdc656-cb9c-4989-85ad-032031471d21
+
+###
+DELETE  http://{{host}}/Rooms/{{roomId}}
+Content-Type: {{jsonContentType}}
+

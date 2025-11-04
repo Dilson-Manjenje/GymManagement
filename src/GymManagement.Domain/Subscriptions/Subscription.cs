@@ -11,7 +11,7 @@ namespace GymManagement.Domain.Subscriptions
         private Guid _adminId;
         public Guid Id { get; private set;  }
         public SubscriptionType SubscriptionType { get; private set; } = SubscriptionType.Basic;
-        // TODO: Add Subscription Details: Price, DurationInDays, Status
+        // TODO: Add Subscription Details: Price, DurationInDays, MaxDailySessions, IsActive
         public Subscription(SubscriptionType subscriptionType, Guid adminId, Guid? id = null)
         {
             Id = id ?? Guid.NewGuid();

@@ -1,0 +1,22 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
+@roomId = cabdc656-cb9c-4989-85ad-032031471d21
+
+###
+PUT http://{{host}}/Rooms/{{roomId}}
+Content-Type: {{jsonContentType}}
+
+{
+    "name": "Jiu-Jitsu Brasileiro Sala 1",
+    "capacity": "10",
+    "gymId": "a1002392-18dd-4338-ab4d-b88fafc0c9e6"
+}
+
+# "name": "KickBoxing Room1",
+# "capacity": 15,
+# "isAvailable": false,
+# "gymId": "a1002392-18dd-4338-ab4d-b88fafc0c9e6"

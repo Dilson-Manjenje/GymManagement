@@ -1,0 +1,16 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
+@gymId = e9a5f0b6-063d-40b4-9197-69514a371143
+
+###
+PUT http://{{host}}/Gyms/{{gymId}}
+Content-Type: {{jsonContentType}}
+
+{
+    "name": "Talatona Gym",
+    "address": "Talaton, Rua 15"
+}

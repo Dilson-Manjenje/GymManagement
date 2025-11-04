@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GymManagement.Application;
@@ -13,6 +14,8 @@ public static class DependencyInjection
             //options.RegisterServicesFromAssemblyContaining(typeof(DependencyInjection));
             options.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
         });
+
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         
         return services;
                 

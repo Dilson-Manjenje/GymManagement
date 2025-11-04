@@ -1,0 +1,14 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@roomId = cabdc656-cb9c-4989-85ad-032031471d21
+
+###
+GET  http://{{host}}/Rooms/{{roomId}}
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Rooms/List
+Content-Type: {{jsonContentType}}
