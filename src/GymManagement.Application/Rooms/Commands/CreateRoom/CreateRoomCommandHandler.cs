@@ -28,7 +28,7 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         
         var validator = new CreateRoomCommandValidator(_roomsRepository);
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
-        
+
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
@@ -36,14 +36,14 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
                 .ToList();
             return errors;
         }
-
+        // TODO: Check if RoomId is already in the Gym by Name, Type
+        
         var room = new Room(
             name: request.Name,
             capacity: request.Capacity,
             gymId: request.GymId
         );
 
-        //await _gymsRepository.UpdateAsync(gym, cancellationToken); // TODO: Add room to gym rooms collection if needed
         await _roomsRepository.AddAsync(room, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 

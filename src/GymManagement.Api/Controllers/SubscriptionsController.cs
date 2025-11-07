@@ -11,9 +11,7 @@ using GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
 
 namespace GymManagement.Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class SubscriptionsController : ControllerBase
+public class SubscriptionsController : ApiBaseController
 {
     private readonly ISender _mediator;
     public SubscriptionsController(ISender mediator)
@@ -27,10 +25,7 @@ public class SubscriptionsController : ControllerBase
         if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
                                                 out var subscriptionType))
         {
-            //return BadRequest($"Invalid subscription type: {request.SubscriptionType}");
-            return Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                detail: $"Subscription type '{request.SubscriptionType}' is invalid.");
+            return InvalidSubscriptionType(request.SubscriptionType.ToString());
         }
 
         var cmd = new CreateSubscriptionCommand(subscriptionType, request.AdminId);
@@ -40,8 +35,13 @@ public class SubscriptionsController : ControllerBase
             subscription => CreatedAtAction(actionName: nameof(GetSubscription),
                                             routeValues: new { subscriptionId = subscription.Id },
                                             value: new { subscription.Id, subscriptionType = subscription.SubscriptionType.Name }), // Pass null or the created resource            
-            errors => Problem()
-        );
+            error => Problem(error));
+    }
+
+    private IActionResult InvalidSubscriptionType(string subscriptionType)
+    {
+        return Problem(statusCode: StatusCodes.Status400BadRequest,
+                       detail: $"Subscription type '{subscriptionType}' is invalid.");
     }
 
     [HttpGet("{subscriptionId:guid}")]
@@ -52,8 +52,7 @@ public class SubscriptionsController : ControllerBase
         return result.MatchFirst(
           subscription => Ok(new SubscriptionResponse(subscription.Id,
                                                      Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))),
-          error => Problem(title: error.Code, detail: error.Description,
-                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
+          error => Problem(error)
       );
     }
 
@@ -67,8 +66,7 @@ public class SubscriptionsController : ControllerBase
                                                                 .Select(subscription => new SubscriptionResponse(
                                                                                         subscription.Id,
                                                                                         Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))))),
-          error => Problem(title: error.Code, detail: error.Description,
-                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
+          error => Problem(error)
       );
     }
 
@@ -79,9 +77,7 @@ public class SubscriptionsController : ControllerBase
 
         return result.MatchFirst<IActionResult>(
           subscription => NoContent(),
-          error => Problem(title: error.Code, detail: error.Description,
-                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
-      );
+          error => Problem(error));
     }
 
     [HttpPut("{id:guid}")]
@@ -89,19 +85,15 @@ public class SubscriptionsController : ControllerBase
     {
         if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
                                                 out var subscriptionType))
-        {            
-            return Problem(
-                statusCode: StatusCodes.Status400BadRequest,
-                detail: $"Subscription type '{request.SubscriptionType}' is invalid.");
+        {
+            return InvalidSubscriptionType(request.SubscriptionType.ToString());
         }
-
+        
         var result = await _mediator.Send(new UpdateSubscriptionCommand(id, subscriptionType));
 
         return result.MatchFirst(
           subscription => Ok(new SubscriptionResponse(subscription.Id,
                                                      Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))),
-          error => Problem(title: error.Code, detail: error.Description,
-                           statusCode: error.Type == ErrorType.NotFound ? 404 : 500)
-      );
+          error => Problem(error));
     }
 }

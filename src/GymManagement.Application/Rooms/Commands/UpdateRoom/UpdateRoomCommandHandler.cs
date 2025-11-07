@@ -15,9 +15,9 @@ public class UpdateRoomCommandHandler : IRequestHandler<UpdateRoomCommand, Error
                                     IGymsRepository gymsRepository,
                                     IUnitOfWork unitOfWork)
     {
-        _unitOfWork = unitOfWork;
         _roomsRepository = roomsRepository;
         _gymsRepository = gymsRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<ErrorOr<Room>> Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
@@ -42,7 +42,9 @@ public class UpdateRoomCommandHandler : IRequestHandler<UpdateRoomCommand, Error
         if (room is null)
             return RoomErrors.RoomNotFound(request.Id);
 
-        var result = room.UpdateRoom(request.Name, request.Capacity, request.GymId);
+        var result = room.UpdateRoom(request.Name,
+                                     request.Capacity,
+                                     request.GymId);
 
         if (result.IsError)
             return result.Errors;

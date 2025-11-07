@@ -1,6 +1,5 @@
 using ErrorOr;
 using GymManagement.Domain.Gyms;
-using GymManagement.Domain.Subscriptions;
 using MediatR;
 
 namespace GymManagement.Application.Gyms.Commands.DeleteGym;

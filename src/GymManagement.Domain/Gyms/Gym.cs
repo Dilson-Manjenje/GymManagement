@@ -7,9 +7,7 @@ namespace GymManagement.Domain.Gyms;
 public class Gym
 {
     private readonly int _maxRooms;
-    public Guid Id { get; }
-    //TODO: Tranform roomsIds into ICollection<Room>
-    //private readonly List<Guid> _roomIds = new(); 
+    public Guid Id { get; }    
     public List<Room> Rooms { get; private set; } = new();
     //private readonly List<Guid> _trainerIds = new();
     public string Name { get; private set; } = null!;
