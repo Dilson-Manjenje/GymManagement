@@ -16,10 +16,10 @@ public class CreateGymCommandHandler : IRequestHandler<CreateGymCommand, ErrorOr
         _gymsRepository = gymsRepository;
         _unitOfWork = unitOfWork;
     }
-    public async Task<ErrorOr<Gym>> Handle(CreateGymCommand request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Gym>> Handle(CreateGymCommand command, CancellationToken cancellationToken = default)
     {
         var validator = new CreateGymCommandValidator(_gymsRepository);
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
         
         if (!validationResult.IsValid)
         {
@@ -30,8 +30,8 @@ public class CreateGymCommandHandler : IRequestHandler<CreateGymCommand, ErrorOr
         }
 
         var gym = new Gym(
-            name: request.Name,
-            address: request.Address
+            name: command.Name,
+            address: command.Address
         );
 
         await _gymsRepository.AddAsync(gym, cancellationToken);

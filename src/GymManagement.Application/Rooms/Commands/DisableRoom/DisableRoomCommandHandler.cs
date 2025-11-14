@@ -16,16 +16,16 @@ public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, Err
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Updated>> Handle(DisableRoomCommand request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Updated>> Handle(DisableRoomCommand command, CancellationToken cancellationToken = default)
     {
-        var room = await _roomsRepository.GetByIdAsync(request.Id, cancellationToken);
+        var room = await _roomsRepository.GetByIdAsync(command.Id, cancellationToken);
 
         if (room is null)
-            return RoomErrors.RoomNotFound(request.Id);
+            return RoomErrors.RoomNotFound(command.Id);
 
         var result = room.DisableRoom();
         if (result.IsError)
-            return RoomErrors.CannotDisableRoomWithSessions(request.Id);
+            return RoomErrors.CannotDisableRoomWithSessions(command.Id);
         
         await _roomsRepository.UpdateAsync(room, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);

@@ -20,12 +20,12 @@ public class DeleteSubscriptionCommandHandler : IRequestHandler<DeleteSubscripti
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Deleted>> Handle(DeleteSubscriptionCommand request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Deleted>> Handle(DeleteSubscriptionCommand command, CancellationToken cancellationToken = default)
     {
-        var subscription = await _subscriptionsRepository.GetByIdAsync(request.Id, cancellationToken);
+        var subscription = await _subscriptionsRepository.GetByIdAsync(command.Id, cancellationToken);
         if (subscription is null)
             return Error.NotFound(code: "Subscription.NotFound",
-                                  description: $"Subscription with ID '{request.Id}' not found.");
+                                  description: $"Subscription with ID '{command.Id}' not found.");
         
         // TODO: check if user exist, remove/cancel subscription from user/admins, 
 

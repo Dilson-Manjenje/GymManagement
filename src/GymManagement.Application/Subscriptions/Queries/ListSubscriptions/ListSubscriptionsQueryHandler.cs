@@ -14,7 +14,7 @@ public class ListSubscriptionsQueryHandler : IRequestHandler<ListSubscriptionsQu
         _subscriptionsRepository = subscriptionsRepository;
     }
     
-    public async Task<ErrorOr<IEnumerable<Subscription>?>> Handle(ListSubscriptionsQuery request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<IEnumerable<Subscription>?>> Handle(ListSubscriptionsQuery query, CancellationToken cancellationToken = default)
     {
         var subscriptions = await _subscriptionsRepository.ListAsync();
         

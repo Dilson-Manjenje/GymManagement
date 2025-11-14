@@ -14,12 +14,12 @@ public class GetSubscriptionQueryHandler : IRequestHandler<GetSubscriptionQuery,
         _subscriptionsRepository = subscriptionsRepository;
     }
     
-    public async Task<ErrorOr<Subscription>> Handle(GetSubscriptionQuery request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Subscription>> Handle(GetSubscriptionQuery query, CancellationToken cancellationToken = default)
     {
-        var subscription = await _subscriptionsRepository.GetByIdAsync(request.Id);
+        var subscription = await _subscriptionsRepository.GetByIdAsync(query.Id);
         
         return (subscription is null) 
-            ? SubscriptionErrors.SubscriptionNotFound(request.Id)
+            ? SubscriptionErrors.SubscriptionNotFound(query.Id)
             : subscription;        
     }
 }

@@ -14,12 +14,12 @@ public class GetGymQueryHandler : IRequestHandler<GetGymQuery, ErrorOr<Gym>>
         _gymsRepository = gymsRepository;
     }
 
-    public async Task<ErrorOr<Gym>> Handle(GetGymQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Gym>> Handle(GetGymQuery query, CancellationToken cancellationToken)
     {
-        var gym = await _gymsRepository.GetByIdAsync(request.GymId);
+        var gym = await _gymsRepository.GetByIdAsync(query.GymId);
 
         return (gym is null)
-            ? GymErrors.GymNotFound(request.GymId)
+            ? GymErrors.GymNotFound(query.GymId)
             : gym;
     }
 }

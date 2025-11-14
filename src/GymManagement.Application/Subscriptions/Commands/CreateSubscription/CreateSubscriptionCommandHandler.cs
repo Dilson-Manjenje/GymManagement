@@ -15,11 +15,11 @@ public class CreateSubscriptionCommandHandler : IRequestHandler<CreateSubscripti
         _subscriptionsRepository = subscriptionsRepository;
         _unitOfWork = unitOfWork;
     }
-    public async Task<ErrorOr<Subscription>> Handle(CreateSubscriptionCommand request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Subscription>> Handle(CreateSubscriptionCommand command, CancellationToken cancellationToken = default)
     {
         // TODO: Check if Admin/User exists, validate SubscriptionType, etc.
-        var subscription = new Subscription(subscriptionType: request.SubscriptionType,
-                                            adminId: request.AdminId);   
+        var subscription = new Subscription(subscriptionType: command.SubscriptionType,
+                                            adminId: command.AdminId);   
 
         await _subscriptionsRepository.AddSubscriptionAsync(subscription, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);

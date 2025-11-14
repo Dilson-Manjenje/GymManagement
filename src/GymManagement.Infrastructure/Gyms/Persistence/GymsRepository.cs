@@ -1,6 +1,5 @@
 using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Gyms;
-using GymManagement.Domain.Subscriptions;
 using GymManagement.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +14,7 @@ internal class GymsRepository : IGymsRepository
         _dbContext = dbContext;
     }
 
-    async Task IGymsRepository.RemoveGym(Gym gym, CancellationToken cancellationToken)
+    async Task IGymsRepository.RemoveAsync(Gym gym, CancellationToken cancellationToken)
     {
         //await Task.FromResult(_dbContext.Gyms.Remove(gym));    
         // TODO: Disable instead of delete gym
@@ -35,7 +34,7 @@ internal class GymsRepository : IGymsRepository
        return await _dbContext.Gyms.FindAsync(gymId);
     }
 
-    async Task<Gym?> IGymsRepository.GetByName(string name, CancellationToken cancellationToken)
+    async Task<Gym?> IGymsRepository.GetByNameAsync(string name, CancellationToken cancellationToken)
     {
         return await _dbContext.Gyms
             .AsNoTracking()

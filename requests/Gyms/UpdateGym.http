@@ -11,6 +11,6 @@ PUT http://{{host}}/Gyms/{{gymId}}
 Content-Type: {{jsonContentType}}
 
 {
-    "name": "Talatona Gym",
-    "address": "Talaton, Rua 15"
+    "name": "TopFitenss Gym",
+    "address": "Talatona, Rua 15, Shopping Talatona"
 }

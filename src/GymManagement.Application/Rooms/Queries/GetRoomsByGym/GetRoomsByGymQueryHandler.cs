@@ -17,13 +17,13 @@ public class GetRoomsByGymQueryHandler : IRequestHandler<GetRoomsByGymQuery, Err
         _gymsRepository = gymsRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<Room>?>> Handle(GetRoomsByGymQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<Room>?>> Handle(GetRoomsByGymQuery query, CancellationToken cancellationToken)
     {
-        var gym = await _gymsRepository.GetByIdAsync(request.GymId, cancellationToken);
+        var gym = await _gymsRepository.GetByIdAsync(query.GymId, cancellationToken);
         if (gym is null)
-            return GymErrors.GymNotFound(request.GymId);
+            return GymErrors.GymNotFound(query.GymId);
         
-        var rooms = await _roomsRepository.GetRoomsByGymIdAsync(request.GymId, cancellationToken);
+        var rooms = await _roomsRepository.GetRoomsByGymIdAsync(query.GymId, cancellationToken);
 
         return rooms?.ToList();
     }

@@ -14,7 +14,7 @@ public class ListRoomsQueryHandler : IRequestHandler<ListRoomsQuery, ErrorOr<IEn
         _roomsRepository = roomsRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<Room>?>> Handle(ListRoomsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<Room>?>> Handle(ListRoomsQuery query, CancellationToken cancellationToken)
     {
         var rooms = await _roomsRepository.ListAsync();
 

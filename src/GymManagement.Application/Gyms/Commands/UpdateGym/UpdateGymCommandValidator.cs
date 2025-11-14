@@ -30,7 +30,7 @@ public class UpdateGymCommandValidator : AbstractValidator<UpdateGymCommand>
 
 	private async Task<bool> NameNotExisteForOther(UpdateGymCommand command, CancellationToken token)
 	{
-		var gymExistent = await _gymsRepository.GetByName(command.Name);
+		var gymExistent = await _gymsRepository.GetByNameAsync(command.Name);
 
 		if (gymExistent is null || gymExistent.Id == command.Id) 
 			return true; 

@@ -14,7 +14,7 @@ public class ListGymsQueryHandler : IRequestHandler<ListGymsQuery, ErrorOr<IEnum
         _gymsRepository = gymsRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<Gym>?>> Handle(ListGymsQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<Gym>?>> Handle(ListGymsQuery query, CancellationToken cancellationToken)
     {
         var gyms = await _gymsRepository.ListAsync();
 

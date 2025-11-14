@@ -28,7 +28,7 @@ public class CreateGymCommandValidator : AbstractValidator<CreateGymCommand>
 
     private async Task<bool> NotExistWithSame(CreateGymCommand command, CancellationToken token)
     {
-        var gymInDb = await _gymsRepository.GetByName(command.Name);
+        var gymInDb = await _gymsRepository.GetByNameAsync(command.Name);
 
         return gymInDb is null;
     }

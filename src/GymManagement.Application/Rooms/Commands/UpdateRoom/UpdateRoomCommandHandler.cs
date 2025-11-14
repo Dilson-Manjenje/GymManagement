@@ -20,14 +20,14 @@ public class UpdateRoomCommandHandler : IRequestHandler<UpdateRoomCommand, Error
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Room>> Handle(UpdateRoomCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Room>> Handle(UpdateRoomCommand command, CancellationToken cancellationToken)
     {
-        var gym = await _gymsRepository.GetByIdAsync(request.GymId, cancellationToken);
+        var gym = await _gymsRepository.GetByIdAsync(command.GymId, cancellationToken);
         if (gym is null)
-            return GymErrors.GymNotFound(request.GymId);
+            return GymErrors.GymNotFound(command.GymId);
         
         var validator = new UpdateRoomCommandValidator(_roomsRepository);
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
         {
@@ -37,14 +37,14 @@ public class UpdateRoomCommandHandler : IRequestHandler<UpdateRoomCommand, Error
             return errors;
         }
         
-        var room = await _roomsRepository.GetByIdAsync(request.Id, cancellationToken);
+        var room = await _roomsRepository.GetByIdAsync(command.Id, cancellationToken);
         
         if (room is null)
-            return RoomErrors.RoomNotFound(request.Id);
+            return RoomErrors.RoomNotFound(command.Id);
 
-        var result = room.UpdateRoom(request.Name,
-                                     request.Capacity,
-                                     request.GymId);
+        var result = room.UpdateRoom(command.Name,
+                                     command.Capacity,
+                                     command.GymId);
 
         if (result.IsError)
             return result.Errors;

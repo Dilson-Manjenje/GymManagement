@@ -15,14 +15,25 @@ public class UpdateGymCommandHandler : IRequestHandler<UpdateGymCommand, ErrorOr
         _gymsRepository = gymsRepository;
     }
 
-    public async Task<ErrorOr<Gym>> Handle(UpdateGymCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Gym>> Handle(UpdateGymCommand command, CancellationToken cancellationToken)
     {
-        var gym = await _gymsRepository.GetByIdAsync(request.Id, cancellationToken);
-        
-        if (gym is null)
-            return GymErrors.GymNotFound(request.Id);
+        var gym = await _gymsRepository.GetByIdAsync(command.Id, cancellationToken);
 
-        gym.UpdateGym(request.Name, request.Address);
+        if (gym is null)
+            return GymErrors.GymNotFound(command.Id);
+
+        var validator = new UpdateGymCommandValidator(_gymsRepository);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors
+                .Select(e => Error.Validation(e.PropertyName, e.ErrorMessage))
+                .ToList();
+            return errors;
+        }
+        
+        gym.UpdateGym(command.Name, command.Address);
         await _gymsRepository.UpdateAsync(gym, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 

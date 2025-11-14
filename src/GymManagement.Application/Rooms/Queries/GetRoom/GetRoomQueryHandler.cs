@@ -14,12 +14,12 @@ public class GetRoomQueryHandler : IRequestHandler<GetRoomQuery, ErrorOr<Room>>
         _roomsRepository = roomsRepository;
     }
     
-    public async Task<ErrorOr<Room>> Handle(GetRoomQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Room>> Handle(GetRoomQuery query, CancellationToken cancellationToken)
     {
-        var room = await _roomsRepository.GetByIdAsync(request.RoomId);
+        var room = await _roomsRepository.GetByIdAsync(query.RoomId);
 
         return (room is null)
-            ? RoomErrors.RoomNotFound(request.RoomId)
+            ? RoomErrors.RoomNotFound(query.RoomId)
             : room;
     }
 }

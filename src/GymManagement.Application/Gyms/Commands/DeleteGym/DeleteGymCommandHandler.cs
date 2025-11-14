@@ -16,15 +16,15 @@ public class DeleteGymCommandHandler : IRequestHandler<DeleteGymCommand, ErrorOr
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Deleted>> Handle(DeleteGymCommand request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Deleted>> Handle(DeleteGymCommand command, CancellationToken cancellationToken = default)
     {
-        var gym = await _gymsRepository.GetByIdAsync(request.Id, cancellationToken);
+        var gym = await _gymsRepository.GetByIdAsync(command.Id, cancellationToken);
         
         if (gym is null)
-            return GymErrors.GymNotFound(request.Id);
+            return GymErrors.GymNotFound(command.Id);
         
         // TODO: remove all rooms and sessions from gym 
-        await _gymsRepository.RemoveGym(gym, cancellationToken);
+        await _gymsRepository.RemoveAsync(gym, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
         return Result.Deleted;

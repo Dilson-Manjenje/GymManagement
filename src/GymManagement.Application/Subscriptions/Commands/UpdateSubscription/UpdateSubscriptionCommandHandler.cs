@@ -20,14 +20,14 @@ public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscripti
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Subscription>> Handle(UpdateSubscriptionCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Subscription>> Handle(UpdateSubscriptionCommand command, CancellationToken cancellationToken)
     {
-        var subscription = await _subscriptionsRepository.GetByIdAsync(request.Id, cancellationToken);
+        var subscription = await _subscriptionsRepository.GetByIdAsync(command.Id, cancellationToken);
 
         if (subscription is null)
-            SubscriptionErrors.SubscriptionNotFound(request.Id);
+            SubscriptionErrors.SubscriptionNotFound(command.Id);
 
-        var result = subscription!.UpdateSubscription(request.SubscriptionType);
+        var result = subscription!.UpdateSubscription(command.SubscriptionType);
         
         if (result.IsError)
             return result.Errors;

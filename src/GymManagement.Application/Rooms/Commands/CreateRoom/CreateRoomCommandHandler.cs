@@ -20,14 +20,14 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         _gymsRepository = gymsRepository;
         _unitOfWork = unitOfWork;
     }
-    public async Task<ErrorOr<Room>> Handle(CreateRoomCommand request, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Room>> Handle(CreateRoomCommand command, CancellationToken cancellationToken = default)
     {
-        var gym = await _gymsRepository.GetByIdAsync(request.GymId, cancellationToken);
+        var gym = await _gymsRepository.GetByIdAsync(command.GymId, cancellationToken);
         if (gym is null)
-            return GymErrors.GymNotFound(request.GymId);
+            return GymErrors.GymNotFound(command.GymId);
         
         var validator = new CreateRoomCommandValidator(_roomsRepository);
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (!validationResult.IsValid)
         {
@@ -39,9 +39,9 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         // TODO: Check if RoomId is already in the Gym by Name, Type
         
         var room = new Room(
-            name: request.Name,
-            capacity: request.Capacity,
-            gymId: request.GymId
+            name: command.Name,
+            capacity: command.Capacity,
+            gymId: command.GymId
         );
 
         await _roomsRepository.AddAsync(room, cancellationToken);

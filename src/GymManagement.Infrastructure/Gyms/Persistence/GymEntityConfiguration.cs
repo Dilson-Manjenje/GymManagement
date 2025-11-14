@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GymManagement.Infrastructure.Gyms.Persistence;
 
-public class GymRepositoryEntityConfiguration : IEntityTypeConfiguration<Gym>
+public class GymEntityConfiguration : IEntityTypeConfiguration<Gym>
 {
     public void Configure(EntityTypeBuilder<Gym> builder)
     {
