@@ -16,11 +16,12 @@ internal class GymsRepository : IGymsRepository
 
     async Task IGymsRepository.RemoveAsync(Gym gym, CancellationToken cancellationToken)
     {
-        //await Task.FromResult(_dbContext.Gyms.Remove(gym));    
+        await Task.FromResult(_dbContext.Gyms.Remove(gym));    
+        
         // TODO: Disable instead of delete gym
-        await _dbContext.Gyms
-            .Where(g => g.Id == gym.Id)
-            .ExecuteDeleteAsync(cancellationToken);
+        // await _dbContext.Gyms
+        //     .Where(g => g.Id == gym.Id)
+        //     .ExecuteDeleteAsync(cancellationToken); // Delete imediattly no wait for SaveChanges 
 
     }
 
