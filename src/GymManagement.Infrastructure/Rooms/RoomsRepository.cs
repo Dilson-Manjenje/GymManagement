@@ -27,12 +27,6 @@ internal class RoomsRepository : IRoomsRepository
         return await _dbContext.Rooms.FindAsync(roomId, cancellationToken);
     }
 
-    async Task<Room?> IRoomsRepository.GetByName(string name, CancellationToken cancellationToken)
-    {
-        return await _dbContext.Rooms
-                               .FirstOrDefaultAsync(r => r.Name == name, cancellationToken);
-    }
-
     async Task<IEnumerable<Room>?> IRoomsRepository.GetRoomsByGymIdAsync(Guid gymId, CancellationToken cancellationToken)
     {
         return await _dbContext.Rooms

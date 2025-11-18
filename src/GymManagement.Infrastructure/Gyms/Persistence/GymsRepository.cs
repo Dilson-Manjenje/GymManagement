@@ -1,5 +1,6 @@
 using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Gyms;
+using GymManagement.Domain.Rooms;
 using GymManagement.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,7 +33,11 @@ internal class GymsRepository : IGymsRepository
 
     async Task<Gym?> IGymsRepository.GetByIdAsync(Guid gymId, CancellationToken cancellationToken)
     {
-       return await _dbContext.Gyms.FindAsync(gymId);
+       return await _dbContext.Gyms
+                        .Where(g => g.Id == gymId)
+                        .Include(g => g.Rooms)
+                        //TODO: Include Trainer
+                        .FirstOrDefaultAsync();
     }
 
     async Task<Gym?> IGymsRepository.GetByNameAsync(string name, CancellationToken cancellationToken)
@@ -45,8 +50,9 @@ internal class GymsRepository : IGymsRepository
     async Task<IEnumerable<Gym>?> IGymsRepository.ListAsync(CancellationToken cancellationToken)
     {
          return await _dbContext.Gyms
-                         .AsNoTracking()
-                         .ToListAsync(cancellationToken);
+                        .AsNoTracking()
+                        //.Include(g => g.Rooms) //TODO: Include Rooms and Trainer
+                        .ToListAsync(cancellationToken);
     }
 
     async Task IGymsRepository.UpdateAsync(Gym gym, CancellationToken cancellationToken)

@@ -7,15 +7,16 @@
 
 @gymIdQuibuma = 221bb04b-1f47-4d91-a148-582f3f59bc82
 @gymIdFightSociety = a1002392-18dd-4338-ab4d-b88fafc0c9e6
+@gymZ1 = c03901c3-d95d-4fe0-8aed-3e7698972e47
+@topFitnessGym = e9a5f0b6-063d-40b4-9197-69514a371143
 
 ###
 POST http://localhost:5105/Rooms
 Content-Type: application/json
 
 {
-    "Name": "Musculação", 
-    "Capacity": 30,
-    //"IsAvailable": true,
+    "Name": "Musculação 2", 
+    "Capacity": 15,
     "GymId": "{{gymIdQuibuma}}"
 }
 
@@ -24,8 +25,7 @@ POST http://localhost:5105/Rooms
 Content-Type: application/json
 
 {
-    "Name": "KickBoxing Room1", 
-    "Capacity": 15,
-    //"IsAvailable": true,
-    "GymId": "{{gymIdFightSociety}}"
+    "Name": "Body Building", 
+    "Capacity": 30,
+    "GymId": "{{topFitnessGym}}"
 }

@@ -20,10 +20,17 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("SubscriptionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(60)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -33,7 +40,9 @@ namespace GymManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228")
+                            Id = new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228"),
+                            UserId = new Guid("d290f1ee-6c54-4b01-90e6-d701748f0851"),
+                            UserName = "admin"
                         });
                 });
 
@@ -100,20 +109,95 @@ namespace GymManagement.Infrastructure.Migrations
                     b.ToTable("Subscriptions");
                 });
 
+            modelBuilder.Entity("GymManagement.Domain.Trainers.Trainer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AdminId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("GymId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Specialization")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId")
+                        .IsUnique();
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("GymId");
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
+
+                    b.ToTable("Trainers");
+                });
+
             modelBuilder.Entity("GymManagement.Domain.Rooms.Room", b =>
                 {
                     b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
                         .WithMany("Rooms")
                         .HasForeignKey("GymId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Gym");
                 });
 
+            modelBuilder.Entity("GymManagement.Domain.Trainers.Trainer", b =>
+                {
+                    b.HasOne("GymManagement.Domain.Admins.Admin", "Admin")
+                        .WithOne("Trainer")
+                        .HasForeignKey("GymManagement.Domain.Trainers.Trainer", "AdminId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
+                        .WithMany("Trainers")
+                        .HasForeignKey("GymId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Gym");
+                });
+
+            modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
+                {
+                    b.Navigation("Trainer");
+                });
+
             modelBuilder.Entity("GymManagement.Domain.Gyms.Gym", b =>
                 {
                     b.Navigation("Rooms");
+
+                    b.Navigation("Trainers");
                 });
 #pragma warning restore 612, 618
         }

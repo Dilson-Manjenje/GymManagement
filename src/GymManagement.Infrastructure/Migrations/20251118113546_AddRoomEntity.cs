@@ -29,7 +29,7 @@ namespace GymManagement.Infrastructure.Migrations
                         column: x => x.GymId,
                         principalTable: "Gyms",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,0 +1,14 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@trainerId = ed2cabb0-7b39-4d63-971f-2dcd0321e783
+
+###
+GET  http://{{host}}/Trainers/{{trainerId}}
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Trainers/List
+Content-Type: {{jsonContentType}}

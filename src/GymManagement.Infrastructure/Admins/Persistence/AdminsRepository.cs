@@ -5,19 +5,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymManagement.Infrastructure.Admins.Persistence;
 
-public class AdminsRepository(GymManagementDbContext dbContext) : IAdminsRepository
+internal class AdminsRepository : IAdminsRepository
 {
-    private readonly GymManagementDbContext _dbContext = dbContext;
+    private readonly GymManagementDbContext _dbContext;
 
-    public Task<Admin?> GetByIdAsync(Guid adminId)
+    public AdminsRepository(GymManagementDbContext dbContext)
     {
-        return _dbContext.Admins.FirstOrDefaultAsync(a => a.Id == adminId);
+        _dbContext = dbContext;
     }
-
-    public Task UpdateAsync(Admin admin)
+    async Task<Admin?> IAdminsRepository.GetByIdAsync(Guid adminId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Admins.FirstOrDefaultAsync(a => a.Id == adminId);
+    }
+    async Task<IEnumerable<Admin>?> IAdminsRepository.ListAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Admins.ToListAsync();
+    }
+    async Task IAdminsRepository.UpdateAsync(Admin admin, CancellationToken cancellationToken)
     {
         _dbContext.Admins.Update(admin);
+        await Task.CompletedTask;
+    }
 
-        return Task.CompletedTask;
+    async Task IAdminsRepository.AddAsync(Admin admin, CancellationToken cancellationToken)
+    {
+        await _dbContext.Admins.AddAsync(admin);        
     }
 }

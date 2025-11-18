@@ -15,14 +15,16 @@ public class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
        Include(new RoomBaseCommandValidator());
 
         RuleFor( c => c)
-            .MustAsync(NotExistWithSame)
-            .WithMessage("A room with the same name already exists.");
+            .MustAsync(NotExistWithSameName)
+            .WithMessage("A room with the same name already exists in this Gym.");
     }
 
-    private async Task<bool> NotExistWithSame(CreateRoomCommand command, CancellationToken token)
+    private async Task<bool> NotExistWithSameName(CreateRoomCommand command, CancellationToken token)
     {
-        var room = await _roomsRepository.GetByName(command.Name);
-
+        var rooms = await _roomsRepository.ListAsync();
+        var room = rooms?.SingleOrDefault(r => r.Name.Equals(command.Name, StringComparison.InvariantCultureIgnoreCase)
+                                            && r.GymId == command.GymId );
+        
         return room is null;
     }
 }

@@ -4,19 +4,22 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 @adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@roomId = cabdc656-cb9c-4989-85ad-032031471d21
+@gymIdQuibuma = 221bb04b-1f47-4d91-a148-582f3f59bc82
+@gymIdFightSociety = a1002392-18dd-4338-ab4d-b88fafc0c9e6
+@gymZ1 = c03901c3-d95d-4fe0-8aed-3e7698972e47
+@topFitnessGym = e9a5f0b6-063d-40b4-9197-69514a371143
+@roomId = 6124cf0e-cf91-436b-9806-4e5eb0afaeb9
 
 ###
 PUT http://{{host}}/Rooms/{{roomId}}
 Content-Type: {{jsonContentType}}
 
 {
-    "name": "Jiu-Jitsu Brasileiro Sala 1",
-    "capacity": "10",
-    "gymId": "a1002392-18dd-4338-ab4d-b88fafc0c9e6"
+  "name": "BodyBuilding",
+  "capacity": 50,
+  "gymId": "{{topFitnessGym}}"
 }
 
 # "name": "KickBoxing Room1",
 # "capacity": 15,
 # "isAvailable": false,
-# "gymId": "a1002392-18dd-4338-ab4d-b88fafc0c9e6"

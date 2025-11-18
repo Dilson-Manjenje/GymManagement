@@ -1,20 +1,25 @@
 using GymManagement.Domain.Subscriptions;
+using GymManagement.Domain.Trainers;
 using Throw;
 
 namespace GymManagement.Domain.Admins;
 
 public class Admin
 {
-    public Guid UserId { get; }
-    public Guid? SubscriptionId { get; private set; } = null;
     public Guid Id { get; private set; }
+    public Guid? UserId { get; private set; } = null;
+    public string UserName { get; set; } = string.Empty;
+    public Guid? SubscriptionId { get; private set; } = null;
+    public Trainer? Trainer { get; set; } = null; // Navigation for 1:1
 
     public Admin(
-        Guid userId,
+        string userName,
+        Guid? userId = null,
         Guid? subscriptionId = null,
         Guid? id = null)
     {
-        UserId = userId;
+        UserName = userName;
+        UserId = userId ?? Guid.NewGuid();
         SubscriptionId = subscriptionId;
         Id = id ?? Guid.NewGuid();
     }

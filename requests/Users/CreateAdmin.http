@@ -1,0 +1,15 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+
+###
+POST http://localhost:5105/Admins/Register
+Content-Type: application/json
+
+{
+    "UserName": "geovany.oliveira", 
+    "Password": "Bla-Bla-123"
+}
+

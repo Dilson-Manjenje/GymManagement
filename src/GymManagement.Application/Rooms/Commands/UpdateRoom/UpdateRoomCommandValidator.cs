@@ -18,12 +18,14 @@ public class UpdateRoomCommandValidator : AbstractValidator<UpdateRoomCommand>
      
         RuleFor( r => r)
                 .MustAsync(NameNotExisteForOther) 
-                .WithMessage($"Name is already used by other Room.");
+                .WithMessage($"Name already used by other Room in this Gym.");
 	}
 
 	private async Task<bool> NameNotExisteForOther(UpdateRoomCommand command, CancellationToken token)
 	{
-		var room = await _roomsRepository.GetByName(command.Name);
+		var rooms = await _roomsRepository.ListAsync();
+		var room = rooms?.SingleOrDefault(r => r.Name.Equals(command.Name, StringComparison.InvariantCultureIgnoreCase)
+		 									&& r.GymId == command.GymId);
 
 		if (room is null || room.Id == command.Id) 
 			return true; 

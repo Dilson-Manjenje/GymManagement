@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20251106132206_AddRoomEntity")]
+    [Migration("20251118113546_AddRoomEntity")]
     partial class AddRoomEntity
     {
         /// <inheritdoc />
@@ -88,7 +88,7 @@ namespace GymManagement.Infrastructure.Migrations
                     b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
                         .WithMany("Rooms")
                         .HasForeignKey("GymId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Gym");

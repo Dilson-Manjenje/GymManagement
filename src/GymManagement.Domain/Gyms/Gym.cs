@@ -1,5 +1,6 @@
 using ErrorOr;
 using GymManagement.Domain.Rooms;
+using GymManagement.Domain.Trainers;
 using Throw;
 
 namespace GymManagement.Domain.Gyms;
@@ -9,7 +10,7 @@ public class Gym
     private readonly int _maxRooms;
     public Guid Id { get; }    
     public List<Room> Rooms { get; private set; } = new();
-    //private readonly List<Guid> _trainerIds = new();
+    public List<Trainer> Trainers { get; private set; } = new();    
     public string Name { get; private set; } = null!;
     public string Address { get; private set; } = null!;
 
@@ -59,29 +60,45 @@ public class Gym
         return Rooms.Select(r => r.Id).Contains(roomId);        
     }
 
-    void RemoveRoom(Guid roomId)
+    public ErrorOr<Success> RemoveRoom(Guid roomId)
     {
         //_roomIds.Remove(roomId);
         var room = Rooms.FirstOrDefault( r => r.Id == roomId);
         if (room is not null)
             Rooms.Remove(room);
         
+        return Result.Success;
     }    
 
-    // TODO: Move AddTrainer and HasTrainer to a Room entity
-    // public ErrorOr<Success> AddTrainer(Guid trainerId)
-    // {
-    //     if (_trainerIds.Contains(trainerId))
-    //     {
-    //         return Error.Conflict(description: "Trainer already added to gym");
-    //     }
+    public ErrorOr<Success> AddTrainer(Trainer trainer)
+    {
+        var exist = Trainers.Select( t => t.Id).Contains(trainer.Id);
+        if (exist)
+            return TrainerErrors.TrainerAlreadyAddedToGym(trainer.Id);
 
-    //     _trainerIds.Add(trainerId);
-    //     return Result.Success;
-    // }
+        Trainers.Add(trainer);
 
-    // public bool HasTrainer(Guid trainerId)
-    // {
-    //     return _trainerIds.Contains(trainerId);
-    // }   
+        return Result.Success;
+    }
+
+    public bool HasTrainer(Guid trainerId)
+    {
+        return Trainers.Select(t => t.Id).Contains(trainerId);
+    }   
+    
+    public ErrorOr<Success> RemoveTrainer(Guid trainerId)
+    {
+        var trainer = Trainers.FirstOrDefault(t => t.Id == trainerId);
+        
+        if (trainer is null)
+            return GymErrors.TrainerNotAssociated(trainerId, Id);
+
+        // TODO: Check if trainer has session 
+        // if (TrainerHasSession(trainerId))
+        //     return GymErrors.CannotRemoveTrainerWithScheduledSessions(trainerId);
+        
+        Trainers.Remove(trainer);
+        
+        return Result.Success;
+    }  
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace GymManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAdminsEntity : Migration
+    public partial class AddAdminEntity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,6 +16,7 @@ namespace GymManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: true),
                     SubscriptionId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -25,8 +26,13 @@ namespace GymManagement.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Admins",
-                columns: new[] { "Id", "SubscriptionId" },
-                values: new object[] { new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228"), null });
+                columns: new[] { "Id", "SubscriptionId", "UserId" },
+                values: new object[]
+                {
+                    new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228"),
+                    null,
+                    new Guid("d290f1ee-6c54-4b01-90e6-d701748f0851")
+                });
         }
 
         /// <inheritdoc />

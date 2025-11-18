@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20251115083728_AddAdminsEntity")]
-    partial class AddAdminsEntity
+    [Migration("20251118114242_AddAdminEntity")]
+    partial class AddAdminEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,10 +23,12 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("SubscriptionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -36,7 +38,8 @@ namespace GymManagement.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228")
+                            Id = new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228"),
+                            UserId = new Guid("d290f1ee-6c54-4b01-90e6-d701748f0851")
                         });
                 });
 
@@ -108,7 +111,7 @@ namespace GymManagement.Infrastructure.Migrations
                     b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
                         .WithMany("Rooms")
                         .HasForeignKey("GymId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Gym");
