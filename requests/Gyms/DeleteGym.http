@@ -4,7 +4,7 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 @adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@gymId = f8ec8376-f660-4617-ab6d-1f6ea72b6d90
+@gymId = 6042266d-14e6-4738-a086-c1d194ed86f1
 
 ###
 DELETE  http://{{host}}/Gyms/{{gymId}}

@@ -27,17 +27,7 @@ public class  CreateTrainerCommandHandler : IRequestHandler<CreateTrainerCommand
 
     public async Task<ErrorOr<Trainer>> Handle(CreateTrainerCommand command, CancellationToken cancellationToken = default)
     {
-        var validator = new CreateTrainerCommandValidator(_trainerRepository);
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors
-                .Select(e => Error.Validation(code: e.PropertyName, description: e.ErrorMessage))
-                .ToList();
-            return errors;
-        }
-
+       
         var gym = await _gymsRepository.GetByIdAsync(command.GymId, cancellationToken);
         if (gym is null)
             return GymErrors.GymNotFound(command.GymId);
@@ -47,8 +37,6 @@ public class  CreateTrainerCommandHandler : IRequestHandler<CreateTrainerCommand
             return AdminErrors.UserNotFound(command.AdminId);
         
         // TODO: Check if Trainer is already in the Gym
-        // TODO: Add Trainer, User to a Gym, not allow add trainer to other gyms
-
         var trainer = new Trainer(
             name: command.Name,
             phone: command.Phone,

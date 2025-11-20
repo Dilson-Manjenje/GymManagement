@@ -26,17 +26,6 @@ public class UpdateRoomCommandHandler : IRequestHandler<UpdateRoomCommand, Error
         if (gym is null)
             return GymErrors.GymNotFound(command.GymId);
         
-        var validator = new UpdateRoomCommandValidator(_roomsRepository);
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors
-                .Select(e => Error.Validation(code: e.PropertyName, description: e.ErrorMessage))
-                .ToList();
-            return errors;
-        }
-        
         var room = await _roomsRepository.GetByIdAsync(command.Id, cancellationToken);
         
         if (room is null)

@@ -26,18 +26,7 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         if (gym is null)
             return GymErrors.GymNotFound(command.GymId);
         
-        var validator = new CreateRoomCommandValidator(_roomsRepository);
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors
-                .Select(e => Error.Validation(code: e.PropertyName, description: e.ErrorMessage))
-                .ToList();
-            return errors;
-        }
-        // TODO: Check if RoomId is already in the Gym by Name, Type
-        
+        // TODO: Check if RoomId is already in the Gym by Name, Type        
         var room = new Room(
             name: command.Name,
             capacity: command.Capacity,

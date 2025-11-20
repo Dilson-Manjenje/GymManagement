@@ -21,17 +21,6 @@ public class UpdateGymCommandHandler : IRequestHandler<UpdateGymCommand, ErrorOr
 
         if (gym is null)
             return GymErrors.GymNotFound(command.Id);
-
-        var validator = new UpdateGymCommandValidator(_gymsRepository);
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors
-                .Select(e => Error.Validation(e.PropertyName, e.ErrorMessage))
-                .ToList();
-            return errors;
-        }
         
         gym.UpdateGym(command.Name, command.Address);
         await _gymsRepository.UpdateAsync(gym, cancellationToken);

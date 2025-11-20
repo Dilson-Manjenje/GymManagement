@@ -19,17 +19,7 @@ public class  RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, 
 
     public async Task<ErrorOr<Admin>> Handle(RegisterUserCommand command, CancellationToken cancellationToken = default)
     {
-        var validator = new RegisterUserCommandValidator(_adminsRepository);
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors
-                .Select(e => Error.Validation(code: e.PropertyName, description: e.ErrorMessage))
-                .ToList();
-            return errors;
-        }
-
+       
         // TODO: Associate Admin with Gym
         // var gym = await _gymsRepository.GetByIdAsync(command.GymId, cancellationToken);
         // if (gym is null)
