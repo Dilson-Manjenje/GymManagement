@@ -24,19 +24,25 @@ internal class RoomsRepository : IRoomsRepository
 
     async Task<Room?> IRoomsRepository.GetByIdAsync(Guid roomId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Rooms.FindAsync(roomId, cancellationToken);
+        //return await _dbContext.Rooms.FindAsync(roomId, cancellationToken);
+        return await _dbContext.Rooms
+                        .Where(r => r.Id == roomId)
+                        .Include(r => r.Gym)
+                        .SingleOrDefaultAsync();
     }
 
     async Task<IEnumerable<Room>?> IRoomsRepository.GetRoomsByGymIdAsync(Guid gymId, CancellationToken cancellationToken)
     {
         return await _dbContext.Rooms
                                .Where(r => r.GymId == gymId)
+                               .Include(r => r.Gym)
                                .ToListAsync(cancellationToken);
     }
 
     async Task<IEnumerable<Room>?> IRoomsRepository.ListAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Rooms
+                              .Include(r => r.Gym)    
                               .ToListAsync(cancellationToken);
     }
 

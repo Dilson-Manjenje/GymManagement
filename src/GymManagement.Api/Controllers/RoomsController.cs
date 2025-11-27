@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using ErrorOr;
 using GymManagement.Contracts.Rooms;
 using GymManagement.Application.Rooms.Commands.CreateRoom;
 using GymManagement.Application.Rooms.Queries.GetRoom;
 using GymManagement.Application.Rooms.Queries.ListRooms;
-using GymManagement.Application.Rooms.Queries.GetRoomsByGym;
 using GymManagement.Application.Rooms.Commands.DisableRoom;
 using GymManagement.Application.Rooms.Commands.UpdateRoom;
 
@@ -45,7 +43,9 @@ public class RoomsController : ApiBaseController
                                   room.Name,
                                   room.Capacity,
                                   room.IsAvailable,
-                                  room.GymId)),
+                                  room.GymId,
+                                  room.Gym.Name
+                                  )),
       error => Problem(error)
   );
   }
@@ -56,8 +56,13 @@ public class RoomsController : ApiBaseController
     var result = await _mediator.Send(new ListRoomsQuery());
 
     return result.MatchFirst(
-      rooms => Ok(new ListRoomsResponse(rooms.Select(room => new RoomResponse(room.Id, room.Name, room.Capacity,
-                                                                               room.IsAvailable, room.GymId)))),
+      rooms => Ok(new ListRoomsResponse(rooms.Select(room => new RoomResponse(room.Id,
+                                                                              room.Name,
+                                                                              room.Capacity,
+                                                                              room.IsAvailable,
+                                                                              room.GymId,
+                                                                              room.Gym.Name
+                                                                              )))),
       error => Problem(error));
   }
 
@@ -87,7 +92,9 @@ public class RoomsController : ApiBaseController
                                   room.Name,
                                   room.Capacity,
                                   room.IsAvailable,
-                                  room.GymId)),
+                                  room.GymId,
+                                  room.Gym.Name
+                                  )),
       error => Problem(error));
   }
 }

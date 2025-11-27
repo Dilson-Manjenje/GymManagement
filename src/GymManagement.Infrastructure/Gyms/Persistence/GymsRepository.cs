@@ -36,15 +36,8 @@ internal class GymsRepository : IGymsRepository
        return await _dbContext.Gyms
                         .Where(g => g.Id == gymId)
                         .Include(g => g.Rooms)
-                        //TODO: Include Trainer
+                        .Include( g => g.Trainers)
                         .FirstOrDefaultAsync();
-    }
-
-    async Task<Gym?> IGymsRepository.GetByNameAsync(string name, CancellationToken cancellationToken)
-    {
-        return await _dbContext.Gyms
-            .AsNoTracking()
-            .FirstOrDefaultAsync(gym => gym.Name.ToLower() == name.ToLower(), cancellationToken);
     }
 
     async Task<IEnumerable<Gym>?> IGymsRepository.ListAsync(CancellationToken cancellationToken)

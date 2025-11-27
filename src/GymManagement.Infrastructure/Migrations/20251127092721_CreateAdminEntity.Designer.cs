@@ -11,14 +11,48 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20251118113546_AddRoomEntity")]
-    partial class AddRoomEntity
+    [Migration("20251127092721_CreateAdminEntity")]
+    partial class CreateAdminEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.21");
+
+            modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("GymId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("SubscriptionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GymId");
+
+                    b.ToTable("Admins");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228"),
+                            UserId = new Guid("d290f1ee-6c54-4b01-90e6-d701748f0851"),
+                            UserName = "admin"
+                        });
+                });
 
             modelBuilder.Entity("GymManagement.Domain.Gyms.Gym", b =>
                 {
@@ -66,21 +100,14 @@ namespace GymManagement.Infrastructure.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("GymManagement.Domain.Subscriptions.Subscription", b =>
+            modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("TEXT");
+                    b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
+                        .WithMany("Admins")
+                        .HasForeignKey("GymId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Property<int>("SubscriptionType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("_adminId")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("AdminId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Subscriptions");
+                    b.Navigation("Gym");
                 });
 
             modelBuilder.Entity("GymManagement.Domain.Rooms.Room", b =>
@@ -96,6 +123,8 @@ namespace GymManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("GymManagement.Domain.Gyms.Gym", b =>
                 {
+                    b.Navigation("Admins");
+
                     b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618

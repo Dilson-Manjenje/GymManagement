@@ -1,4 +1,5 @@
 using ErrorOr;
+using GymManagement.Domain.Admins;
 using GymManagement.Domain.Rooms;
 using GymManagement.Domain.Trainers;
 using Throw;
@@ -11,6 +12,7 @@ public class Gym
     public Guid Id { get; }    
     public List<Room> Rooms { get; private set; } = new();
     public List<Trainer> Trainers { get; private set; } = new();    
+    public List<Admin> Admins { get; private set; } = new();    
     public string Name { get; private set; } = null!;
     public string Address { get; private set; } = null!;
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20251102220036_Gym")]
-    partial class Gym
+    [Migration("20251127092139_AddRoom")]
+    partial class AddRoom
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,21 +40,46 @@ namespace GymManagement.Infrastructure.Migrations
                     b.ToTable("Gyms");
                 });
 
-            modelBuilder.Entity("GymManagement.Domain.Subscriptions.Subscription", b =>
+            modelBuilder.Entity("GymManagement.Domain.Rooms.Room", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SubscriptionType")
+                    b.Property<int>("Capacity")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("_adminId")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("AdminId");
+                    b.Property<Guid>("GymId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subscriptions");
+                    b.HasIndex("GymId");
+
+                    b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("GymManagement.Domain.Rooms.Room", b =>
+                {
+                    b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
+                        .WithMany("Rooms")
+                        .HasForeignKey("GymId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Gym");
+                });
+
+            modelBuilder.Entity("GymManagement.Domain.Gyms.Gym", b =>
+                {
+                    b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618
         }

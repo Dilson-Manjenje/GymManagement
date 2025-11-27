@@ -5,4 +5,6 @@ public record RoomResponse(
     string Name,
     int Capacity,
     bool IsAvailable,
-    Guid GymId);
+    Guid GymId,
+    string GymName
+    );

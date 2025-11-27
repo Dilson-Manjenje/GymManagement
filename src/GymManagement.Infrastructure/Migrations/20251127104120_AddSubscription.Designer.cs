@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    [Migration("20251118115340_AddTrainerEntity")]
-    partial class AddTrainerEntity
+    [Migration("20251127104120_AddSubscription")]
+    partial class AddSubscription
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,23 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("GymId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid?>("SubscriptionId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("GymId");
 
                     b.ToTable("Admins");
 
@@ -39,7 +49,8 @@ namespace GymManagement.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("7d555faf-06b9-409f-a3ba-60d2a6bfc228"),
-                            UserId = new Guid("d290f1ee-6c54-4b01-90e6-d701748f0851")
+                            UserId = new Guid("d290f1ee-6c54-4b01-90e6-d701748f0851"),
+                            UserName = "admin"
                         });
                 });
 
@@ -94,14 +105,16 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("AdminId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("SubscriptionType")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("_adminId")
-                        .HasColumnType("TEXT")
-                        .HasColumnName("AdminId");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AdminId")
+                        .IsUnique();
 
                     b.ToTable("Subscriptions");
                 });
@@ -155,6 +168,16 @@ namespace GymManagement.Infrastructure.Migrations
                     b.ToTable("Trainers");
                 });
 
+            modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
+                {
+                    b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
+                        .WithMany("Admins")
+                        .HasForeignKey("GymId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Gym");
+                });
+
             modelBuilder.Entity("GymManagement.Domain.Rooms.Room", b =>
                 {
                     b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
@@ -164,6 +187,17 @@ namespace GymManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Gym");
+                });
+
+            modelBuilder.Entity("GymManagement.Domain.Subscriptions.Subscription", b =>
+                {
+                    b.HasOne("GymManagement.Domain.Admins.Admin", "Admin")
+                        .WithOne("Subscription")
+                        .HasForeignKey("GymManagement.Domain.Subscriptions.Subscription", "AdminId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Admin");
                 });
 
             modelBuilder.Entity("GymManagement.Domain.Trainers.Trainer", b =>
@@ -187,11 +221,15 @@ namespace GymManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
                 {
+                    b.Navigation("Subscription");
+
                     b.Navigation("Trainer");
                 });
 
             modelBuilder.Entity("GymManagement.Domain.Gyms.Gym", b =>
                 {
+                    b.Navigation("Admins");
+
                     b.Navigation("Rooms");
 
                     b.Navigation("Trainers");
