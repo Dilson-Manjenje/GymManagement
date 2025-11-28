@@ -27,22 +27,28 @@ public class  CreateTrainerCommandHandler : IRequestHandler<CreateTrainerCommand
 
     public async Task<ErrorOr<Trainer>> Handle(CreateTrainerCommand command, CancellationToken cancellationToken = default)
     {
-       
-        var gym = await _gymsRepository.GetByIdAsync(command.GymId, cancellationToken);
-        if (gym is null)
-            return GymErrors.GymNotFound(command.GymId);
-
+              
         var admin = await _adminsRepository.GetByIdAsync(command.AdminId);
         if (admin is null)
             return AdminErrors.UserNotFound(command.AdminId);
+
+        if (admin.GymId is null || admin.GymId!.Value == Guid.Empty)
+            return AdminErrors.UserDontHaveGym(admin.UserName, admin.Id);
         
-        // TODO: Check if Trainer is already in the Gym
+        var gymId = admin.GymId!.Value;
+        var gym = await _gymsRepository.GetByIdAsync(gymId, cancellationToken);
+        if (gym is null)
+            return GymErrors.GymNotFound(gymId);
+
+        if (gymId == gym.Id)
+            return TrainerErrors.TrainerAlreadyAddedToGym(adminId: admin.Id);
+            
         var trainer = new Trainer(
             name: command.Name,
             phone: command.Phone,
             email: command.Email,
             specialization: command.Specialization,
-            gymId: command.GymId,
+            gymId: gymId,
             adminId: command.AdminId
         );
 

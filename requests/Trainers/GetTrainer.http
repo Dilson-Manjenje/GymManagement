@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@trainerId = ed2cabb0-7b39-4d63-971f-2dcd0321e783
+@trainerId = 639e130f-b54d-420b-bcb4-dc448a6356f9
 
 ###
 GET  http://{{host}}/Trainers/{{trainerId}}

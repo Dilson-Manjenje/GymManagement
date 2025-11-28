@@ -4,25 +4,20 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 @adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@geovanyAdminId = 48ed7d0e-4040-4046-94af-22d591c48aff
-@xagasAdminId = 35d4c6cd-8ba9-44e0-a7d0-23ba8a779548
-@stiveAdminId = b3559150-cb74-4e5a-9cae-a7ecc6e1b5c7
-@fidelAdminId = 6bc53f2c-97a6-4c92-8674-3dcc7e1b9193
-
-@gymIdQuibuma = 221bb04b-1f47-4d91-a148-582f3f59bc82
-@gymIdFightSociety = a1002392-18dd-4338-ab4d-b88fafc0c9e6
-@z1GymId = c03901c3-d95d-4fe0-8aed-3e7698972e47
-
+@geovanyAdminId = 3effc5e5-bdd2-47f2-85fb-c185b4ac2144
+@xagasAdminId = c0b29c46-1c76-4f01-adb3-38aea53424a0
+@stiveAdminId = 1fc4aba1-aa06-4d61-84e0-eb9aa258b14f
+@fidelAdminId = bb7868f0-cd9d-4ff5-9f2d-c08a0a38220e
+@celsioAdminId = d905c0e3-779e-4797-a5bf-00c89ef9557b
 ###
 POST http://localhost:5105/Trainers
 Content-Type: application/json
 
 {
-    "Name": "Stive Braga", 
-    "Phone": "923002002",
-    "Email": "stive.braga@gmail.com",
-    "Specialization": "Kick Boxing, Muay Thai",
-    "GymId":"{{z1GymId}}", 
-    "AdminId":"{{stiveAdminId}}"
+    "Name": "Geovani Oliveira", 
+    "Phone": "924003003",
+    "Email": "enjetech.dev1@gmail.com",
+    "Specialization": "Braziliam Jiu-Jitsu",    
+    "AdminId":"{{geovanyAdminId}}"
 }
 

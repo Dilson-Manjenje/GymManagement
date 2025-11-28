@@ -7,4 +7,5 @@ public sealed record TrainerResponse(
                                 //string Email,
                                 string Specialization,
                                 Guid GymId,
+                                string GymName,
                                 Guid AdminId);

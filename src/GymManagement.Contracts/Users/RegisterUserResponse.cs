@@ -1,3 +1,3 @@
 ﻿namespace GymManagement.Contracts.Users;
 
-public record RegisterResponse(Guid Id);
+public record RegisterUserResponse(Guid Id);

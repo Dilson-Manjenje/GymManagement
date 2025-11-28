@@ -12,9 +12,9 @@ public static class TrainerErrors
   (code: "Trainer.CannotRemoveTrainerWithSessions",
     description: $"Can not remove Trainer {name} with scheduled sessions.");
       
-  public static Error TrainerAlreadyAddedToGym(Guid id) => Error.Conflict
+  public static Error TrainerAlreadyAddedToGym(Guid adminId) => Error.Conflict
   (code: "Trainer.TrainerAlreadyAddedToGym",
-   description: $"Trainer {id} already added to the gym.");    
+   description: $"Trainer with Admin ID {adminId} is already in the gym.");    
       
 
 }

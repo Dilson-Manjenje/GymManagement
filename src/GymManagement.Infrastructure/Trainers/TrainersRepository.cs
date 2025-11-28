@@ -16,13 +16,15 @@ internal class TraneirsRepository : ITrainersRepository
 
     async Task ITrainersRepository.AddAsync(Trainer trainer, CancellationToken cancellationToken)
     {
-        await _dbContext.Trainers.AddAsync(trainer);
+        await _dbContext.Trainers.AddAsync(trainer, cancellationToken);
     }
 
 
     async Task<IEnumerable<Trainer>?> ITrainersRepository.ListAsync(CancellationToken cancellationToken)
     {
-        return await _dbContext.Trainers.ToListAsync();
+        return await _dbContext.Trainers
+                                .Include(t => t.Gym)
+                                .ToListAsync(cancellationToken);
     }
 
     async Task ITrainersRepository.RemoveAsync(Trainer trainer, CancellationToken cancellationToken)
@@ -33,7 +35,11 @@ internal class TraneirsRepository : ITrainersRepository
 
     async Task<Trainer?> ITrainersRepository.GetByIdAsync(Guid trainerId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Trainers.FindAsync(trainerId, cancellationToken);
+        //return await _dbContext.Trainers.FindAsync(trainerId, cancellationToken);
+        return await _dbContext.Trainers
+                    .Where(t => t.Id == trainerId)
+                    .Include(t => t.Gym)
+                    .SingleOrDefaultAsync(cancellationToken);
     }
 
     async Task ITrainersRepository.UpdateAsync(Trainer trainer, CancellationToken cancellationToken)

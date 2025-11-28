@@ -5,18 +5,18 @@
 @jsonContentType = application/json
 @adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
 
-@gymIdQuibuma = 221bb04b-1f47-4d91-a148-582f3f59bc82
-@gymIdFightSociety = a1002392-18dd-4338-ab4d-b88fafc0c9e6
-@gymZ1 = c03901c3-d95d-4fe0-8aed-3e7698972e47
-@topFitnessGym = e9a5f0b6-063d-40b4-9197-69514a371143
+@gymIdQuibuma = da078937-8cde-4218-b248-96feb7c14f7e
+@gymIdFightSociety = 89a0f40a-6a7e-47a0-a355-c8904fce2df7
+@gymZ1 = bfce5f1e-2d69-4801-8ade-2c77ecf61595
+@topFitnessGym =12397642-13da-4b76-a667-c449abb257a8
 
 ###
 POST http://localhost:5105/Rooms
 Content-Type: application/json
 
 {
-    "Name": "Musculação 2", 
-    "Capacity": 15,
+    "Name": "KickBoxing", 
+    "Capacity": 25,
     "GymId": "{{gymIdQuibuma}}"
 }
 
@@ -25,7 +25,7 @@ POST http://localhost:5105/Rooms
 Content-Type: application/json
 
 {
-    "Name": "Body Building", 
+    "Name": "Yoga", 
     "Capacity": 30,
     "GymId": "{{topFitnessGym}}"
 }

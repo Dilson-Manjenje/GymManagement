@@ -17,10 +17,11 @@ public class AdminsController : ApiBaseController
   }
 
   [HttpPost("Register")]
-  public async Task<IActionResult> CreateAdmin([FromBody] RegisterRequest request, CancellationToken cancellationToken)
+  public async Task<IActionResult> CreateAdmin([FromBody] RegisterUserRequest request, CancellationToken cancellationToken)
   {
     var cmd = new RegisterUserCommand(UserName: request.UserName,
-                                      Password: request.Password);
+                                      Password: request.Password,
+                                      GymId: request.GymId);
 
     var result = await _mediator.Send(cmd);
 
