@@ -3,7 +3,10 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
+@dilsonAdmin = 370D5E1F-706D-4E5B-A8C4-2F825F520241
+@ruiAdminId = 643DFC4C-53B3-4951-9D94-F61660A88726
+@ivanAdminId = 4bfce3b0-c3c0-4a95-a9b5-f1cc8f498670
+@geovanyAdminId = 3effc5e5-bdd2-47f2-85fb-c185b4ac2144
 
 ###
 POST http://localhost:5105/Subscriptions
@@ -11,7 +14,7 @@ Content-Type: application/json
 
 {
     "SubscriptionType": "Basic", 
-    "AdminId": "{{adminId}}"
+    "AdminId": "{{ivanAdminId}}"
 }
 
 ###
@@ -20,7 +23,7 @@ Content-Type: {{jsonContentType}}
 
 {
     "SubscriptionType": "Premium", 
-    "AdminId": "{{adminId}}"
+    "AdminId": "{{geovanyAdminId}}"
 }
 
 # {

@@ -15,11 +15,19 @@ internal class AdminsRepository : IAdminsRepository
     }
     async Task<Admin?> IAdminsRepository.GetByIdAsync(Guid adminId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Admins.FirstOrDefaultAsync(a => a.Id == adminId);
+        return await _dbContext.Admins
+                    .Include(a => a.Subscriptions)
+                    .Include(a => a.Trainer)
+                    .Include(a => a.Gym)
+                    .FirstOrDefaultAsync(a => a.Id == adminId);
     }
     async Task<IEnumerable<Admin>?> IAdminsRepository.ListAsync(CancellationToken cancellationToken)
     {
-        return await _dbContext.Admins.ToListAsync();
+        return await _dbContext.Admins
+                    .Include(a => a.Subscriptions )
+                    .Include(a => a.Trainer)
+                    .Include(a => a.Gym)
+                    .ToListAsync();
     }
     async Task IAdminsRepository.UpdateAsync(Admin admin, CancellationToken cancellationToken)
     {

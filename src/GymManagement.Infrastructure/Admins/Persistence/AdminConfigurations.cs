@@ -18,12 +18,10 @@ public class AdminConfigurations : IEntityTypeConfiguration<Admin>
                .HasMaxLength(60)
                .IsRequired();
 
-        builder.Property(a => a.SubscriptionId);
-
         builder.Property(a => a.GymId)
                .IsRequired(false);
         
-        // --- One-To-Many: Gym -> Admins/Users        
+        // --- One-To-Many: Gym -> Admins      
         builder.HasOne(r => r.Gym)
              .WithMany(g => g.Admins)
              .HasForeignKey(t => t.GymId)
@@ -33,7 +31,6 @@ public class AdminConfigurations : IEntityTypeConfiguration<Admin>
             userName: "admin",
             userId: Guid.Parse("d290f1ee-6c54-4b01-90e6-d701748f0851"),
             gymId: null,
-            subscriptionId: null,
             id: Guid.Parse("7d555faf-06b9-409f-a3ba-60d2a6bfc228")));
     }
 }

@@ -18,6 +18,7 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
     {
         return await _dbContext.Subscriptions
                          .AsNoTracking()
+                         .Include(s => s.Admin)
                          .ToListAsync(cancellationToken);
                         
     }
@@ -29,8 +30,10 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
 
     async Task<Subscription?> ISubscriptionsRepository.GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken)
     {
-        //return await _dbContext.Subscriptions.FirstOrDefaultAsync(subscription => subscription.Id == subscriptionId, cancellationToken);
-        return await _dbContext.Subscriptions.FindAsync(subscriptionId, cancellationToken);
+        //return await _dbContext.Subscriptions.FindAsync(subscriptionId, cancellationToken);
+        return await _dbContext.Subscriptions
+                    .Include(s => s.Admin)
+                    .SingleOrDefaultAsync(s => s.Id == subscriptionId, cancellationToken);                    
     }
 
     async Task ISubscriptionsRepository.RemoveSubscription(Subscription subscription, CancellationToken cancellationToken)

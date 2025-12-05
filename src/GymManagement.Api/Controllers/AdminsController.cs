@@ -28,7 +28,12 @@ public class AdminsController : ApiBaseController
     return result.MatchFirst(      
       admin => CreatedAtAction(actionName: nameof(GetAdmin),
                                  routeValues: new { adminId = admin.Id },
-                                 value: new { admin.Id, admin.UserName, admin.UserId, admin.SubscriptionId }),
+                                 value: new
+                                 {
+                                   admin.Id,
+                                   admin.UserName,
+                                   admin.UserId
+                                 }),
       error => Problem(error));
   }
 
@@ -41,7 +46,7 @@ public class AdminsController : ApiBaseController
       admin => Ok(new GetAdminResponse(Id: admin.Id,
                                        UserName: admin.UserName,
                                        UserId: admin.UserId,
-                                       SubscriptionId: admin.SubscriptionId)),
+                                       CurrentSubscriptionId:  admin.CurrentSubscription?.Id)),
       error => Problem(error));
   }
 
@@ -51,10 +56,12 @@ public class AdminsController : ApiBaseController
     var result = await _mediator.Send(new ListAdminsQuery());
 
     return result.MatchFirst(
-      admins => Ok(new ListAdminsResponse(admins.Select(admin => new GetAdminResponse(Id: admin.Id,
-                                                                                      UserId: admin.UserId,
-                                                                                      UserName: admin.UserName,
-                                                                                      SubscriptionId: admin.SubscriptionId)))),
+      admins => Ok(new ListAdminsResponse(admins.Select
+                                                (admin => new GetAdminResponse
+                                                              ( Id: admin.Id,
+                                                                UserId: admin.UserId,
+                                                                UserName: admin.UserName,
+                                                                CurrentSubscriptionId: admin.CurrentSubscription?.Id)))),
       error => Problem(error));
   }
 }

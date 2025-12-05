@@ -3,7 +3,6 @@ using GymManagement.Application.Subscriptions.Queries.GetSubscription;
 using GymManagement.Contracts.Subscriptions;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using ErrorOr;
 using DomainSubscriptionType = GymManagement.Domain.Subscriptions.SubscriptionType;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptions;
 using GymManagement.Application.Subscriptions.Commands.DeleteSubscription;
@@ -34,7 +33,14 @@ public class SubscriptionsController : ApiBaseController
         return result.MatchFirst(
             subscription => CreatedAtAction(actionName: nameof(GetSubscription),
                                             routeValues: new { subscriptionId = subscription.Id },
-                                            value: new { subscription.Id, subscriptionType = subscription.SubscriptionType.Name }), // Pass null or the created resource            
+                                            value: new SubscriptionResponse(Id: subscription.Id,
+                                                       SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
+                                                       Price: subscription.Price,
+                                                       MaxRooms: subscription.GetMaxRooms(),
+                                                       MaxDailySessions: subscription.MaxDailySessions,
+                                                       AdminId: subscription.Admin.Id,
+                                                       UserName: subscription.Admin.UserName)
+                                            ), // Pass null or the created resource            
             error => Problem(error));
     }
 
@@ -50,8 +56,14 @@ public class SubscriptionsController : ApiBaseController
         var result = await _mediator.Send(new GetSubscriptionQuery(subscriptionId));
 
         return result.MatchFirst(
-          subscription => Ok(new SubscriptionResponse(subscription.Id,
-                                                     Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))),
+          subscription => Ok(new SubscriptionResponse(Id: subscription.Id,
+                                                       SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
+                                                       Price: subscription.Price,
+                                                       MaxRooms: subscription.GetMaxRooms(),
+                                                       MaxDailySessions: subscription.MaxDailySessions,
+                                                       AdminId: subscription.Admin.Id,
+                                                       UserName: subscription.Admin.UserName
+                                                    )),
           error => Problem(error)
       );
     }
@@ -63,9 +75,13 @@ public class SubscriptionsController : ApiBaseController
 
         return result.MatchFirst(
           subscriptions => Ok(new SubscriptionsListResponse(subscriptions
-                                                                .Select(subscription => new SubscriptionResponse(
-                                                                                        subscription.Id,
-                                                                                        Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))))),
+                                                                .Select(subscription => new SubscriptionResponse(Id: subscription.Id,
+                                                                    SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
+                                                                    Price: subscription.Price,
+                                                                    MaxRooms: subscription.GetMaxRooms(),
+                                                                    MaxDailySessions: subscription.MaxDailySessions,
+                                                                    AdminId: subscription.Admin.Id,
+                                                                    UserName: subscription.Admin.UserName)))),
           error => Problem(error)
       );
     }
@@ -92,8 +108,14 @@ public class SubscriptionsController : ApiBaseController
         var result = await _mediator.Send(new UpdateSubscriptionCommand(id, subscriptionType));
 
         return result.MatchFirst(
-          subscription => Ok(new SubscriptionResponse(subscription.Id,
-                                                     Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name))),
+          subscription => Ok(new SubscriptionResponse(Id: subscription.Id,
+                                                      SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
+                                                       Price: subscription.Price,
+                                                       MaxRooms: subscription.GetMaxRooms(),
+                                                       MaxDailySessions: subscription.MaxDailySessions,
+                                                       AdminId: subscription.Admin.Id,
+                                                       UserName: subscription.Admin.UserName             
+                                                       )),
           error => Problem(error));
     }
 }

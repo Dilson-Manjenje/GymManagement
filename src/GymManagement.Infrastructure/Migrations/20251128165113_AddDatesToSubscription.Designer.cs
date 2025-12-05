@@ -3,6 +3,7 @@ using System;
 using GymManagement.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GymManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(GymManagementDbContext))]
-    partial class GymManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251128165113_AddDatesToSubscription")]
+    partial class AddDatesToSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.21");
@@ -23,6 +26,9 @@ namespace GymManagement.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("GymId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("SubscriptionId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("UserId")
@@ -113,7 +119,8 @@ namespace GymManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
+                    b.HasIndex("AdminId")
+                        .IsUnique();
 
                     b.ToTable("Subscriptions");
                 });
@@ -191,8 +198,8 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Subscriptions.Subscription", b =>
                 {
                     b.HasOne("GymManagement.Domain.Admins.Admin", "Admin")
-                        .WithMany("Subscriptions")
-                        .HasForeignKey("AdminId")
+                        .WithOne("Subscription")
+                        .HasForeignKey("GymManagement.Domain.Subscriptions.Subscription", "AdminId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -220,7 +227,7 @@ namespace GymManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("GymManagement.Domain.Admins.Admin", b =>
                 {
-                    b.Navigation("Subscriptions");
+                    b.Navigation("Subscription");
 
                     b.Navigation("Trainer");
                 });
