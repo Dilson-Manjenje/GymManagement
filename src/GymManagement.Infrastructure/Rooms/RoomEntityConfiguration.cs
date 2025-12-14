@@ -23,12 +23,13 @@ public class RoomEntityConfiguration : IEntityTypeConfiguration<Room>
        builder.Property(r => r.IsAvailable)
               .IsRequired();
 
-              builder.Property(r => r.GymId).IsRequired();
-       
-       // --- One-To-Many: Gym -> Rooms
-       builder.HasOne(r => r.Gym)
-            .WithMany( g => g.Rooms)
-            .HasForeignKey(t => t.GymId)
-            .OnDelete(DeleteBehavior.Restrict); // Prevents deleting gym with rooms                                      
+       builder.Property(r => r.GymId).IsRequired();
+
+              // --- One-To-Many: Gym -> Rooms
+              builder.HasOne(r => r.Gym)
+                   .WithMany(g => g.Rooms)
+                   .HasForeignKey(t => t.GymId)
+                   .OnDelete(DeleteBehavior.Restrict); // Prevents deleting gym with rooms                                      
+
     }
 }

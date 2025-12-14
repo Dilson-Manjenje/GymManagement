@@ -44,7 +44,8 @@ internal class GymsRepository : IGymsRepository
     {
          return await _dbContext.Gyms
                         .AsNoTracking()
-                        //.Include(g => g.Rooms) //TODO: Include Rooms and Trainer
+                        .Include(g => g.Rooms) 
+                        .Include( g => g.Trainers)
                         .ToListAsync(cancellationToken);
     }
 

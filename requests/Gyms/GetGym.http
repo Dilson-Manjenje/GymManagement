@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@gymId = 221bb04b-1f47-4d91-a148-582f3f59bc82
+@gymId = e7f2d4bf-b428-433a-bd41-9d824923c9bb
 
 ###
 GET  http://{{host}}/Gyms/{{gymId}}

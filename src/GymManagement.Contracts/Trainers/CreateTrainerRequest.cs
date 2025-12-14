@@ -12,7 +12,7 @@ public sealed record CreateTrainerRequest(string Name,
                                 string Phone,
                                 string Email,
                                 string Specialization,
-                                Guid AdminId): TrainerBaseRequest(Name: Name,
+                                Guid MemberId): TrainerBaseRequest(Name: Name,
                                                                   Phone: Phone,
                                                                   Email: Email,
                                                                   Specialization: Specialization); 

@@ -2,9 +2,11 @@ namespace GymManagement.Contracts.Subscriptions;
 
 public record SubscriptionResponse(Guid Id,
                                    SubstriptionType SubscriptionType,
-                                   int Price,
+                                   decimal Price,
+                                   string Gym,
                                    int MaxRooms,
+                                   List<string> Rooms,
                                    int MaxDailySessions,
-                                   Guid AdminId,
-                                   string UserName 
+                                   Guid MemberId,
+                                   string UserName
                                    );

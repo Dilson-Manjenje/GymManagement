@@ -7,6 +7,6 @@ namespace GymManagement.Application.Trainers.Commands.CreateTrainer;
 public sealed record CreateTrainerCommand(string Name,
                                 string Phone,
                                 string Specialization,
-                                Guid AdminId,
+                                Guid MemberId,
                                 string Email = "" 
                                 ): IRequest<ErrorOr<Trainer>>;

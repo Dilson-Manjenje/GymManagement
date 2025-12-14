@@ -42,11 +42,11 @@ public class TrainerEntityConfiguration : IEntityTypeConfiguration<Trainer>
                    .HasForeignKey(t => t.GymId)
                    .OnDelete(DeleteBehavior.Restrict); // Prevents deleting gym with trainers
 
-              // One-to-One: Trainer <-> Admin
-              builder.HasOne(t => t.Admin)
-               .WithOne(ad => ad.Trainer)
-               .HasForeignKey<Trainer>(t => t.AdminId)
-               .OnDelete(DeleteBehavior.Restrict); // Prevents deleting admin with trainer
+              // One-to-One: Trainer <-> Member
+              builder.HasOne(t => t.Member)
+               .WithOne(m => m.Trainer)
+               .HasForeignKey<Trainer>(t => t.MemberId)
+               .OnDelete(DeleteBehavior.Restrict); // Prevents deleting member with trainer
 
 
        }

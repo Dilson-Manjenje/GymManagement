@@ -3,8 +3,12 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@subscriptionId = 2E9EA885-FDFB-4398-9262-05CD23A963F1
+@subscriptionId = c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
+@quibumaBodyRoomId = 40A171F7-5230-4474-B49F-9CF25A50C9E0
+@quibumaKickRoomId = 1a5b1dd9-43e0-4451-845f-3ceae5e5cb43
+
+@JudoRoomId = CF9D6AA7-2611-4012-A004-C2E52FF63853
+
 
 ###
 PUT http://{{host}}/Subscriptions/{{subscriptionId}}

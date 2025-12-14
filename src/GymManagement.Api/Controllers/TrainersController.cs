@@ -24,7 +24,7 @@ public class TrainersController : ApiBaseController
                                        Phone: request.Phone,
                                        Email: request.Email,
                                        Specialization: request.Specialization,
-                                       AdminId: request.AdminId);
+                                       MemberId: request.MemberId);
 
     var result = await _mediator.Send(cmd);
     
@@ -48,7 +48,7 @@ public class TrainersController : ApiBaseController
                                         Specialization: trainer.Specialization,
                                         GymId: trainer.GymId,
                                         GymName: trainer.Gym.Name,
-                                        AdminId: trainer.AdminId)),
+                                        MemberId: trainer.MemberId)),
       error => Problem(error));
   }
 
@@ -65,7 +65,7 @@ public class TrainersController : ApiBaseController
                                                                 Specialization: trainer.Specialization,
                                                                 GymId: trainer.GymId,
                                                                 GymName: trainer.Gym.Name,
-                                                                AdminId: trainer.AdminId)))),
+                                                                MemberId: trainer.MemberId)))),
       error => Problem(error));
   }
 

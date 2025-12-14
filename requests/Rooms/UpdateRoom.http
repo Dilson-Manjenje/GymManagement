@@ -3,19 +3,19 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@gymIdQuibuma = da078937-8cde-4218-b248-96feb7c14f7e
-@gymIdFightSociety = 89a0f40a-6a7e-47a0-a355-c8904fce2df7
-@gymZ1 = bfce5f1e-2d69-4801-8ade-2c77ecf61595
-@topFitnessGym =12397642-13da-4b76-a667-c449abb257a8
-@roomId = 6835f82d-21d1-44a4-9b05-bee4c62c6400
+@gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
+@gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
+@gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
+@topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
+@roomId = d1093172-f63f-476b-a8b4-89e7f066210c
+
 
 ###
 PUT http://{{host}}/Rooms/{{roomId}}
 Content-Type: {{jsonContentType}}
 
 {
-  "name": "Body Building",
-  "capacity": 50,
+  "name": "Yoga",
+  "capacity": 20,
   "gymId": "{{topFitnessGym}}"
 }

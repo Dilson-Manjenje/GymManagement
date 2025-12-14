@@ -1,11 +1,11 @@
 using ErrorOr;
+using GymManagement.Domain.Common;
 using GymManagement.Domain.Gyms;
 
 namespace GymManagement.Domain.Rooms;
 
-public class Room
+public class Room : Entity
 {
-    public Guid Id { get; }
     public string Name { get; private set; } = null!;
     public int Capacity { get; private set; }
     public Guid GymId { get; private set; }
@@ -16,12 +16,11 @@ public class Room
         string name,
         int capacity,
         Guid gymId,
-        Guid? id = null)
+        Guid? id = null) : base(id ?? Guid.NewGuid())
     {
         Name = name;
         Capacity = capacity;
         GymId = gymId;
-        Id = id ?? Guid.NewGuid();
     }
     private Room() { }
     // TODO: Add RoomType, Equipment, session cannot exceed room capacity.

@@ -3,12 +3,12 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@subscriptionId1 = 7DFE1320-A453-4880-B843-9E1FA3D4C03D	
-@subscriptionId2 = 9528EE84-7A1D-4584-9074-D803F6690200
+@subscriptionId1 = 19a3e3cb-d4fb-4814-ac34-26c45bce6412 
+@subscriptionId2 = 02992F15-C972-4F33-9F6E-6633420EB17E
+
 
 ###
-GET  http://{{host}}/Subscriptions/{{subscriptionId1}}
+GET  http://{{host}}/Subscriptions/c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
 Content-Type: {{jsonContentType}}
 
 ###

@@ -1,0 +1,14 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@memberId = abce4882-6535-4308-86c5-7b5ed2570a13
+
+###
+GET  http://{{host}}/Members/{{memberId}}
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Members/List
+Content-Type: {{jsonContentType}}

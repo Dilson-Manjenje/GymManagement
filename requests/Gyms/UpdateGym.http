@@ -3,14 +3,13 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@gymId = 12397642-13da-4b76-a667-c449abb257a8
+@gymId = 38139b2e-e867-4446-9ddb-2d7b673ade27
 
 ###
 PUT http://{{host}}/Gyms/{{gymId}}
 Content-Type: {{jsonContentType}}
 
 {
-    "name": "TopFitness Gym",
-    "address": "Talatona, Luanda"
+    "name": "Quibuma Sports",
+    "address": "Morro Bento, Luanda"
 }

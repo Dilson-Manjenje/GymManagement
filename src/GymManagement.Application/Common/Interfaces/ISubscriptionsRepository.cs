@@ -2,16 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GymManagement.Domain.Rooms;
 using GymManagement.Domain.Subscriptions;
 
 namespace GymManagement.Application.Common.Interfaces;
 
 public interface ISubscriptionsRepository
 {
-    Task AddSubscriptionAsync(Subscription subscription, CancellationToken cancellationToken = default);
+    Task AddAsync(Subscription subscription, CancellationToken cancellationToken = default);
     Task<Subscription?> GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<Subscription>?> ListAsync(CancellationToken cancellationToken = default);   
-    Task RemoveSubscription(Subscription subscription, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Subscription>?> ListAsync(CancellationToken cancellationToken = default);
+    Task RemoveAsync(Subscription subscription, CancellationToken cancellationToken = default);
     Task UpdateAsync(Subscription subscription, CancellationToken cancellationToken = default);
+    Task AddRoomToSubscriptionAsync(SubscriptionRooms subscRoom, CancellationToken cancellationToken = default);
+    Task RemoveRoomFromSubscriptionAsync(SubscriptionRooms subscRoom, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Room>> GetSubscriptionRooms(Guid subscriptionId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Subscription>> GetAllSubscriptionsByRoomAsync(Guid roomId, CancellationToken cancellationToken = default);
 }

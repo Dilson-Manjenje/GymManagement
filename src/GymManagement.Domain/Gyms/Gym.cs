@@ -1,18 +1,18 @@
 using ErrorOr;
-using GymManagement.Domain.Admins;
+using GymManagement.Domain.Members;
+using GymManagement.Domain.Common;
 using GymManagement.Domain.Rooms;
 using GymManagement.Domain.Trainers;
 using Throw;
 
 namespace GymManagement.Domain.Gyms;
 
-public class Gym
+public class Gym : Entity
 {
     private readonly int _maxRooms;
-    public Guid Id { get; }    
     public List<Room> Rooms { get; private set; } = new();
     public List<Trainer> Trainers { get; private set; } = new();    
-    public List<Admin> Admins { get; private set; } = new();    
+    public List<Member> Members { get; private set; } = new();    
     public string Name { get; private set; } = null!;
     public string Address { get; private set; } = null!;
 
@@ -20,13 +20,11 @@ public class Gym
         string name,
         string address,
         int maxRooms = 100,
-        Guid? id = null)
+        Guid? id = null) : base(id ?? Guid.NewGuid())
     {
         Name = name;
         Address = address;
         _maxRooms = maxRooms;
-        Id = id ?? Guid.NewGuid();
-        //_roomIds = Rooms?.Select( r => r.Id).ToList() ?? new List<Guid>();
     }
 
     private Gym() { }
@@ -35,22 +33,18 @@ public class Gym
     {
         Name = name;
         Address = address;
-        
+
         return Result.Success;
     } 
     public ErrorOr<Success> AddRoom(Room room)
     {
-        //_roomIds.Throw().IfContains(room.Id);
-        //var _roomIds = Rooms.Select( r => r.Id).Throw().IfContains(room.Id);
-        
         var exist = Rooms.Select( r => r.Id).Contains(room.Id);
         if (exist)
             return GymErrors.RoomAlreadyAddedToGym(room.Id);
-        
+
         if (Rooms.Count >= _maxRooms)
-            return GymErrors.CantExceedMaxRooms;
-        
-        //_roomIds.Add(room.Id);
+            return GymErrors.CantExceedMaxRooms;   
+               
         Rooms.Add(room);
 
         return Result.Success;
@@ -58,13 +52,11 @@ public class Gym
 
     public bool HasRoom(Guid roomId)
     {
-        //return _roomIds.Contains(roomId);
         return Rooms.Select(r => r.Id).Contains(roomId);        
     }
 
     public ErrorOr<Success> RemoveRoom(Guid roomId)
     {
-        //_roomIds.Remove(roomId);
         var room = Rooms.FirstOrDefault( r => r.Id == roomId);
         if (room is not null)
             Rooms.Remove(room);
@@ -74,18 +66,19 @@ public class Gym
 
     public ErrorOr<Success> AddTrainer(Trainer trainer)
     {
-        var exist = Trainers.Select( t => t.Id).Contains(trainer.Id);
+        var exist = Trainers.Any(t => t.Id.Equals(trainer.Id)) ||
+                    Trainers.Any(t => t.MemberId == trainer.MemberId);
         if (exist)
-            return TrainerErrors.TrainerAlreadyAddedToGym(trainer.Id);
+            return TrainerErrors.TrainerAlreadyAddedToGym(memberId: trainer.MemberId);
 
         Trainers.Add(trainer);
 
         return Result.Success;
     }
 
-    public bool HasTrainer(Guid trainerId)
+    public bool HasTrainer(Guid memberId)
     {
-        return Trainers.Select(t => t.Id).Contains(trainerId);
+        return Trainers.Any(t => t.MemberId == memberId);                
     }   
     
     public ErrorOr<Success> RemoveTrainer(Guid trainerId)
@@ -95,7 +88,7 @@ public class Gym
         if (trainer is null)
             return GymErrors.TrainerNotAssociated(trainerId, Id);
 
-        // TODO: Check if trainer has session 
+        // TODO: Check if trainer has booking/sessions
         // if (TrainerHasSession(trainerId))
         //     return GymErrors.CannotRemoveTrainerWithScheduledSessions(trainerId);
         

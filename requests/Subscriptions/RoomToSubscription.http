@@ -1,0 +1,30 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@subscriptionId = c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
+@quibumaBodyRoomId = 40A171F7-5230-4474-B49F-9CF25A50C9E0
+@quibumaKickRoomId = 1a5b1dd9-43e0-4451-845f-3ceae5e5cb43
+
+@JudoRoomId = CF9D6AA7-2611-4012-A004-C2E52FF63853
+
+@fightJiuJitsu = 555b756b-de79-449e-82c5-80b7a7552cf6
+@fightKick = 16b36cd2-c7f8-4c80-8b37-12ecdba3cc23
+
+###
+PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
+Content-Type: {{jsonContentType}}
+
+{
+    "roomId": "{{fightJiuJitsu}}"
+}
+
+
+###
+DELETE  http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
+Content-Type: {{jsonContentType}}
+
+{
+    "roomId": "{{fightKick}}"
+}

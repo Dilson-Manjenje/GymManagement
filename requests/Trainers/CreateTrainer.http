@@ -3,21 +3,28 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@adminId = 7D555FAF-06B9-409F-A3BA-60D2A6BFC228
-@geovanyAdminId = 3effc5e5-bdd2-47f2-85fb-c185b4ac2144
-@xagasAdminId = c0b29c46-1c76-4f01-adb3-38aea53424a0
-@stiveAdminId = 1fc4aba1-aa06-4d61-84e0-eb9aa258b14f
-@fidelAdminId = bb7868f0-cd9d-4ff5-9f2d-c08a0a38220e
-@celsioAdminId = d905c0e3-779e-4797-a5bf-00c89ef9557b
+
+@quibumaPt1 = 07b464b8-b1ec-4169-9dcd-87de90ccf3fc
+@quibumaPt2 = ef092159-57de-42fc-832e-94874bf98096
+@quibumaMaster1 = DEFCA9BD-4E21-4C2A-9848-3DE867206D2B
+
+@fightMt1 = ef920f2a-e9b9-44d6-91c0-f638bb09e307
+@fightMt2 = 6e9dc946-c313-4f62-832f-1c505825256f
+
+@topFitnessPt1 = 6e9dc2bf-ea2a-45e6-8554-8e720eb414f1
+@topFitnessPt2 =45aac776-5547-4b3e-9c16-04bec9965e0a
+
+@adminId = 7d555faf-06b9-409f-a3ba-60d2a6bfc228
+
 ###
 POST http://localhost:5105/Trainers
 Content-Type: application/json
 
 {
-    "Name": "Geovani Oliveira", 
-    "Phone": "924003003",
-    "Email": "enjetech.dev1@gmail.com",
-    "Specialization": "Braziliam Jiu-Jitsu",    
-    "AdminId":"{{geovanyAdminId}}"
+    "Name": "Quibuma-Pt1", 
+    "Phone": "923001003",
+    "Email": "quibumapt1@gmail.com",
+    "Specialization": "Body Building",    
+    "MemberId":"{{quibumaPt1}}"
 }
 

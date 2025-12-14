@@ -1,5 +1,5 @@
 ﻿using GymManagement.Application.Common.Interfaces;
-using GymManagement.Infrastructure.Admins.Persistence;
+using GymManagement.Infrastructure.Members.Persistence;
 using GymManagement.Infrastructure.Common.Persistence;
 using GymManagement.Infrastructure.Gyms.Persistence;
 using GymManagement.Infrastructure.Rooms.Persistence;
@@ -23,9 +23,11 @@ public static class DependencyInjection
         services.AddScoped<ISubscriptionsRepository, SubscriptionsRepository>();
         services.AddScoped<IGymsRepository, GymsRepository>();
         services.AddScoped<IRoomsRepository, RoomsRepository>();
-        services.AddScoped<IAdminsRepository, AdminsRepository>();
+        services.AddScoped<IMembersRepository, MembersRepository>();
         services.AddScoped<ITrainersRepository, TraneirsRepository>();
-                     
+        
+        services.AddScoped<IDBInitializer, DBInitializer>();                     
+
         return services;
     }
 }

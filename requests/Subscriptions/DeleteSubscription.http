@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@subscriptionId = 8612B4B5-C96E-4966-A47A-5DADAC72ED0E
+@subscriptionId = 06a19606-09e1-4690-a79b-0ba1ef80b17f
 
 ###
 DELETE  http://{{host}}/Subscriptions/{{subscriptionId}}

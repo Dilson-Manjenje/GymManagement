@@ -17,9 +17,8 @@ public class GymEntityConfiguration : IEntityTypeConfiguration<Gym>
                .HasMaxLength(60)
                .IsRequired();
 
-        builder.Property(g => g.Address)
-               .HasMaxLength(100)
-               .IsRequired();
-               
+       builder.Property(g => g.Address)
+                     .HasMaxLength(100)
+                     .IsRequired();                           
     }
 }

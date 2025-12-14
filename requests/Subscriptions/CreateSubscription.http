@@ -3,10 +3,8 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@dilsonAdmin = 370D5E1F-706D-4E5B-A8C4-2F825F520241
-@ruiAdminId = 643DFC4C-53B3-4951-9D94-F61660A88726
-@ivanAdminId = 4bfce3b0-c3c0-4a95-a9b5-f1cc8f498670
-@geovanyAdminId = 3effc5e5-bdd2-47f2-85fb-c185b4ac2144
+@member1Quibuma = abce4882-6535-4308-86c5-7b5ed2570a13
+@member2Quibuma = 2c46acb6-c673-4978-861b-f1c8f98db733
 
 ###
 POST http://localhost:5105/Subscriptions
@@ -14,7 +12,7 @@ Content-Type: application/json
 
 {
     "SubscriptionType": "Basic", 
-    "AdminId": "{{ivanAdminId}}"
+    "MemberId": "{{member1Quibuma}}"
 }
 
 ###
@@ -22,11 +20,6 @@ POST http://{{host}}/Subscriptions
 Content-Type: {{jsonContentType}}
 
 {
-    "SubscriptionType": "Premium", 
-    "AdminId": "{{geovanyAdminId}}"
+    "SubscriptionType": "Basic", 
+    "MemberId": "258fc6ad-90e7-44a6-8f4f-de3e98355404"
 }
-
-# {
-#     "AdminId": "{{adminId}}", 
-#     "SubscriptionType": "Basic",  // Basic, Plus, Premium
-# }
