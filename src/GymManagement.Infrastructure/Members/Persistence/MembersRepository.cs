@@ -16,18 +16,20 @@ internal class MembersRepository : IMembersRepository
     }
     async Task<Member?> IMembersRepository.GetByIdAsync(Guid memberId, CancellationToken cancellationToken)
     {
-        return await _dbContext.Members
-                    .Include(a => a.Subscriptions)
-                    .Include(a => a.Trainer)
-                    .Include(a => a.Gym)
-                    .FirstOrDefaultAsync(a => a.Id == memberId);
+        return await _dbContext.Members                    
+                    .Include(m => m.Subscriptions)
+                    .Include(m => m.Trainer)
+                    .Include(m => m.Gym)
+                    //.Include(m => m.Bookings)
+                    .SingleOrDefaultAsync(a => a.Id == memberId);
     }
     async Task<IEnumerable<Member>?> IMembersRepository.ListAsync(CancellationToken cancellationToken)
     {
         return await _dbContext.Members
-                    .Include(a => a.Subscriptions)
-                    .Include(a => a.Trainer)
-                    .Include(a => a.Gym)
+                    .Include(m => m.Subscriptions)
+                    .Include(m => m.Trainer)
+                    .Include(m => m.Gym)
+                    //.Include(m => m.Bookings)
                     .ToListAsync();
     }
     async Task IMembersRepository.UpdateAsync(Member member, CancellationToken cancellationToken)
@@ -41,11 +43,13 @@ internal class MembersRepository : IMembersRepository
         await _dbContext.Members.AddAsync(member);
     }
 
-    async Task<IEnumerable<Member>?> IMembersRepository.ListByGym(Guid gymId, CancellationToken cancellationToken)
+    async Task<IEnumerable<Member>?> IMembersRepository.ListByGymAsync(Guid gymId, CancellationToken cancellationToken)
     {
         return await _dbContext.Members
-                        .Include(m => m.Gym)
+                        .Include(m => m.Subscriptions)
                         .Include(m => m.Trainer)
+                        .Include(m => m.Gym)
+                        //.Include(m => m.Bookings)
                         .Where(m => m.GymId == gymId).ToListAsync();
     }
 }

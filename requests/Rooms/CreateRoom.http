@@ -14,7 +14,7 @@ POST http://localhost:5105/Rooms
 Content-Type: application/json
 
 {
-    "Name": "Yoga", 
+    "Name": "Judo", 
     "Capacity": 25,
     "GymId": "{{topFitnessGym}}"
 }

@@ -8,5 +8,5 @@ public interface IMembersRepository
     Task UpdateAsync(Member member, CancellationToken cancellationToken = default);
     Task AddAsync(Member member, CancellationToken cancellationToken = default);
     Task<IEnumerable<Member>?> ListAsync(CancellationToken cancellationToken = default);
-    Task<IEnumerable<Member>?> ListByGym(Guid gymId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Member>?> ListByGymAsync(Guid gymId, CancellationToken cancellationToken = default);
 }

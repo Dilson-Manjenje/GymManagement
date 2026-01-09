@@ -26,7 +26,7 @@ public class RemoveTrainerCommandHandler : IRequestHandler<RemoveTrainerCommand,
         var result = trainer.RemoveTrainer();
 
         if (result.IsError)
-            return TrainerErrors.CannotRemoveTrainerWithSessions($"{trainer.Name}(Phone: {trainer.Phone})");
+            return result.Errors;
         
         await _trainersRepository.RemoveAsync(trainer, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);

@@ -3,12 +3,12 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@roomId = 528a1a02-be51-452d-a24e-e388a47b0512
+@sessionId = daa982a0-70a4-4e29-9ef9-0c2018b167e6
 
 ###
-GET  http://{{host}}/Rooms/{{roomId}}
+GET  http://{{host}}/Sessions/{{sessionId}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Rooms/List
+GET  http://{{host}}/Sessions/List
 Content-Type: {{jsonContentType}}

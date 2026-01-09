@@ -3,7 +3,14 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@trainerId = 48e2e07c-4b8a-4c01-be87-e4c105c2d149
+
+@gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
+@gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
+@gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
+@topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
+
+@trainerId = d3e7b917-5f02-47ae-b654-6a7fed195f11
+
 
 ###
 GET  http://{{host}}/Trainers/{{trainerId}}
@@ -12,3 +19,10 @@ Content-Type: {{jsonContentType}}
 ###
 GET  http://{{host}}/Trainers/List
 Content-Type: {{jsonContentType}}
+
+
+###
+GET  http://{{host}}/Trainers/List/{{topFitnessGym}}
+Content-Type: {{jsonContentType}}
+
+ [HttpGet("{trainerId:guid}")]

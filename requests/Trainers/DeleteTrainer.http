@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@trainerId = 8e89b6ef-881c-43f0-b17b-e075de1b6eb7
+@trainerId = d3e7b917-5f02-47ae-b654-6a7fed195f11
 
 ###
 DELETE  http://{{host}}/Trainers/{{trainerId}}

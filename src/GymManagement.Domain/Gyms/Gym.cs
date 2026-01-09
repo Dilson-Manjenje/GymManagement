@@ -36,64 +36,12 @@ public class Gym : Entity
 
         return Result.Success;
     } 
-    public ErrorOr<Success> AddRoom(Room room)
-    {
-        var exist = Rooms.Select( r => r.Id).Contains(room.Id);
-        if (exist)
-            return GymErrors.RoomAlreadyAddedToGym(room.Id);
 
-        if (Rooms.Count >= _maxRooms)
-            return GymErrors.CantExceedMaxRooms;   
-               
-        Rooms.Add(room);
-
-        return Result.Success;
-    }
-
-    public bool HasRoom(Guid roomId)
-    {
-        return Rooms.Select(r => r.Id).Contains(roomId);        
-    }
-
-    public ErrorOr<Success> RemoveRoom(Guid roomId)
-    {
-        var room = Rooms.FirstOrDefault( r => r.Id == roomId);
-        if (room is not null)
-            Rooms.Remove(room);
-        
-        return Result.Success;
-    }    
-
-    public ErrorOr<Success> AddTrainer(Trainer trainer)
+    public bool HasTrainer(Trainer trainer)
     {
         var exist = Trainers.Any(t => t.Id.Equals(trainer.Id)) ||
                     Trainers.Any(t => t.MemberId == trainer.MemberId);
-        if (exist)
-            return TrainerErrors.TrainerAlreadyAddedToGym(memberId: trainer.MemberId);
-
-        Trainers.Add(trainer);
-
-        return Result.Success;
+        
+        return exist;
     }
-
-    public bool HasTrainer(Guid memberId)
-    {
-        return Trainers.Any(t => t.MemberId == memberId);                
-    }   
-    
-    public ErrorOr<Success> RemoveTrainer(Guid trainerId)
-    {
-        var trainer = Trainers.FirstOrDefault(t => t.Id == trainerId);
-        
-        if (trainer is null)
-            return GymErrors.TrainerNotAssociated(trainerId, Id);
-
-        // TODO: Check if trainer has booking/sessions
-        // if (TrainerHasSession(trainerId))
-        //     return GymErrors.CannotRemoveTrainerWithScheduledSessions(trainerId);
-        
-        Trainers.Remove(trainer);
-        
-        return Result.Success;
-    }  
 }
