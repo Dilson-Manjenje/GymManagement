@@ -32,7 +32,7 @@ public class TrainersController : ApiBaseController
       trainer => CreatedAtAction(actionName: nameof(GetTrainer),
                                  routeValues: new { trainerId = trainer.Id },
                                  value: new { trainer.Id, trainer.Name, trainer.Phone, trainer.Email, trainer.Specialization }),
-      error => Problem(error));    
+      error => HandleErrors(result.Errors));    
       
   }
 
@@ -49,7 +49,7 @@ public class TrainersController : ApiBaseController
                                         GymId: trainer.GymId,
                                         GymName: trainer.Gym.Name,
                                         MemberId: trainer.MemberId)),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 
   [HttpGet("List")]
@@ -66,7 +66,7 @@ public class TrainersController : ApiBaseController
                                                                 GymId: trainer.GymId,
                                                                 GymName: trainer.Gym.Name,
                                                                 MemberId: trainer.MemberId)))),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 
   [HttpDelete("{id:guid}")]
@@ -76,6 +76,6 @@ public class TrainersController : ApiBaseController
 
     return result.MatchFirst<IActionResult>(
       trainer => NoContent(),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 }

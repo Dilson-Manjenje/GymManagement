@@ -30,7 +30,7 @@ public class RoomsController : ApiBaseController
         room => CreatedAtAction(actionName: nameof(GetRoom),
                                         routeValues: new { roomId = room.Id },
                                         value: new { room.Id, room.Name, room.Capacity, room.GymId }),
-        error => Problem(error));
+        error => HandleErrors(result.Errors));
   }
 
   [HttpGet("{roomId:guid}")]
@@ -46,7 +46,7 @@ public class RoomsController : ApiBaseController
                                   room.GymId,
                                   room.Gym.Name
                                   )),
-      error => Problem(error)
+      error => HandleErrors(result.Errors)
   );
   }
 
@@ -63,9 +63,8 @@ public class RoomsController : ApiBaseController
                                                                               room.GymId,
                                                                               room.Gym.Name
                                                                               )))),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
-
 
   [HttpDelete("{id:guid}")]
   public async Task<IActionResult> DisableRoom(Guid id)
@@ -74,7 +73,7 @@ public class RoomsController : ApiBaseController
 
     return result.MatchFirst<IActionResult>(
       room => NoContent(),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 
   [HttpPut("{id:guid}")]
@@ -95,6 +94,6 @@ public class RoomsController : ApiBaseController
                                   room.GymId,
                                   room.Gym.Name
                                   )),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 }

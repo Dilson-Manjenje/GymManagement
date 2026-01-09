@@ -49,10 +49,8 @@ public class  CreateTrainerCommandHandler : IRequestHandler<CreateTrainerCommand
             memberId: command.MemberId
         );
 
-        var result = gym.AddTrainer(trainer);
-
-        if (result.IsError)
-            return result.FirstError;
+        if (gym.HasTrainer(trainer))
+            return TrainerErrors.TrainerAlreadyAddedToGym(trainer.MemberId);
 
         await _trainerRepository.AddAsync(trainer, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);

@@ -24,12 +24,12 @@ public class GymsController : ApiBaseController
                                   request.Address);
 
     var result = await _mediator.Send(cmd);
-
+        
     return result.MatchFirst(
-        gym => CreatedAtAction(actionName: nameof(GetGym),
+      gym => CreatedAtAction(actionName: nameof(GetGym),
                               routeValues: new { gymId = gym.Id },
                               value: new { gym.Id, gym.Name, gym.Address }),
-      error => Problem(error));    
+      error => HandleErrors(result.Errors));    
   }
 
   [HttpGet("{gymId:guid}")]
@@ -39,7 +39,7 @@ public class GymsController : ApiBaseController
 
     return result.MatchFirst(
       gym => Ok(new GymResponse(gym.Id, gym.Name, gym.Address)),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 
   [HttpGet("List")]
@@ -49,7 +49,7 @@ public class GymsController : ApiBaseController
 
     return result.MatchFirst(
       gyms => Ok(new ListGymsResponse(gyms.Select(gym => new GymResponse(gym.Id, gym.Name, gym.Address)))),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 
   [HttpDelete("{id:guid}")]
@@ -59,7 +59,7 @@ public class GymsController : ApiBaseController
 
     return result.MatchFirst<IActionResult>(
       gym => NoContent(),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 
   [HttpPut("{id:guid}")]
@@ -69,6 +69,6 @@ public class GymsController : ApiBaseController
 
     return result.MatchFirst(
       gym => Ok(new GymResponse(gym.Id, gym.Name, gym.Address)),
-      error => Problem(error));
+      error => HandleErrors(result.Errors));
   }
 }

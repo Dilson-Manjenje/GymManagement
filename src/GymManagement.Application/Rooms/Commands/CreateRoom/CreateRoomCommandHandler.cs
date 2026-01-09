@@ -26,7 +26,6 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         if (gym is null)
             return GymErrors.GymNotFound(command.GymId);
         
-        // TODO: Check if RoomId is already in the Gym by Name, Type        
         var room = new Room(
             name: command.Name,
             capacity: command.Capacity,

@@ -12,7 +12,8 @@
 @fightMt2 = 6e9dc946-c313-4f62-832f-1c505825256f
 
 @topFitnessPt1 = 6e9dc2bf-ea2a-45e6-8554-8e720eb414f1
-@topFitnessPt2 =45aac776-5547-4b3e-9c16-04bec9965e0a
+@topFitnessPt2 = 45aac776-5547-4b3e-9c16-04bec9965e0a
+@topFitnessTr2 = ca0422c9-d749-476c-9962-f938f4c7c57a
 
 @adminId = 7d555faf-06b9-409f-a3ba-60d2a6bfc228
 
@@ -26,5 +27,18 @@ Content-Type: application/json
     "Email": "quibumapt1@gmail.com",
     "Specialization": "Body Building",    
     "MemberId":"{{quibumaPt1}}"
+}
+
+
+###
+POST http://localhost:5105/Trainers
+Content-Type: application/json
+
+{
+    "Name": "TopFit Trainer 2", 
+    "Phone": "917001001",
+    "Email": "topFitnessTr2@gmail.com",
+    "Specialization": "Ninjitsu, Judo, Jiu-Jitsu",    
+    "MemberId":"{{topFitnessTr2}}"
 }
 

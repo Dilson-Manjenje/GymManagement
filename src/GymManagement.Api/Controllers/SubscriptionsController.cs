@@ -47,7 +47,7 @@ public class SubscriptionsController : ApiBaseController
                                                        UserName: subscription.Member.UserName
                                                        )
                                             ), // Pass null or the created resource            
-            error => Problem(error));
+            error => HandleErrors(result.Errors));
     }
 
     private IActionResult InvalidSubscriptionType(string subscriptionType)
@@ -72,7 +72,7 @@ public class SubscriptionsController : ApiBaseController
                                                        MemberId: subscription.Member.Id,
                                                        UserName: subscription.Member.UserName
                                                     )),
-          error => Problem(error)
+          error => HandleErrors(result.Errors)
       );
     }
 
@@ -92,7 +92,7 @@ public class SubscriptionsController : ApiBaseController
                                                                     MaxDailySessions: subscription.MaxDailySessions,
                                                                     MemberId: subscription.Member.Id,
                                                                     UserName: subscription.Member.UserName)))),
-          error => Problem(error)
+          error => HandleErrors(result.Errors)
       );
     }
 
@@ -103,7 +103,7 @@ public class SubscriptionsController : ApiBaseController
 
         return result.MatchFirst<IActionResult>(
           subscription => NoContent(),
-          error => Problem(error));
+          error => HandleErrors(result.Errors));
     }
 
     [HttpPut("{id:guid}")]
@@ -129,7 +129,7 @@ public class SubscriptionsController : ApiBaseController
                                                        MemberId: subscription.Member.Id,
                                                        UserName: subscription.Member.UserName
                                                        )),
-          error => Problem(error));
+          error => HandleErrors(result.Errors));
     }
 
     [HttpPut("{subscriptionId:guid}/rooms/")]
@@ -150,7 +150,7 @@ public class SubscriptionsController : ApiBaseController
                                                        MemberId: subscription.Member.Id,
                                                        UserName: subscription.Member.UserName
                                                        )),
-          error => Problem(error));
+          error => HandleErrors(result.Errors));
     }
 
 
@@ -162,6 +162,6 @@ public class SubscriptionsController : ApiBaseController
 
         return result.MatchFirst<IActionResult>(
          subscription => NoContent(),
-         error => Problem(error));          
+         error => HandleErrors(result.Errors));          
     }
 }

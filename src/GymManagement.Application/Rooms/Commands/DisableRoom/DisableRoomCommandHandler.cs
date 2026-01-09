@@ -24,8 +24,9 @@ public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, Err
             return RoomErrors.RoomNotFound(command.Id);
 
         var result = room.DisableRoom();
+
         if (result.IsError)
-            return RoomErrors.CannotDisableRoomWithSessions(command.Id);
+            return result.Errors;
         
         await _roomsRepository.UpdateAsync(room, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);

@@ -14,7 +14,7 @@ public class UpdateRoomCommandValidator : AbstractValidator<UpdateRoomCommand>
 		Include(new RoomBaseCommandValidator());
 		
         RuleFor(r => r.Id)
-                 .NotEmpty().WithMessage("'{PropertyName}' é obrigatório.");
+                 .NotEmpty().WithMessage("'{PropertyName}' is required.");
      
         RuleFor( r => r)
                 .MustAsync(NameNotExisteForOther) 

@@ -3,7 +3,12 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@memberId = abce4882-6535-4308-86c5-7b5ed2570a13
+@memberId = ca0422c9-d749-476c-9962-f938f4c7c57a
+
+@gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
+@gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
+@gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
+@topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
 
 ###
 GET  http://{{host}}/Members/{{memberId}}
@@ -12,3 +17,9 @@ Content-Type: {{jsonContentType}}
 ###
 GET  http://{{host}}/Members/List
 Content-Type: {{jsonContentType}}
+
+
+###
+GET  http://{{host}}/Members/List/{{topFitnessGym}}
+Content-Type: {{jsonContentType}}
+
