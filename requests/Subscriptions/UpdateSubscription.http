@@ -4,6 +4,8 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 @subscriptionId = c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
+@subscriptionId2 = 06a19606-09e1-4690-a79b-0ba1ef80b17f
+
 @quibumaBodyRoomId = 40A171F7-5230-4474-B49F-9CF25A50C9E0
 @quibumaKickRoomId = 1a5b1dd9-43e0-4451-845f-3ceae5e5cb43
 
@@ -15,5 +17,11 @@ PUT http://{{host}}/Subscriptions/{{subscriptionId}}
 Content-Type: {{jsonContentType}}
 
 {
-    "SubscriptionType": "Plus"
+    "SubscriptionType": "Premium"
 }
+
+
+###
+DELETE  http://{{host}}/Subscriptions/f2457b98-f25e-4caf-b017-eb26dab1b7a4
+Content-Type: {{jsonContentType}}
+

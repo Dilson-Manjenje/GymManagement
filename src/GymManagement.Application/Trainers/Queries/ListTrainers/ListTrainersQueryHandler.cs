@@ -1,11 +1,11 @@
 using ErrorOr;
 using GymManagement.Application.Common.Interfaces;
-using GymManagement.Domain.Trainers;
+using GymManagement.Application.Trainers.Queries.Dtos;
 using MediatR;
 
 namespace GymManagement.Application.Trainers.Queries.ListTrainers;
 
-public class ListTrainersQueryHandler : IRequestHandler<ListTrainersQuery, ErrorOr<IEnumerable<Trainer>?>>
+public class ListTrainersQueryHandler : IRequestHandler<ListTrainersQuery, ErrorOr<IEnumerable<TrainerDto>?>>
 {
     private readonly ITrainersRepository _trainersRepository;
 
@@ -14,10 +14,9 @@ public class ListTrainersQueryHandler : IRequestHandler<ListTrainersQuery, Error
         _trainersRepository = trainersRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<Trainer>?>> Handle(ListTrainersQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<TrainerDto>?>> Handle(ListTrainersQuery query, CancellationToken cancellationToken)
     {
         var trainers = await _trainersRepository.ListAsync();
-
-        return trainers?.ToList();
+        return trainers?.Select(t => TrainerDto.MapToDto(t)).ToList();
     }
 }

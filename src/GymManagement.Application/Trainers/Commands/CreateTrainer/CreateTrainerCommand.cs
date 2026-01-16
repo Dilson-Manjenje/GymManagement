@@ -5,8 +5,7 @@ using MediatR;
 namespace GymManagement.Application.Trainers.Commands.CreateTrainer;
 
 public sealed record CreateTrainerCommand(string Name,
-                                string Phone,
-                                string Specialization,
-                                Guid MemberId,
-                                string Email = "" 
-                                ): IRequest<ErrorOr<Trainer>>;
+                                          string Phone,
+                                          string? Email,
+                                          string Specialization,
+                                          Guid MemberId) : IRequest<ErrorOr<Guid>>;

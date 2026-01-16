@@ -8,4 +8,4 @@ using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
 
-public record UpdateSubscriptionCommand(Guid Id, SubscriptionType SubscriptionType) : IRequest<ErrorOr<Subscription>>;
+public record UpdateSubscriptionCommand(Guid Id, SubscriptionType SubscriptionType) : IRequest<ErrorOr<Guid>>;

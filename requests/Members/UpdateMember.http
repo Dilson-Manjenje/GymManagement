@@ -1,0 +1,24 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@memberId = 7abb41be-916e-4216-a4ae-b18ee633f22a
+
+###
+PUT http://localhost:5105/Members/{{memberId}}
+Content-Type: application/json
+
+{
+    "UserName": "Manual Trainer TopFit 2", 
+    "Password": "Bla-Bla-123"
+}
+
+
+###
+DELETE  http://{{host}}/Members/7abb41be-916e-4216-a4ae-b18ee633f22a
+Content-Type: {{jsonContentType}}
+
+
+
+

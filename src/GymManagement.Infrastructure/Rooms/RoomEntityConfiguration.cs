@@ -27,7 +27,7 @@ public class RoomEntityConfiguration : IEntityTypeConfiguration<Room>
 
               // --- One-To-Many: Gym -> Rooms
               builder.HasOne(r => r.Gym)
-                   .WithMany(g => g.Rooms)
+                   .WithMany()
                    .HasForeignKey(t => t.GymId)
                    .OnDelete(DeleteBehavior.Restrict); // Prevents deleting gym with rooms                                      
 

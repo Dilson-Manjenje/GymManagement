@@ -20,7 +20,8 @@ public class SubscriptionEntityConfiguration : IEntityTypeConfiguration<Subscrip
 
         // --- One-To-Many: Member -> Subscription
         builder.HasOne(s => s.Member)
-             .WithMany(a => a.Subscriptions)
+             //.WithMany(a => a.Subscriptions)
+             .WithMany()
              .HasForeignKey(s => s.MemberId) 
              .IsRequired(true) // Required
              .OnDelete(DeleteBehavior.Restrict); // Prevents deleting member with subscription

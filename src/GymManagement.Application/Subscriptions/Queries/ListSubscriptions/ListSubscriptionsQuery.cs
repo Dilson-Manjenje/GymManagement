@@ -1,7 +1,7 @@
 using ErrorOr;
-using GymManagement.Domain.Subscriptions;
+using GymManagement.Application.Subscriptions.Queries.Dtos;
 using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Queries.ListSubscriptions;
 
-public record ListSubscriptionsQuery(): IRequest<ErrorOr<IEnumerable<Subscription>?>>;
+public record ListSubscriptionsQuery(): IRequest<ErrorOr<IEnumerable<SubscriptionDto>?>>;

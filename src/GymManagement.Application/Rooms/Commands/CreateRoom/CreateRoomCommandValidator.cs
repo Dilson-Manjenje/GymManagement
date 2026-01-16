@@ -21,9 +21,8 @@ public class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
 
     private async Task<bool> NotExistWithSameName(CreateRoomCommand command, CancellationToken token)
     {
-        var rooms = await _roomsRepository.ListAsync();
-        var room = rooms?.SingleOrDefault(r => r.Name.Equals(command.Name, StringComparison.InvariantCultureIgnoreCase)
-                                            && r.GymId == command.GymId );
+        var rooms = await _roomsRepository.ListByGymAsync(command.GymId);
+        var room = rooms?.SingleOrDefault(r => r.Name.Equals(command.Name, StringComparison.InvariantCultureIgnoreCase));
         
         return room is null;
     }

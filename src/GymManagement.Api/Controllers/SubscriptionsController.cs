@@ -9,6 +9,9 @@ using GymManagement.Application.Subscriptions.Commands.DeleteSubscription;
 using GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
 using GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
 using GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscription;
+using GymManagement.Application.Subscriptions.Queries.Dtos;
+using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByGym;
+using GymManagement.Api.Mappings;
 
 namespace GymManagement.Api.Controllers;
 
@@ -31,22 +34,12 @@ public class SubscriptionsController : ApiBaseController
 
         var cmd = new CreateSubscriptionCommand(subscriptionType, request.MemberId);
         var result = await _mediator.Send(cmd);
-        
+
         return result.MatchFirst(
-            subscription => CreatedAtAction(actionName: nameof(GetSubscription),
-                                            routeValues: new { subscriptionId = subscription.Id },
-                                            value: new SubscriptionResponse(
-                                                       Id: subscription.Id,
-                                                       SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
-                                                       Price: subscription.Price,
-                                                       Gym: subscription.Member.Gym.Name,
-                                                       MaxRooms: subscription.MaxRoomsAllowed,
-                                                       Rooms: null,
-                                                       MaxDailySessions: subscription.MaxDailySessions,
-                                                       MemberId: subscription.Member.Id,
-                                                       UserName: subscription.Member.UserName
-                                                       )
-                                            ), // Pass null or the created resource            
+            id => CreatedAtAction(actionName: nameof(GetSubscription),
+                                            routeValues: new { subscriptionId = id },
+                                            value: null // Pass null or the created resource   
+                                            ),          
             error => HandleErrors(result.Errors));
     }
 
@@ -56,53 +49,13 @@ public class SubscriptionsController : ApiBaseController
                        detail: $"Subscription type '{subscriptionType}' is invalid.");
     }
 
-    [HttpGet("{subscriptionId:guid}")]
-    public async Task<IActionResult> GetSubscription(Guid subscriptionId)
-    {
-        var result = await _mediator.Send(new GetSubscriptionQuery(subscriptionId));
-
-        return result.MatchFirst(
-          subscription => Ok(new SubscriptionResponse(Id: subscription.Id,
-                                                       SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
-                                                       Price: subscription.Price,
-                                                       Gym: subscription.Member.Gym.Name,
-                                                       MaxRooms: subscription.MaxRoomsAllowed,
-                                                       Rooms: subscription.SubscriptionRooms.Select(sr => sr.Room.Name).ToList(),
-                                                       MaxDailySessions: subscription.MaxDailySessions,
-                                                       MemberId: subscription.Member.Id,
-                                                       UserName: subscription.Member.UserName
-                                                    )),
-          error => HandleErrors(result.Errors)
-      );
-    }
-
-    [HttpGet("List")]
-    public async Task<IActionResult> ListSubscriptions()
-    {
-        var result = await _mediator.Send(new ListSubscriptionsQuery());
-
-        return result.MatchFirst(
-          subscriptions => Ok(new SubscriptionsListResponse(subscriptions
-                                                                .Select(subscription => new SubscriptionResponse(Id: subscription.Id,
-                                                                    SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
-                                                                    Price: subscription.Price,
-                                                                    Gym: subscription.Member.Gym.Name,
-                                                                    MaxRooms: subscription.MaxRoomsAllowed,
-                                                                    Rooms: null,
-                                                                    MaxDailySessions: subscription.MaxDailySessions,
-                                                                    MemberId: subscription.Member.Id,
-                                                                    UserName: subscription.Member.UserName)))),
-          error => HandleErrors(result.Errors)
-      );
-    }
-
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteSubscription(Guid id)
     {
         var result = await _mediator.Send(new DeleteSubscriptionCommand(id));
 
-        return result.MatchFirst<IActionResult>(
-          subscription => NoContent(),
+        return result.MatchFirst(
+          _ => NoContent(),
           error => HandleErrors(result.Errors));
     }
 
@@ -118,50 +71,64 @@ public class SubscriptionsController : ApiBaseController
         var result = await _mediator.Send(new UpdateSubscriptionCommand(id, subscriptionType));
 
         return result.MatchFirst(
-          subscription => Ok(new SubscriptionResponse(Id: subscription.Id,
-                                                      SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
-                                                       Price: subscription.Price,
-                                                       Gym: subscription.Member.Gym.Name,
-                                                       MaxRooms: subscription.MaxRoomsAllowed,
-                                                       Rooms: subscription.SubscriptionRooms
-                                                                .Select(sr => sr.Room.Name).ToList(),
-                                                       MaxDailySessions: subscription.MaxDailySessions,
-                                                       MemberId: subscription.Member.Id,
-                                                       UserName: subscription.Member.UserName
-                                                       )),
+          id => Ok(new { Id = id }),
+          error => HandleErrors(result.Errors));
+    }
+
+    [HttpGet("{subscriptionId:guid}")]
+    public async Task<IActionResult> GetSubscription(Guid subscriptionId)
+    {
+        var result = await _mediator.Send(new GetSubscriptionQuery(subscriptionId));
+
+        return result.MatchFirst(
+          subscription => Ok(ContractMappings.MapToSubscriptionResponse(subscription)),
+          error => HandleErrors(result.Errors)
+      );
+    }
+
+    [HttpGet("List")]
+    public async Task<IActionResult> ListSubscriptions()
+    {
+        var result = await _mediator.Send(new ListSubscriptionsQuery());
+
+        return result.MatchFirst(
+          subscriptions => Ok(new ListSubscriptionsResponse(subscriptions
+                                        .Select(room => ContractMappings.MapToSubscriptionResponse(room)))),
+          error => HandleErrors(result.Errors)
+      );
+
+    }
+
+    [HttpGet("List/{gymId:guid}")]
+    public async Task<IActionResult> ListAllByGym([FromRoute] Guid gymId)
+    {
+        var result = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gymId));
+
+        return result.MatchFirst(
+          subscriptions => Ok(new ListSubscriptionsResponse(subscriptions
+                                        .Select(subs => ContractMappings.MapToSubscriptionResponse(subs)))),
           error => HandleErrors(result.Errors));
     }
 
     [HttpPut("{subscriptionId:guid}/rooms/")]
-    public async Task<IActionResult> AddRoom([FromRoute] Guid subscriptionId, RoomInSubscriptionRequest request)
+    public async Task<IActionResult> AddRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
     {
         var result = await _mediator.Send(new AddRoomToSubscriptionCommand(SubscriptionId: subscriptionId,
                                                                            RoomId: request.RoomId));
 
         return result.MatchFirst(
-          subscription => Ok(new SubscriptionResponse(Id: subscription.Id,
-                                                      SubscriptionType: Enum.Parse<SubstriptionType>(subscription.SubscriptionType.Name),
-                                                       Price: subscription.Price,
-                                                       Gym: subscription.Member.Gym.Name,
-                                                       MaxRooms: subscription.MaxRoomsAllowed,
-                                                       Rooms: subscription.SubscriptionRooms
-                                                                .Select(sr => sr.Room.Name).ToList(),
-                                                       MaxDailySessions: subscription.MaxDailySessions,
-                                                       MemberId: subscription.Member.Id,
-                                                       UserName: subscription.Member.UserName
-                                                       )),
+          id => Ok(new { SubscriptionId = id }),
           error => HandleErrors(result.Errors));
     }
 
-
     [HttpDelete("{subscriptionId:guid}/rooms")]
-    public async Task<IActionResult> RemoveRoom([FromRoute] Guid subscriptionId, RoomInSubscriptionRequest request)
+    public async Task<IActionResult> RemoveRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
     {  
         var result = await _mediator.Send(new RemoveRoomToSubscriptionCommand(SubscriptionId: subscriptionId,
                                                                               RoomId: request.RoomId));
 
         return result.MatchFirst<IActionResult>(
-         subscription => NoContent(),
+         _ => NoContent(),
          error => HandleErrors(result.Errors));          
     }
 }

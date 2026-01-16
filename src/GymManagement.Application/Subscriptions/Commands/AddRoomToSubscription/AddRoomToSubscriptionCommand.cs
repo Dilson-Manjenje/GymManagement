@@ -8,4 +8,4 @@ using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
 
-public record AddRoomToSubscriptionCommand(Guid SubscriptionId, Guid RoomId) : IRequest<ErrorOr<Subscription>>;
+public record AddRoomToSubscriptionCommand(Guid SubscriptionId, Guid RoomId) : IRequest<ErrorOr<Guid>>;

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace GymManagement.Application.Gyms.Commands.UpdateGym;
 
-public class UpdateGymCommandHandler : IRequestHandler<UpdateGymCommand, ErrorOr<Gym>>
+public class UpdateGymCommandHandler : IRequestHandler<UpdateGymCommand, ErrorOr<Guid>>
 {
     private readonly IGymsRepository _gymsRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -15,7 +15,7 @@ public class UpdateGymCommandHandler : IRequestHandler<UpdateGymCommand, ErrorOr
         _gymsRepository = gymsRepository;
     }
 
-    public async Task<ErrorOr<Gym>> Handle(UpdateGymCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Guid>> Handle(UpdateGymCommand command, CancellationToken cancellationToken)
     {
         var gym = await _gymsRepository.GetByIdAsync(command.Id, cancellationToken);
 
@@ -26,6 +26,6 @@ public class UpdateGymCommandHandler : IRequestHandler<UpdateGymCommand, ErrorOr
         await _gymsRepository.UpdateAsync(gym, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
-        return gym;
+        return gym.Id;
     }
 }

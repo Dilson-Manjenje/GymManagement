@@ -40,7 +40,7 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
         {
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified )
             {
-                var now = DateTime.UtcNow;
+                var now = DateTime.Now;
                 if (entry.State == EntityState.Added)
                     entry.Entity.SetCreationDate(now);
                 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GymManagement.Application.Common.Interfaces;
+using GymManagement.Application.Rooms.Queries.Dtos;
 using GymManagement.Domain.Rooms;
 using GymManagement.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,13 @@ internal class RoomsRepository : IRoomsRepository
     }
     async Task IRoomsRepository.AddAsync(Room room, CancellationToken cancellationToken)
     {
-        await _dbContext.Rooms.AddAsync(room);        
+        await _dbContext.Rooms.AddAsync(room);
+    }
+    
+    async Task IRoomsRepository.UpdateAsync(Room room, CancellationToken cancellationToken)
+    {
+        _dbContext.Rooms.Update(room);
+        await Task.CompletedTask;                       
     }
 
     async Task<Room?> IRoomsRepository.GetByIdAsync(Guid roomId, CancellationToken cancellationToken)
@@ -31,24 +38,25 @@ internal class RoomsRepository : IRoomsRepository
                         .SingleOrDefaultAsync();
     }
 
-    async Task<IEnumerable<Room>?> IRoomsRepository.GetRoomsByGymIdAsync(Guid gymId, CancellationToken cancellationToken)
+    async Task<RoomDetailsDto?> IRoomsRepository.GetWithDetails(Guid roomId, CancellationToken cancellationToken)
+    {
+         return await _dbContext.Rooms
+            .Where(r => r.Id == roomId)
+            .Select(r => RoomDetailsDto.MapToDto(r, r.Gym.Name))
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+    async Task<IEnumerable<Room>?> IRoomsRepository.ListAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Rooms
+                              .Include(r => r.Gym)
+                              .ToListAsync(cancellationToken);
+    }
+    
+    async Task<IEnumerable<Room>?> IRoomsRepository.ListByGymAsync(Guid gymId, CancellationToken cancellationToken)
     {
         return await _dbContext.Rooms
                                .Where(r => r.GymId == gymId)
                                .Include(r => r.Gym)
                                .ToListAsync(cancellationToken);
-    }
-
-    async Task<IEnumerable<Room>?> IRoomsRepository.ListAsync(CancellationToken cancellationToken)
-    {
-        return await _dbContext.Rooms
-                              .Include(r => r.Gym)    
-                              .ToListAsync(cancellationToken);
-    }
-
-    async Task IRoomsRepository.UpdateAsync(Room room, CancellationToken cancellationToken)
-    {
-        _dbContext.Rooms.Update(room);
-        await Task.CompletedTask;                       
     }
 }

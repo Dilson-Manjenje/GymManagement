@@ -3,12 +3,18 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
+
+@gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
+@gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
+@gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
+@topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
+
 @subscriptionId1 = 19a3e3cb-d4fb-4814-ac34-26c45bce6412 
-@subscriptionId2 = 02992F15-C972-4F33-9F6E-6633420EB17E
+@subscriptionId2 = c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
 
 
 ###
-GET  http://{{host}}/Subscriptions/c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
+GET  http://{{host}}/Subscriptions/61a2af3e-bb7a-435e-8d03-0e05b031d1a5
 Content-Type: {{jsonContentType}}
 
 ###
@@ -17,4 +23,8 @@ Content-Type: {{jsonContentType}}
 
 ###
 GET  http://{{host}}/Subscriptions/List
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Subscriptions/List/{{gymIdQuibuma}}
 Content-Type: {{jsonContentType}}

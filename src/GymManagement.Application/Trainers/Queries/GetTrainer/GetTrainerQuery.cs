@@ -1,7 +1,7 @@
 using ErrorOr;
-using GymManagement.Domain.Trainers;
+using GymManagement.Application.Trainers.Queries.Dtos;
 using MediatR;
 
 namespace GymManagement.Application.Trainers.Queries.GetTrainer;
 
-public sealed record GetTrainerQuery(Guid TrainerId): IRequest<ErrorOr<Trainer>>;
+public sealed record GetTrainerQuery(Guid TrainerId): IRequest<ErrorOr<TrainerDto>>;

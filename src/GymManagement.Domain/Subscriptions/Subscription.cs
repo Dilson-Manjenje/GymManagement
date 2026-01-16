@@ -13,10 +13,11 @@ namespace GymManagement.Domain.Subscriptions
         public SubscriptionType SubscriptionType { get; private set; } = SubscriptionType.Basic;
         public Guid MemberId { get; private set; }
         public Member Member { get; set; } = null!;
-        public List<SubscriptionRooms> SubscriptionRooms { get; private set; } = null!;
+        // TODO: Review usage of SubscriptionRooms in Subscription
+        public List<SubscriptionRooms> SubscriptionRooms { get; private set; } = new(); 
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }        
-        public bool IsActive => EndDate >= DateTime.Today;                 
+        public bool IsActive => EndDate >= DateTime.Now;                 
         public decimal Price => SubscriptionType.Price;
         public int MaxDailySessions => SubscriptionType.MaxDailySessions;       
         public int MaxRoomsAllowed => SubscriptionType.MaxRooms;

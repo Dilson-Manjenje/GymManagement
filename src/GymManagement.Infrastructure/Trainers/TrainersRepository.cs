@@ -19,14 +19,12 @@ internal class TraneirsRepository : ITrainersRepository
         await _dbContext.Trainers.AddAsync(trainer, cancellationToken);
     }
 
-
-    async Task<IEnumerable<Trainer>?> ITrainersRepository.ListAsync(CancellationToken cancellationToken)
+        async Task ITrainersRepository.UpdateAsync(Trainer trainer, CancellationToken cancellationToken)
     {
-        return await _dbContext.Trainers
-                                .Include(t => t.Gym)
-                                .ToListAsync(cancellationToken);
+        _dbContext.Trainers.Update(trainer);
+        await Task.CompletedTask;
     }
-
+    
     async Task ITrainersRepository.RemoveAsync(Trainer trainer, CancellationToken cancellationToken)
     {
         _dbContext.Trainers.Remove(trainer);
@@ -42,9 +40,31 @@ internal class TraneirsRepository : ITrainersRepository
                     .SingleOrDefaultAsync(cancellationToken);
     }
 
-    async Task ITrainersRepository.UpdateAsync(Trainer trainer, CancellationToken cancellationToken)
+    async Task<Trainer?> ITrainersRepository.GetByMemberIdAsync(Guid memberId, CancellationToken cancellationToken)
     {
-        _dbContext.Trainers.Update(trainer);
-        await Task.CompletedTask;                       
+        return await _dbContext.Trainers
+                    .Where(t => t.MemberId == memberId)
+                    .SingleOrDefaultAsync(cancellationToken);
     }
+    
+    async Task<IEnumerable<Trainer>?> ITrainersRepository.ListAsync(CancellationToken cancellationToken)
+    {
+        return await _dbContext.Trainers
+                                .Include(t => t.Gym)
+                                .ToListAsync(cancellationToken);
+    }
+
+    async Task<IEnumerable<Trainer>?> ITrainersRepository.ListByGymIdAsync(Guid gymId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Trainers
+                               .Where(t => t.GymId == gymId)
+                               .Include(t => t.Gym)
+                               .ToListAsync(cancellationToken);
+    }
+
+    bool ITrainersRepository.IsTrainerInGymAsync(Guid gymId, Guid memberId)
+    {
+        var exist =_dbContext.Trainers.Any(t => t.GymId == gymId && t.MemberId == memberId);
+        return exist;
+    }    
 }

@@ -1,0 +1,23 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@trainerId = bb942c11-4d8f-4f22-b3bc-862ef0538a3e
+
+
+###
+PUT http://localhost:5105/Trainers/{{trainerId}}
+Content-Type: application/json
+
+{
+    "Name": "TopFit-Trainer2", 
+    "Phone": "923501502",
+    "Specialization": "Ninjitsu, Jiu-Jitsu"
+}
+
+
+###
+DELETE  http://{{host}}/Trainers/{{trainerId}}
+Content-Type: {{jsonContentType}}
+
