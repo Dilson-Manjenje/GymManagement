@@ -9,9 +9,8 @@ public class Room : Entity
     public string Name { get; private set; } = null!;
     public int Capacity { get; private set; }
     public Guid GymId { get; private set; }
-    public Gym Gym { get; private set; } = null!;
+    public Gym Gym { get; set; } = null!;
     public bool IsAvailable { get; private set; } = true;
-
     public Room(
         string name,
         int capacity,
@@ -23,7 +22,7 @@ public class Room : Entity
         GymId = gymId;
     }
     private Room() { }
-    // TODO: Add RoomType, Equipment, session cannot exceed room capacity.
+    // TODO: Add RoomType, Equipment
     public ErrorOr<Success> UpdateRoom(string? newName = null,
                                        int? newCapacity = null,
                                        Guid? gymId = null)
@@ -37,7 +36,6 @@ public class Room : Entity
 
     public ErrorOr<Success> DisableRoom()
     {
-        // TODO: Check if there are scheduled sessions before disabling
         IsAvailable = false;
         
         return Result.Success;

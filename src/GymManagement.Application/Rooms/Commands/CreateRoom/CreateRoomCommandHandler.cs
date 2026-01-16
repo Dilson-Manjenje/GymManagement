@@ -1,13 +1,13 @@
 using ErrorOr;
 using MediatR;
-using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Rooms;
 using GymManagement.Domain.Gyms;
+using GymManagement.Application.Common.Interfaces;
 
 
 namespace GymManagement.Application.Rooms.Commands.CreateRoom;
 
-public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, ErrorOr<Room>>
+public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, ErrorOr<Guid>>
 {
     private readonly IRoomsRepository _roomsRepository;
     private readonly IGymsRepository _gymsRepository;
@@ -20,7 +20,7 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         _gymsRepository = gymsRepository;
         _unitOfWork = unitOfWork;
     }
-    public async Task<ErrorOr<Room>> Handle(CreateRoomCommand command, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Guid>> Handle(CreateRoomCommand command, CancellationToken cancellationToken = default)
     {
         var gym = await _gymsRepository.GetByIdAsync(command.GymId, cancellationToken);
         if (gym is null)
@@ -35,6 +35,6 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         await _roomsRepository.AddAsync(room, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
-        return room;
+        return room.Id;
     }
 }

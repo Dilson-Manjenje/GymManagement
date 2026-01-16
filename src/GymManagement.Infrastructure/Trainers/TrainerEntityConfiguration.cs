@@ -38,13 +38,13 @@ public class TrainerEntityConfiguration : IEntityTypeConfiguration<Trainer>
 
               // One-to-Many: Gym <-> Trainer               
               builder.HasOne(t => t.Gym)
-                   .WithMany(g => g.Trainers)
+                   .WithMany()
                    .HasForeignKey(t => t.GymId)
                    .OnDelete(DeleteBehavior.Restrict); // Prevents deleting gym with trainers
 
               // One-to-One: Trainer <-> Member
               builder.HasOne(t => t.Member)
-               .WithOne(m => m.Trainer)
+               .WithOne()
                .HasForeignKey<Trainer>(t => t.MemberId)
                .OnDelete(DeleteBehavior.Restrict); // Prevents deleting member with trainer
 

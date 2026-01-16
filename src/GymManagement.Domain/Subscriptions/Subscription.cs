@@ -13,10 +13,11 @@ namespace GymManagement.Domain.Subscriptions
         public SubscriptionType SubscriptionType { get; private set; } = SubscriptionType.Basic;
         public Guid MemberId { get; private set; }
         public Member Member { get; set; } = null!;
-        public List<SubscriptionRooms> SubscriptionRooms { get; private set; } = null!;
+        // TODO: Review usage of SubscriptionRooms in Subscription
+        public List<SubscriptionRooms> SubscriptionRooms { get; private set; } = new(); 
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }        
-        public bool IsActive => EndDate >= DateTime.Today;                 
+        public bool IsActive => EndDate >= DateTime.Now;                 
         public decimal Price => SubscriptionType.Price;
         public int MaxDailySessions => SubscriptionType.MaxDailySessions;       
         public int MaxRoomsAllowed => SubscriptionType.MaxRooms;
@@ -49,33 +50,6 @@ namespace GymManagement.Domain.Subscriptions
             var exist = SubscriptionRooms.Any(sr => sr.RoomId == roomId);
             return exist;
         }
-       
-        public ErrorOr<Success> AddRoom(Guid roomId)
-        {
-            var exist = SubscriptionRooms.Any(sr => sr.RoomId == roomId);
-            if (exist)
-                return SubscriptionErrors.RoomAlreadyAssociated(roomId);
-
-            if (SubscriptionRooms.Count >= SubscriptionType.MaxRooms)
-                return SubscriptionErrors.HasMaxRoomsAllowed(); 
-
-            SubscriptionRooms.Add(new SubscriptionRooms(subscriptionId: Id, roomId: roomId));
-
-            return Result.Success;
-        }
-
-        public ErrorOr<Success> RemoveRoom(Guid roomId)
-        {
-            var subscriptionRoom = SubscriptionRooms.SingleOrDefault(sr => sr.RoomId == roomId);
-            if (subscriptionRoom is null)
-                return SubscriptionErrors.RoomNotInSubscription(roomId);
-
-            // TODO: Remove room physically from Db, allow add another time
-            // Add Event to remove from database
-            SubscriptionRooms.Remove(subscriptionRoom);
-
-            return Result.Success;
-        }
-
+              
     }
 }

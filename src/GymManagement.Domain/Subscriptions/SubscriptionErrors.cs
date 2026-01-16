@@ -11,6 +11,11 @@ public static class SubscriptionErrors
   public static Error InvalidSubscriptionType(string name) => Error.Validation
   (code: "Subscription.InvalidSubscriptionType",
   description: $"SubscriptionType with name {name} is invalid.");
+
+  public static Error CantDeleteActiveSubscription() => Error.Validation
+(code: "Member.CantDeleteActiveSubscription",
+ description: $"Can not delete active susbcription.");
+   
   public static Error SubscriptionAlreadyExists() => Error.Conflict
   (code: "Subscription.AlreadyExists",
     description: $"Subscription with given details already exists.");

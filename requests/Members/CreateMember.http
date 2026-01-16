@@ -13,7 +13,7 @@ POST http://localhost:5105/Members/Register
 Content-Type: application/json
 
 {
-    "UserName": "TopFit Trainer 2", 
+    "UserName": "TopFit-Master-2", 
     "Password": "Bla-Bla-123",
     "GymId": "{{topFitnessGym}}"
 }

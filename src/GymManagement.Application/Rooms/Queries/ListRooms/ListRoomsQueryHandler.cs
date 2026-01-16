@@ -1,11 +1,11 @@
 using ErrorOr;
 using GymManagement.Application.Common.Interfaces;
-using GymManagement.Domain.Rooms;
+using GymManagement.Application.Rooms.Queries.Dtos;
 using MediatR;
 
 namespace GymManagement.Application.Rooms.Queries.ListRooms;
 
-public class ListRoomsQueryHandler : IRequestHandler<ListRoomsQuery, ErrorOr<IEnumerable<Room>?>>
+public class ListRoomsQueryHandler : IRequestHandler<ListRoomsQuery, ErrorOr<IEnumerable<RoomDto>?>>
 {
     private readonly IRoomsRepository _roomsRepository;
 
@@ -14,10 +14,12 @@ public class ListRoomsQueryHandler : IRequestHandler<ListRoomsQuery, ErrorOr<IEn
         _roomsRepository = roomsRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<Room>?>> Handle(ListRoomsQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<RoomDto>?>> Handle(ListRoomsQuery query, CancellationToken cancellationToken)
     {
-        var rooms = await _roomsRepository.ListAsync();
+        var rooms = await _roomsRepository.ListAsync();        
+        var dtos = rooms?.Select(r => RoomDto.MapToDto(r))
+                         .ToList();
 
-        return rooms?.ToList();
+        return dtos;
     }
 }

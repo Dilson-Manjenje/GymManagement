@@ -11,9 +11,8 @@ public class SubscriptionRooms : Entity
 {
     public Guid SubscriptionId { get; private set; }
     public Subscription Subscription { get; set; } = null!;
-
     public Guid RoomId { get; private set; }
-    public Room Room { get; set; } = null!;
+    public Room Room { get; set; } = null!; // TODO: Review use of navigation property by business rules
     
     public int MaxSessionsPerMonth => Subscription.SubscriptionType.Name switch
     {

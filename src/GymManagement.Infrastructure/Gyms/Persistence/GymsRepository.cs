@@ -1,6 +1,5 @@
 using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Gyms;
-using GymManagement.Domain.Rooms;
 using GymManagement.Infrastructure.Common.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,38 +14,9 @@ internal class GymsRepository : IGymsRepository
         _dbContext = dbContext;
     }
 
-    async Task IGymsRepository.RemoveAsync(Gym gym, CancellationToken cancellationToken)
-    {
-        await Task.FromResult(_dbContext.Gyms.Remove(gym));    
-        
-        // TODO: Disable instead of delete gym
-        // await _dbContext.Gyms
-        //     .Where(g => g.Id == gym.Id)
-        //     .ExecuteDeleteAsync(cancellationToken); // Delete imediattly no wait for SaveChanges 
-
-    }
-
     async Task IGymsRepository.AddAsync(Gym gym, CancellationToken cancellationToken)
     {
         await _dbContext.Gyms.AddAsync(gym);
-    }
-
-    async Task<Gym?> IGymsRepository.GetByIdAsync(Guid gymId, CancellationToken cancellationToken)
-    {
-       return await _dbContext.Gyms
-                        .Where(g => g.Id == gymId)
-                        .Include(g => g.Rooms)
-                        .Include( g => g.Trainers)
-                        .FirstOrDefaultAsync();
-    }
-
-    async Task<IEnumerable<Gym>?> IGymsRepository.ListAsync(CancellationToken cancellationToken)
-    {
-         return await _dbContext.Gyms
-                        .AsNoTracking()
-                        .Include(g => g.Rooms) 
-                        .Include( g => g.Trainers)
-                        .ToListAsync(cancellationToken);
     }
 
     async Task IGymsRepository.UpdateAsync(Gym gym, CancellationToken cancellationToken)
@@ -54,4 +24,24 @@ internal class GymsRepository : IGymsRepository
         _dbContext.Gyms.Update(gym);
         await Task.CompletedTask;
     }
+
+    async Task IGymsRepository.RemoveAsync(Gym gym, CancellationToken cancellationToken)
+    {
+        await Task.FromResult(_dbContext.Gyms.Remove(gym));            
+        // TODO: Disable gym instead of delete gym
+    }
+
+    async Task<Gym?> IGymsRepository.GetByIdAsync(Guid gymId, CancellationToken cancellationToken)
+    {
+       return await _dbContext.Gyms
+                        .Where(g => g.Id == gymId)
+                        .SingleOrDefaultAsync();
+    }
+
+    async Task<IEnumerable<Gym>?> IGymsRepository.ListAsync(CancellationToken cancellationToken)
+    {
+         return await _dbContext.Gyms
+                        .AsNoTracking()
+                        .ToListAsync(cancellationToken);
+    }    
 }

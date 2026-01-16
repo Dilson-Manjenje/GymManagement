@@ -9,7 +9,7 @@ using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
 
-public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscriptionCommand, ErrorOr<Subscription>>
+public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscriptionCommand, ErrorOr<Guid>>
 {
     private readonly ISubscriptionsRepository _subscriptionsRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -20,14 +20,14 @@ public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscripti
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Subscription>> Handle(UpdateSubscriptionCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Guid>> Handle(UpdateSubscriptionCommand command, CancellationToken cancellationToken)
     {
         var subscription = await _subscriptionsRepository.GetByIdAsync(command.Id, cancellationToken);
 
         if (subscription is null)
-            SubscriptionErrors.SubscriptionNotFound(command.Id);
+            return SubscriptionErrors.SubscriptionNotFound(command.Id);
 
-        var result = subscription!.UpdateSubscription(command.SubscriptionType);
+        var result = subscription.UpdateSubscription(command.SubscriptionType);
         
         if (result.IsError)
             return result.Errors;
@@ -35,6 +35,6 @@ public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscripti
         await _subscriptionsRepository.UpdateAsync(subscription, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
         
-        return subscription;
+        return subscription.Id;
     }
 }

@@ -1,28 +1,25 @@
+using ErrorOr;
 using GymManagement.Domain.Common;
 using GymManagement.Domain.Gyms;
 using GymManagement.Domain.Subscriptions;
-using GymManagement.Domain.Trainers;
 
 namespace GymManagement.Domain.Members;
 
 public class Member : Entity
 {
     public Guid? UserId { get; private set; } = null;
-    public string UserName { get; set; } = string.Empty;
-    
-    public Subscription? CurrentSubscription
-    {
-        get {
-            return Subscriptions?.SingleOrDefault( s => s.IsActive);             
-        }
-    
-    }
-    
-    public List<Subscription>? Subscriptions { get; set; } = new();     
-    public Trainer? Trainer { get; set; } = null; // Navigation for 1:1    
+    public string UserName { get; set; } = string.Empty;    
     public Guid? GymId { get; set; }
     public Gym? Gym { get; set; } = null; 
-
+    
+    // public Subscription? CurrentSubscription
+    // {
+    //     get {
+    //         return Subscriptions?.SingleOrDefault( s => s.IsActive);             
+    //     }
+    
+    // }    
+   
 
     public Member(
         string userName,
@@ -36,12 +33,11 @@ public class Member : Entity
     }
 
     private Member() { }
-
-    public bool HasActiveSubscription()
+     public ErrorOr<Success> Update(string? usarName = null,
+                                    string? password = null)
     {
-        if (Subscriptions is null)
-            return false;
-
-        return Subscriptions.Any(s => s.IsActive);        
-    }    
+        UserName = usarName ?? UserName;
+        
+        return Result.Success;
+    }
 }

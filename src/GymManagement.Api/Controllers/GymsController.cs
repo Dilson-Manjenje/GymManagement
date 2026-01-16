@@ -6,6 +6,7 @@ using GymManagement.Application.Gyms.Queries.GetGym;
 using GymManagement.Application.Gyms.Queries.ListGyms;
 using GymManagement.Application.Gyms.Commands.DeleteGym;
 using GymManagement.Application.Gyms.Commands.UpdateGym;
+using GymManagement.Application.Gyms.Queries.Dtos;
 
 namespace GymManagement.Api.Controllers;
 
@@ -18,7 +19,7 @@ public class GymsController : ApiBaseController
   }
 
   [HttpPost]
-  public async Task<IActionResult> CreateGym(CreateUpdateGymRequest request)
+  public async Task<IActionResult> CreateGym(GymRequest request)
   {
     var cmd = new CreateGymCommand(request.Name,
                                   request.Address);
@@ -26,9 +27,9 @@ public class GymsController : ApiBaseController
     var result = await _mediator.Send(cmd);
         
     return result.MatchFirst(
-      gym => CreatedAtAction(actionName: nameof(GetGym),
-                              routeValues: new { gymId = gym.Id },
-                              value: new { gym.Id, gym.Name, gym.Address }),
+      id => CreatedAtAction(actionName: nameof(GetGym),
+                              routeValues: new { gymId = id },
+                              value: null),
       error => HandleErrors(result.Errors));    
   }
 
@@ -38,8 +39,13 @@ public class GymsController : ApiBaseController
     var result = await _mediator.Send(new GetGymQuery(gymId));
 
     return result.MatchFirst(
-      gym => Ok(new GymResponse(gym.Id, gym.Name, gym.Address)),
+      gym => Ok(MapToResponse(gym)),
       error => HandleErrors(result.Errors));
+  }
+
+  private GymResponse MapToResponse(GymDto dto)
+  {
+    return new GymResponse(Id: dto.Id, Name: dto.Name, Address: dto.Address);      
   }
 
   [HttpGet("List")]
@@ -48,7 +54,7 @@ public class GymsController : ApiBaseController
     var result = await _mediator.Send(new ListGymsQuery());
 
     return result.MatchFirst(
-      gyms => Ok(new ListGymsResponse(gyms.Select(gym => new GymResponse(gym.Id, gym.Name, gym.Address)))),
+      gyms => Ok(new ListGymsResponse(gyms.Select(gym => MapToResponse(gym)))),
       error => HandleErrors(result.Errors));
   }
 
@@ -58,17 +64,17 @@ public class GymsController : ApiBaseController
     var result = await _mediator.Send(new DeleteGymCommand(id));
 
     return result.MatchFirst<IActionResult>(
-      gym => NoContent(),
+      _ => NoContent(),
       error => HandleErrors(result.Errors));
   }
 
   [HttpPut("{id:guid}")]
-  public async Task<IActionResult> UpdateGym([FromRoute] Guid id, CreateUpdateGymRequest request)
+  public async Task<IActionResult> UpdateGym([FromRoute] Guid id, GymRequest request)
   {
     var result = await _mediator.Send(new UpdateGymCommand(id, request.Name, request.Address));
 
     return result.MatchFirst(
-      gym => Ok(new GymResponse(gym.Id, gym.Name, gym.Address)),
+      id => Ok(new { gymId = id }),
       error => HandleErrors(result.Errors));
   }
 }

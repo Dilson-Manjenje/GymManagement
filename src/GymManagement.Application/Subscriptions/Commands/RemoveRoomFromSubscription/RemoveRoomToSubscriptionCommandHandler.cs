@@ -10,7 +10,7 @@ using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscription;
 
-public class RemoveRoomToSubscriptionCommandHandler : IRequestHandler<RemoveRoomToSubscriptionCommand, ErrorOr<Success>>
+public class RemoveRoomToSubscriptionCommandHandler : IRequestHandler<RemoveRoomToSubscriptionCommand, ErrorOr<Unit>>
 {
     private readonly ISubscriptionsRepository _subscriptionsRepository;
     private readonly IRoomsRepository _roomsRepository;
@@ -24,7 +24,7 @@ public class RemoveRoomToSubscriptionCommandHandler : IRequestHandler<RemoveRoom
         _roomsRepository = roomsRepository;
     }
 
-    public async Task<ErrorOr<Success>> Handle(RemoveRoomToSubscriptionCommand command, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Unit>> Handle(RemoveRoomToSubscriptionCommand command, CancellationToken cancellationToken)
     {
         var subscription = await _subscriptionsRepository.GetByIdAsync(command.SubscriptionId, cancellationToken);
         if (subscription is null)
@@ -42,6 +42,6 @@ public class RemoveRoomToSubscriptionCommandHandler : IRequestHandler<RemoveRoom
         await _subscriptionsRepository.RemoveRoomFromSubscriptionAsync(subsRoom);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
-        return Result.Success;
+        return Unit.Value;
     }
 }

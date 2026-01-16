@@ -17,15 +17,14 @@ public class UpdateRoomCommandValidator : AbstractValidator<UpdateRoomCommand>
                  .NotEmpty().WithMessage("'{PropertyName}' is required.");
      
         RuleFor( r => r)
-                .MustAsync(NameNotExisteForOther) 
+                .MustAsync(NameNotExistForOther) 
                 .WithMessage($"Name already used by other Room in this Gym.");
 	}
 
-	private async Task<bool> NameNotExisteForOther(UpdateRoomCommand command, CancellationToken token)
+	private async Task<bool> NameNotExistForOther(UpdateRoomCommand command, CancellationToken token)
 	{
-		var rooms = await _roomsRepository.ListAsync();
-		var room = rooms?.SingleOrDefault(r => r.Name.Equals(command.Name, StringComparison.InvariantCultureIgnoreCase)
-		 									&& r.GymId == command.GymId);
+		var rooms = await _roomsRepository.ListByGymAsync(command.GymId);
+		var room = rooms?.SingleOrDefault(r => r.Name.Equals(command.Name, StringComparison.InvariantCultureIgnoreCase));
 
 		if (room is null || room.Id == command.Id) 
 			return true; 

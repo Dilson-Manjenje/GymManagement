@@ -9,20 +9,20 @@
 @gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
 @topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
 
-@trainerId = d3e7b917-5f02-47ae-b654-6a7fed195f11
+@trainerId = 8c3b3865-c343-488a-9b09-cd982028a9b0
 
 
 ###
 GET  http://{{host}}/Trainers/{{trainerId}}
 Content-Type: {{jsonContentType}}
 
+
 ###
 GET  http://{{host}}/Trainers/List
 Content-Type: {{jsonContentType}}
 
 
+
 ###
 GET  http://{{host}}/Trainers/List/{{topFitnessGym}}
 Content-Type: {{jsonContentType}}
-
- [HttpGet("{trainerId:guid}")]

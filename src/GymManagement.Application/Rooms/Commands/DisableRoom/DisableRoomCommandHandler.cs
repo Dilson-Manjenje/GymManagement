@@ -5,7 +5,7 @@ using MediatR;
 
 namespace GymManagement.Application.Rooms.Commands.DisableRoom;
 
-public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, ErrorOr<Updated>>
+public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, ErrorOr<Guid>>
 {
     private readonly IRoomsRepository _roomsRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -16,7 +16,7 @@ public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, Err
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ErrorOr<Updated>> Handle(DisableRoomCommand command, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Guid>> Handle(DisableRoomCommand command, CancellationToken cancellationToken = default)
     {
         var room = await _roomsRepository.GetByIdAsync(command.Id, cancellationToken);
 
@@ -31,7 +31,7 @@ public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, Err
         await _roomsRepository.UpdateAsync(room, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
-        return Result.Updated;
+        return room.Id;
     }
 }
     
