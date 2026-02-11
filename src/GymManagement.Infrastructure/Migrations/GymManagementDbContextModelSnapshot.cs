@@ -17,6 +17,35 @@ namespace GymManagement.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.21");
 
+            modelBuilder.Entity("GymManagement.Domain.Bookings.Booking", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastUpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("SessionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("Bookings");
+                });
+
             modelBuilder.Entity("GymManagement.Domain.Gyms.Gym", b =>
                 {
                     b.Property<Guid>("Id")
@@ -102,6 +131,52 @@ namespace GymManagement.Infrastructure.Migrations
                     b.HasIndex("GymId");
 
                     b.ToTable("Rooms");
+                });
+
+            modelBuilder.Entity("GymManagement.Domain.Sessions.Session", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastUpdateDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TrainerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Vacancy")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("TrainerId");
+
+                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("GymManagement.Domain.Subscriptions.Subscription", b =>
@@ -217,10 +292,29 @@ namespace GymManagement.Infrastructure.Migrations
                     b.ToTable("Trainers");
                 });
 
+            modelBuilder.Entity("GymManagement.Domain.Bookings.Booking", b =>
+                {
+                    b.HasOne("GymManagement.Domain.Members.Member", "Member")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GymManagement.Domain.Sessions.Session", "Session")
+                        .WithMany()
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Member");
+
+                    b.Navigation("Session");
+                });
+
             modelBuilder.Entity("GymManagement.Domain.Members.Member", b =>
                 {
                     b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
-                        .WithMany("Members")
+                        .WithMany()
                         .HasForeignKey("GymId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -230,7 +324,7 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Rooms.Room", b =>
                 {
                     b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
-                        .WithMany("Rooms")
+                        .WithMany()
                         .HasForeignKey("GymId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -238,10 +332,29 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Navigation("Gym");
                 });
 
+            modelBuilder.Entity("GymManagement.Domain.Sessions.Session", b =>
+                {
+                    b.HasOne("GymManagement.Domain.Rooms.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GymManagement.Domain.Trainers.Trainer", "Trainer")
+                        .WithMany()
+                        .HasForeignKey("TrainerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("Trainer");
+                });
+
             modelBuilder.Entity("GymManagement.Domain.Subscriptions.Subscription", b =>
                 {
                     b.HasOne("GymManagement.Domain.Members.Member", "Member")
-                        .WithMany("Subscriptions")
+                        .WithMany()
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -271,13 +384,13 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Trainers.Trainer", b =>
                 {
                     b.HasOne("GymManagement.Domain.Gyms.Gym", "Gym")
-                        .WithMany("Trainers")
+                        .WithMany()
                         .HasForeignKey("GymId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("GymManagement.Domain.Members.Member", "Member")
-                        .WithOne("Trainer")
+                        .WithOne()
                         .HasForeignKey("GymManagement.Domain.Trainers.Trainer", "MemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -285,22 +398,6 @@ namespace GymManagement.Infrastructure.Migrations
                     b.Navigation("Gym");
 
                     b.Navigation("Member");
-                });
-
-            modelBuilder.Entity("GymManagement.Domain.Gyms.Gym", b =>
-                {
-                    b.Navigation("Members");
-
-                    b.Navigation("Rooms");
-
-                    b.Navigation("Trainers");
-                });
-
-            modelBuilder.Entity("GymManagement.Domain.Members.Member", b =>
-                {
-                    b.Navigation("Subscriptions");
-
-                    b.Navigation("Trainer");
                 });
 
             modelBuilder.Entity("GymManagement.Domain.Subscriptions.Subscription", b =>

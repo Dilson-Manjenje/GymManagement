@@ -26,3 +26,8 @@ Content-Type: {{jsonContentType}}
 ###
 GET  http://{{host}}/Trainers/List/{{topFitnessGym}}
 Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Trainers/dabbfda5-bd6b-4f9c-9daa-8c27ac060d52/Sessions
+Content-Type: {{jsonContentType}}
+

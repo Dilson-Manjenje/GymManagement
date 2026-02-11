@@ -3,7 +3,21 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@sessionId = daa982a0-70a4-4e29-9ef9-0c2018b167e6
+@sessionId = 6d8be3b7-ec21-4950-af07-7a0d34042654
+
+@gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
+@gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
+@gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
+@topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
+
+@quibumaBodyRoom = 40a171f7-5230-4474-b49f-9cf25a50c9e0
+@fightKickRoom = 16b36cd2-c7f8-4c80-8b37-12ecdba3cc23	
+@topFitBodyRoom = 3c0fdef3-a08b-403c-90d5-9891ae458ac5
+
+@quibumaPt1 = 48e2e07c-4b8a-4c01-be87-e4c105c2d149
+@fightMt1 = c7e5bc1a-a7c8-4654-b62e-42c7b39887a1
+@topfitPt1 = 80186a62-8869-4e1f-bb98-fba483056964
+
 
 ###
 GET  http://{{host}}/Sessions/{{sessionId}}
@@ -12,3 +26,31 @@ Content-Type: {{jsonContentType}}
 ###
 GET  http://{{host}}/Sessions/List
 Content-Type: {{jsonContentType}}
+
+
+###
+GET  http://{{host}}/Sessions/UpCommingSessions/{{gymIdFightSociety}}
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Sessions/9daa654d-02ce-4060-9ce3-088154c3f101/Bookings
+Content-Type: {{jsonContentType}}
+
+
+###
+GET  http://{{host}}/Gyms/{{gymIdFightSociety}}/Sessions
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Rooms/{{quibumaBodyRoom}}/Sessions
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Trainers/dabbfda5-bd6b-4f9c-9daa-8c27ac060d52/Sessions
+Content-Type: {{jsonContentType}}
+
+# Gyms/{gymId}/Sessions
+# Rooms/{roomId}/Sessions
+# Trainers/{trainerId}/Sessions
+# Members/{trainerId}/Sessions
+# Sessions/{sessionId}/Bookings

@@ -9,11 +9,11 @@
 @topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
 
 ###
-POST http://localhost:5105/Members/Register
+POST http://localhost:5105/Members
 Content-Type: application/json
 
 {
-    "UserName": "TopFit-Master-2", 
+    "UserName": "TopFit-Member2", 
     "Password": "Bla-Bla-123",
     "GymId": "{{topFitnessGym}}"
 }

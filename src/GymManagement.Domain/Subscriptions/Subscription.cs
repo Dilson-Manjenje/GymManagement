@@ -16,8 +16,8 @@ namespace GymManagement.Domain.Subscriptions
         // TODO: Review usage of SubscriptionRooms in Subscription
         public List<SubscriptionRooms> SubscriptionRooms { get; private set; } = new(); 
         public DateTime StartDate { get; private set; }
-        public DateTime EndDate { get; private set; }        
-        public bool IsActive => EndDate >= DateTime.Now;                 
+        public DateTime EndDate { get; private set; }         
+        public bool IsActive => EndDate >= DateTime.Now; // TODO: Add subscription status             
         public decimal Price => SubscriptionType.Price;
         public int MaxDailySessions => SubscriptionType.MaxDailySessions;       
         public int MaxRoomsAllowed => SubscriptionType.MaxRooms;

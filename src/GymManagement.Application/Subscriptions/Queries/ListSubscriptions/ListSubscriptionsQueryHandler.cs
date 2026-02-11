@@ -22,20 +22,21 @@ public class ListSubscriptionsQueryHandler : IRequestHandler<ListSubscriptionsQu
         if (subscriptions is null || !subscriptions.Any())
             return new List<SubscriptionDto>();
 
-        // TODO: Refactor: Create a ListWithDetails<SubscriptionDetailsDto> to return everything in one projected query
+        // TODO: Create ListWithDetails<SubscriptionDetailsDto> to return everything in one projected query
         // Instead of make multiple trips to repository
-        var result = new List<SubscriptionDto>(subscriptions.Count());
         
-        if(subscriptions is not null)
-            foreach(var subs in subscriptions)
-            {
-                var rooms = await _subscriptionsRepository.ListSubscriptionRooms(subs.Id, cancellationToken);
-                var roomNames = rooms.Select(r => r.Name).ToList()
-                              ?? new List<string>();
-                              
-                result.Add(SubscriptionDto.MapToDto(subs, roomNames));
-            }                
-                                                        
-        return result;                
+        // var result = new List<SubscriptionDto>(subscriptions.Count());
+        // if(subscriptions is not null)
+        //     foreach(var subs in subscriptions)
+        //     {
+        //         var rooms = await _subscriptionsRepository.ListSubscriptionRooms(subs.Id, cancellationToken);
+        //         var roomNames = rooms.Select(r => r.Name).ToList()
+        //                       ?? new List<string>();
+
+        //         result.Add(SubscriptionDto.MapToDto(subs, roomNames));
+        //     }                
+        // return result; 
+
+        return subscriptions.Select(subs => SubscriptionDto.MapToDto(subs)).ToList();
     }
 }

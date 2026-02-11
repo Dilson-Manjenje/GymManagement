@@ -6,8 +6,10 @@ using GymManagement.Application.Rooms.Queries.GetRoom;
 using GymManagement.Application.Rooms.Queries.ListRooms;
 using GymManagement.Application.Rooms.Commands.DisableRoom;
 using GymManagement.Application.Rooms.Commands.UpdateRoom;
-using GymManagement.Application.Rooms.Queries.Dtos;
 using GymManagement.Application.Rooms.Queries.ListRoomsByGym;
+using GymManagement.Application.Sessions.Queries.ListSessionsByRoom;
+using GymManagement.Contracts.Sessions;
+using GymManagement.Api.Mappings;
 
 namespace GymManagement.Api.Controllers;
 
@@ -41,18 +43,8 @@ public class RoomsController : ApiBaseController
     var result = await _mediator.Send(new GetRoomQuery(roomId));
 
     return result.MatchFirst(
-      room => Ok(MapToResponse(room)),
+      room => Ok(ContractMappings.MapToRoomResponse(room)),
       error => HandleErrors(result.Errors));
-  }
-
-  private RoomResponse MapToResponse(RoomDto room)
-  {
-      return new RoomResponse(Id: room.Id,
-                              Name: room.Name,
-                              Capacity: room.Capacity,
-                              IsAvailable: room.IsAvailable,
-                              GymId: room.GymId,
-                              GymName: room.GymName);
   }
 
 
@@ -62,17 +54,7 @@ public class RoomsController : ApiBaseController
     var result = await _mediator.Send(new ListRoomsQuery());
 
     return result.MatchFirst(
-      rooms => Ok(new ListRoomsResponse(rooms.Select(room => MapToResponse(room)))),
-      error => HandleErrors(result.Errors));
-  }
-
-  [HttpGet("List/{gymId:guid}")]
-  public async Task<IActionResult> ListAllByGym([FromRoute]Guid gymId)
-  {
-    var result = await _mediator.Send(new ListRoomsByGymQuery(GymId: gymId));
-
-    return result.MatchFirst(
-      rooms => Ok(new ListRoomsResponse(rooms.Select(room => MapToResponse(room)))),
+      rooms => Ok(new ListRoomsResponse(rooms.Select(room => ContractMappings.MapToRoomResponse(room)))),
       error => HandleErrors(result.Errors));
   }
 
@@ -98,6 +80,16 @@ public class RoomsController : ApiBaseController
 
     return result.MatchFirst(
       id => Ok(new { Id = id }),
+      error => HandleErrors(result.Errors));
+  }
+
+  [HttpGet("{roomId:guid}/Sessions")]
+  public async Task<IActionResult> ListSessions(Guid roomId)
+  {
+    var result = await _mediator.Send(new ListSessionsByRoomQuery(RoomId: roomId));
+
+    return result.MatchFirst(
+      sessions => Ok(new ListSessionsResponse(sessions.Select(session => ContractMappings.MapToSessionResponse(session)))),
       error => HandleErrors(result.Errors));
   }
 }

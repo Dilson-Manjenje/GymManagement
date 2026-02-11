@@ -28,3 +28,13 @@ Content-Type: {{jsonContentType}}
 {
     "roomId": "{{fightKick}}"
 }
+
+
+
+###
+PUT http://{{host}}/Subscriptions/a53fa148-8256-46c3-bfa8-14d3a1040b76/Rooms
+Content-Type: {{jsonContentType}}
+
+{
+    "roomId": "{{fightKick}}"
+}

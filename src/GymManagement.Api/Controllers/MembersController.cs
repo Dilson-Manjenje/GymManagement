@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using GymManagement.Api.Mappings;
 using GymManagement.Contracts.Members;
+using GymManagement.Contracts.Bookings;
+using GymManagement.Contracts.Subscriptions;
 using GymManagement.Application.Members.Commands.CreateMember;
 using GymManagement.Application.Members.Queries.GetMember;
 using GymManagement.Application.Members.Queries.ListMembers;
-using GymManagement.Application.Members.Queries.ListMembersByGym;
 using GymManagement.Application.Members.Commands.UpdateMember;
 using GymManagement.Application.Members.Commands.DeleteMember;
-using GymManagement.Application.Members.Queries.Dtos;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByMember;
-using GymManagement.Contracts.Subscriptions;
-using GymManagement.Api.Mappings;
+
+using GymManagement.Application.Bookings.Queries.ListBookingsByMember;
 
 
 namespace GymManagement.Api.Controllers;
@@ -23,7 +24,7 @@ public class MembersController : ApiBaseController
     _mediator = mediator;
   }
 
-  [HttpPost("Register")]
+  [HttpPost]
   public async Task<IActionResult> CreateMember([FromBody] CreateMemberRequest request, CancellationToken cancellationToken)
   {
     var cmd = new CreateMemberCommand(UserName: request.UserName,
@@ -34,28 +35,18 @@ public class MembersController : ApiBaseController
 
     return result.MatchFirst(      
       id => CreatedAtAction(actionName: nameof(GetMember),
-                                 routeValues: new { memberId = id },
+                                 routeValues: new { id = id },
                                  value: null),
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{memberId:guid}")]
-  public async Task<IActionResult> GetMember(Guid memberId)
+  [HttpGet("{id:guid}")]
+  public async Task<IActionResult> GetMember(Guid id)
   {
-    var result = await _mediator.Send(new GetMemberQuery(memberId));
+    var result = await _mediator.Send(new GetMemberQuery(id));
 
     return result.MatchFirst(
       member => Ok(ContractMappings.MapToMemberResponse(member)),
-      error => HandleErrors(result.Errors));
-  }
-
-  [HttpGet("{memberId:guid}/Subscriptions")]
-  public async Task<IActionResult> GetMemberSubscriptions(Guid memberId)
-  {
-    var result = await _mediator.Send(new ListSubscriptionsByMemberQuery(MemberId: memberId));
-
-    return result.MatchFirst(
-      subscriptions => Ok(new ListSubscriptionsResponse(subscriptions.Select(subs => ContractMappings.MapToSubscriptionResponse(subs)))),
       error => HandleErrors(result.Errors));
   }
 
@@ -92,16 +83,28 @@ public class MembersController : ApiBaseController
       members => Ok(new ListMembersResponse(members.Select(member => ContractMappings.MapToMemberResponse(member)))),
       error => HandleErrors(result.Errors));
   }
-
-  [HttpGet("List/{gymId:guid}")]
-  public async Task<IActionResult> ListAllByGym([FromRoute]Guid gymId)
+  
+  [HttpGet("{memberId:guid}/Subscriptions")]
+  public async Task<IActionResult> ListSubscriptions(Guid memberId)
   {
-    var result = await _mediator.Send(new ListMembersByGymQuery(GymId: gymId));
+    var result = await _mediator.Send(new ListSubscriptionsByMemberQuery(MemberId: memberId));
 
     return result.MatchFirst(
-      members => Ok(new ListMembersResponse(members.Select(member => ContractMappings.MapToMemberResponse(member)))),
+      subscriptions => Ok(new ListSubscriptionsResponse(subscriptions.Select(subs => ContractMappings.MapToSubscriptionResponse(subs)))),
       error => HandleErrors(result.Errors));
   }
+
+
+  [HttpGet("{memberId:guid}/Bookings")]
+  public async Task<IActionResult> ListBookings(Guid memberId)
+  {
+    var result = await _mediator.Send(new ListBookingsByMemberQuery(MemberId: memberId));
+
+    return result.MatchFirst(
+      bookings => Ok(new ListBookingResponse(bookings.Select(booking => ContractMappings.MapToBookingResponse(booking)))),
+      error => HandleErrors(result.Errors));
+  }
+  
 }
 
 

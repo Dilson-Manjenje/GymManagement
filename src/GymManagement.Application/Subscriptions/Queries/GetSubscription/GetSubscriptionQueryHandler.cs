@@ -18,15 +18,9 @@ public class GetSubscriptionQueryHandler : IRequestHandler<GetSubscriptionQuery,
     public async Task<ErrorOr<SubscriptionDto>> Handle(GetSubscriptionQuery query, CancellationToken cancellationToken = default)
     {
         var subscription = await _subscriptionsRepository.GetByIdAsync(query.Id);
-
-        //TODO: Refactor to return projected result instead of make multiple trips to repository
-        var roomNames = (subscription is not null)
-                            ? (await _subscriptionsRepository.ListSubscriptionRooms(subscription.Id))
-                                                             .Select(r => r.Name).ToList()
-                            : new List<string>();
                             
         return (subscription is null) 
             ? SubscriptionErrors.SubscriptionNotFound(query.Id)
-            : SubscriptionDto.MapToDto(subscription, roomNames);        
+            : SubscriptionDto.MapToDto(subscription);        
     }
 }

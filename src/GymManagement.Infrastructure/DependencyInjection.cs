@@ -1,12 +1,14 @@
-﻿using GymManagement.Application.Common.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using GymManagement.Application.Common.Interfaces;
 using GymManagement.Infrastructure.Members.Persistence;
 using GymManagement.Infrastructure.Common.Persistence;
 using GymManagement.Infrastructure.Gyms.Persistence;
 using GymManagement.Infrastructure.Rooms.Persistence;
 using GymManagement.Infrastructure.Subscriptions.Persistence;
 using GymManagement.Infrastructure.Trainers.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using GymManagement.Infrastructure.Sessions;
+using GymManagement.Infrastructure.Bookings;
 
 namespace GymManagement.Infrastructure;
 
@@ -25,6 +27,9 @@ public static class DependencyInjection
         services.AddScoped<IRoomsRepository, RoomsRepository>();
         services.AddScoped<IMembersRepository, MembersRepository>();
         services.AddScoped<ITrainersRepository, TraneirsRepository>();
+        services.AddScoped<ISessionsRepository, SessionsRepository>();
+        services.AddScoped<IBookingsRepository, BookingsRepository>();
+
         
         services.AddScoped<IDBInitializer, DBInitializer>();                     
 

@@ -20,6 +20,6 @@ POST http://{{host}}/Subscriptions
 Content-Type: {{jsonContentType}}
 
 {
-    "SubscriptionType": "Basic", 
-    "MemberId": "258fc6ad-90e7-44a6-8f4f-de3e98355404"
+    "SubscriptionType": "Plus", 
+    "MemberId": "9c8eeb35-8102-4280-8fca-b607f003283e"
 }
