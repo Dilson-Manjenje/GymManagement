@@ -15,7 +15,7 @@
 
 @topfitPt1 = 80186a62-8869-4e1f-bb98-fba483056964
 
-@sessionId = daa982a0-70a4-4e29-9ef9-0c2018b167e6
+@sessionId = 635acede-83ee-4742-972c-02de74da78a2
 
 
 ###
@@ -25,7 +25,7 @@ Content-Type: application/json
 {
     "RoomId": "{{topFitBodyRoom}}", 
     "TrainerId": "{{topfitPt1}}",
-    "Title": "Body Build Morning Session"
+    "Title": "Musculação Night Session"
 }
 
 ###
@@ -33,15 +33,35 @@ PUT  http://localhost:5105/Sessions/{{sessionId}}
 Content-Type: application/json
 
 {
-    "roomId": "{{quibumaBodyRoom}}", 
-    "trainerId": "{{quibumapt2}}",
-    "title": "Musculação Session 1",
-    "startDate":"2026-01-08T18:00",
-    "endDate":"2026-01-08T20:00"
+    "RoomId": "{{topFitBodyRoom}}", 
+    "TrainerId": "{{topfitPt1}}",
+    "Title": "Musculação Night Session 2",
+    "startDate":"2026-01-26T19:00",
+    "endDate":"2026-01-26T21:00"
 }
 
-# "startDate": "2026-01-07T00:23:34.5637849",
-# "endDate": "2026-01-07T01:23:34.5637849",
+###
+PUT  http://localhost:5105/Sessions/E69C8F43-F135-49FA-BDF9-89949A1AB964
+Content-Type: application/json
+
+{
+    "RoomId": "{{quibumaBodyRoom}}", 
+    "TrainerId": "{{quibumapt2}}",
+    "Title": "Body Build Morning Session"
+}
+
+
+###
+PUT  http://localhost:5105/Sessions/{{sessionId}}
+Content-Type: application/json
+
+{
+    "roomId": "{{quibumaBodyRoom}}", 
+    "trainerId": "{{quibumaPt1}}",
+    "title": "Body Build Morning Session 1",
+    "startDate":"2026-01-12T15:00",
+    "endDate":"2026-01-12T16:30"
+}
 
 
 ###
@@ -58,6 +78,16 @@ Content-Type: application/json
 
 
 ###
-DELETE  http://localhost:5105/Sessions/531b970f-a4f1-4bbc-b9f7-f0094bb381a5
+DELETE  http://localhost:5105/Sessions/c697359c-b9d3-4a99-861f-7e44806e3b01
 Content-Type: application/json
 
+
+
+###
+PUT  http://localhost:5105/Sessions/ef35f5ed-b03c-438f-9a3f-20a8c6f4d5cd/Cancel
+Content-Type: application/json
+
+
+###
+PUT  http://localhost:5105/Sessions/837e5886-4067-45a3-b63a-a9dd18bf0abc/Finalize
+Content-Type: application/json

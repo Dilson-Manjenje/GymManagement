@@ -16,7 +16,10 @@ public class ListSubscriptionsByGymQueryHandler : IRequestHandler<ListSubscripti
 
     public async Task<ErrorOr<IEnumerable<SubscriptionDto>?>> Handle(ListSubscriptionsByGymQuery query, CancellationToken cancellationToken)
     {
-          var subscriptions = await _subscriptionsRepository.ListByGymAsync(query.GymId);
+        var subscriptions = await _subscriptionsRepository.ListByGymAsync(query.GymId);
+
+        if (subscriptions is null || !subscriptions.Any())
+            return new List<SubscriptionDto>();
 
         return subscriptions?.Select(susbcription => SubscriptionDto.MapToDto(susbcription)).ToList();       
     }

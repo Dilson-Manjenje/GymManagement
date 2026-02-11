@@ -23,6 +23,17 @@ Content-Type: application/json
     "title": "Musculação Session 1"
 }
 
+###
+POST http://localhost:5105/Sessions
+Content-Type: application/json
+
+{
+    "roomId": "{{fightKickRoom}}", 
+    "trainerId": "{{fightMt1}}",
+    "title": "KickBoxing Morning Session",
+    "startDate":"2026-02-04T07:00",
+    "endDate":"2026-02-04T09:00"
+}
 
 ###
 POST http://localhost:5105/Sessions
@@ -31,15 +42,15 @@ Content-Type: application/json
 {
     "roomId": "{{topFitBodyRoom}}", 
     "trainerId": "{{topfitPt1}}",
-    "title": "Musculação Session 1",
-    "startDate":"{{$datetime iso8601}}",
-    "endDate":"2026-01-08T23:50"
+    "title": "Musculação de Manhã",
+    "startDate":"2026-02-04T06:00",
+    "endDate":"2026-02-04T09:00"
 }
 
 # "startDate": "2026-01-07T00:23:34.5637849",
 # "endDate": "2026-01-07T01:23:34.5637849",
 
-# "startDate": "2026-01-06T22:12:43.154",
+#"startDate":"{{$datetime iso8601}}",    
 # "endDate": "2026-01-06T23:50:00",
 
 
@@ -51,6 +62,6 @@ Content-Type: application/json
     "roomId": "{{topFitBodyRoom}}", 
     "trainerId": "{{topfitPt1}}",
     "title": "Musculação Session 1",
-    "startDate":"2026-01-06T23:00:00",
-    "endDate":"2026-01-06T23:50:00"
+    "startDate":"2026-01-12T14:00:00",
+    "endDate":"2026-01-12T15:30:00"
 }

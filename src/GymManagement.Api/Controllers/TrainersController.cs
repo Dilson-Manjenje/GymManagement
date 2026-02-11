@@ -5,9 +5,10 @@ using GymManagement.Application.Trainers.Queries.GetTrainer;
 using GymManagement.Application.Trainers.Commands.CreateTrainer;
 using GymManagement.Application.Trainers.Queries.ListTrainers;
 using GymManagement.Application.Trainers.Commands.DeleteTrainer;
-using GymManagement.Application.Trainers.Queries.ListTrainersByGym;
-using GymManagement.Application.Trainers.Queries.Dtos;
 using GymManagement.Application.Trainers.Commands.UpdateTrainer;
+using GymManagement.Application.Sessions.Queries.ListSessionsByTrainer;
+using GymManagement.Contracts.Sessions;
+using GymManagement.Api.Mappings;
 
 
 namespace GymManagement.Api.Controllers;
@@ -45,21 +46,8 @@ public class TrainersController : ApiBaseController
     var result = await _mediator.Send(new GetTrainerQuery(trainerId));
 
     return result.MatchFirst(
-      trainer => Ok(MapToResponse(trainer)),
+      trainer => Ok(ContractMappings.MapToTrainerResponse(trainer)),
       error => HandleErrors(result.Errors));
-  }
-
-  private TrainerResponse MapToResponse(TrainerDto trainer)
-  {
-    return new TrainerResponse(Id: trainer.Id,
-                               Name: trainer.Name,
-                               Phone: trainer.Phone,
-                               Email: trainer.Email,
-                               Specialization: trainer.Specialization,
-                               IsActive: trainer.IsActive,
-                               GymId: trainer.GymId,
-                               GymName: trainer.GymName,
-                               MemberId: trainer.MemberId);
   }
 
   [HttpGet("List")]
@@ -68,7 +56,7 @@ public class TrainersController : ApiBaseController
     var result = await _mediator.Send(new ListTrainersQuery());
 
     return result.MatchFirst(
-      trainers => Ok(new ListTrainersResponse(trainers.Select(trainer => MapToResponse(trainer)))),
+      trainers => Ok(new ListTrainersResponse(trainers.Select(trainer => ContractMappings.MapToTrainerResponse(trainer)))),
       error => HandleErrors(result.Errors));
   }
 
@@ -98,13 +86,14 @@ public class TrainersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("List/{gymId:guid}")]
-  public async Task<IActionResult> ListAllByGym([FromRoute]Guid gymId)
+  [HttpGet("{trainerId:guid}/Sessions")]
+  public async Task<IActionResult> ListSessions(Guid trainerId)
   {
-    var result = await _mediator.Send(new ListTrainersByGymQuery(GymId: gymId));
+    var result = await _mediator.Send(new ListSessionsByTrainerQuery(TrainerId: trainerId));
 
     return result.MatchFirst(
-      trainers => Ok(new ListTrainersResponse( trainers.Select(trainer => MapToResponse(trainer)))),
+      sessions => Ok(new ListSessionsResponse(sessions.Select(session => ContractMappings.MapToSessionResponse(session)))),
       error => HandleErrors(result.Errors));
   }
+  
 }

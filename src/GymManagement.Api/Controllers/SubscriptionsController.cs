@@ -99,17 +99,6 @@ public class SubscriptionsController : ApiBaseController
 
     }
 
-    [HttpGet("List/{gymId:guid}")]
-    public async Task<IActionResult> ListAllByGym([FromRoute] Guid gymId)
-    {
-        var result = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gymId));
-
-        return result.MatchFirst(
-          subscriptions => Ok(new ListSubscriptionsResponse(subscriptions
-                                        .Select(subs => ContractMappings.MapToSubscriptionResponse(subs)))),
-          error => HandleErrors(result.Errors));
-    }
-
     [HttpPut("{subscriptionId:guid}/rooms/")]
     public async Task<IActionResult> AddRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
     {
@@ -117,7 +106,7 @@ public class SubscriptionsController : ApiBaseController
                                                                            RoomId: request.RoomId));
 
         return result.MatchFirst(
-          id => Ok(new { SubscriptionId = id }),
+          id => Ok(new { id = id }),
           error => HandleErrors(result.Errors));
     }
 

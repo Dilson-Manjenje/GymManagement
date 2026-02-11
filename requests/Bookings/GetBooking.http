@@ -1,0 +1,26 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+@sessionId = 635acede-83ee-4742-972c-02de74da78a2
+
+@gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
+@gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
+@topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
+
+@quibumaBodyRoom = 40a171f7-5230-4474-b49f-9cf25a50c9e0
+@fightKickRoom = 16b36cd2-c7f8-4c80-8b37-12ecdba3cc23	
+@topFitBodyRoom = 3c0fdef3-a08b-403c-90d5-9891ae458ac5
+
+###
+GET  http://{{host}}/Bookings/7E55B10E-18AF-443A-AF9A-B77001C6F31F
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Bookings/List
+Content-Type: {{jsonContentType}}
+
+
+# Members/{memberId}/Bookings
+# Members/{memberId}/Sessions

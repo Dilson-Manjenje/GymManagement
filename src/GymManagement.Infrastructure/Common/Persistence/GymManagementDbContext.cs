@@ -6,6 +6,8 @@ using GymManagement.Domain.Rooms;
 using GymManagement.Domain.Members;
 using GymManagement.Domain.Trainers;
 using GymManagement.Domain.Common;
+using GymManagement.Domain.Sessions;
+using GymManagement.Domain.Bookings;
 
 namespace GymManagement.Infrastructure.Common.Persistence;
 
@@ -17,6 +19,8 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
     public DbSet<Trainer> Trainers { get; set; } = null!;
     public DbSet<Subscription> Subscriptions { get; set; } = null!;
     public DbSet<SubscriptionRooms> SubscriptionRooms { get; set; } = null!;
+    public DbSet<Session> Sessions { get; set; } = null!;
+    public DbSet<Booking> Bookings { get; set; } = null!;
     public GymManagementDbContext(DbContextOptions options) : base(options)
     {
 

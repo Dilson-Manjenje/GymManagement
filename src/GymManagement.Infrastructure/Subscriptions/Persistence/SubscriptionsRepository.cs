@@ -33,14 +33,15 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
 
     async Task<Subscription?> ISubscriptionsRepository.GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken)
     {
-        //return await _dbContext.Subscriptions.FindAsync(subscriptionId, cancellationToken);
-        return await _dbContext.Subscriptions
-                    .Include(s => s.Member)
-                        .ThenInclude(m => m.Gym)
-                    .Include(s => s.SubscriptionRooms)
-                        .ThenInclude(sr => sr.Room)
-                    .AsSplitQuery()
-                    .SingleOrDefaultAsync(s => s.Id == subscriptionId, cancellationToken);
+        var subscription = await _dbContext.Subscriptions
+                                            .Include(s => s.Member)
+                                            .Include(s => s.Member.Gym)
+                                            .Include(s => s.SubscriptionRooms)
+                                                .ThenInclude(sr => sr.Room)              
+                                            .AsSingleQuery()
+                                            .SingleOrDefaultAsync(s => s.Id == subscriptionId, cancellationToken);
+
+        return subscription;                    
     }
 
     async Task<IEnumerable<Subscription>?> ISubscriptionsRepository.ListAsync(CancellationToken cancellationToken)
@@ -114,15 +115,29 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
 
         return subscriptionsInTheRoom;
     }
-    
+
     async Task<bool> ISubscriptionsRepository.HasActiveSubscription(Guid memberId, CancellationToken cancellationToken)
     {
-        var memberSusbcriptions = await _dbContext.Subscriptions
-                                                .Where(m => m.MemberId == memberId)
-                                                .ToListAsync();
-
-        var hasActive = memberSusbcriptions.Any(s => s.IsActive );
-
-        return hasActive;         
+        return await _dbContext.Subscriptions
+                               .AnyAsync(s => s.MemberId == memberId
+                               && s.EndDate > DateTime.Now);
+                
     }
+    
+    
+    async Task<Subscription?> ISubscriptionsRepository.GetActiveSubscriptionAsync(Guid memberId, CancellationToken cancellationToken)
+    {
+        var subscription = await _dbContext.Subscriptions
+                                            .Where(s => s.MemberId == memberId
+                                                       && s.EndDate > DateTime.Now )
+                                            .Include(s => s.Member)
+                                            .Include(s => s.Member.Gym)
+                                            .Include(s => s.SubscriptionRooms)
+                                                .ThenInclude(sr => sr.Room)              
+                                            .AsSingleQuery()
+                                            .SingleOrDefaultAsync(cancellationToken);
+
+        return subscription;                    
+    }
+
 }

@@ -1,0 +1,27 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+
+@fightSession1 = a5c51012-ffd3-48ba-af25-4a9f833f8a9b
+@fightSession2 = 6d8be3b7-ec21-4950-af07-7a0d34042654
+@quibumaMusculacao = 9f5d9d5a-dac5-4242-9e82-b959543c247c
+
+@fightStudent1 = f46a505b-d8f3-46dd-928d-90ad0f9291ab
+@figthStudent2 = 9c8eeb35-8102-4280-8fca-b607f003283e
+@figthStudent3 = 258fc6ad-90e7-44a6-8f4f-de3e98355404 
+@figthStudent4 = f79ab227-bdf6-4d1f-81ab-98d6a84d87d9
+  
+
+###
+POST http://localhost:5105/Bookings
+Content-Type: application/json
+
+{
+    "sessionId": "9daa654d-02ce-4060-9ce3-088154c3f101", 
+    "memberId": "{{figthStudent4}}"    
+}
+
+
+

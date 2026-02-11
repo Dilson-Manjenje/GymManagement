@@ -13,6 +13,7 @@ public interface ISubscriptionsRepository
     Task UpdateAsync(Subscription subscription, CancellationToken cancellationToken = default);
     Task RemoveAsync(Subscription subscription, CancellationToken cancellationToken = default);
     Task<Subscription?> GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken = default);
+    Task<Subscription?> GetActiveSubscriptionAsync(Guid memberId, CancellationToken cancellationToken = default);    
     Task<IEnumerable<Subscription>?> ListAsync(CancellationToken cancellationToken = default);  
     Task<IEnumerable<Subscription>?> ListByGymAsync(Guid gymId, CancellationToken cancellationToken = default);  
     Task<IEnumerable<Subscription>?> ListByMemberAsync(Guid memberId, CancellationToken cancellationToken = default);  
