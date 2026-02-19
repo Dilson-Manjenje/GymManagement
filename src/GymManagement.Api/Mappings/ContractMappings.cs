@@ -47,7 +47,7 @@ public static class ContractMappings
 								  IsActive: subscription.IsActive,
 								  GymName: subscription.GymName,
 								  MaxRooms: subscription.MaxRooms,
-								  //Rooms: null,
+								  Rooms: subscription.Rooms,
 								  MaxDailySessions: subscription.MaxDailySessions,
 								  MemberId: subscription.MemberId,
 								  UserName: subscription.UserName);

@@ -1,3 +1,5 @@
+using GymManagement.Contracts.Common;
+
 namespace GymManagement.Contracts.Members;
 
 public record MemberResponse(Guid Id,
@@ -6,4 +8,4 @@ public record MemberResponse(Guid Id,
                                 Guid? GymId,
                                 string GymName);
 
-public record ListMembersResponse(IEnumerable<MemberResponse> Members);
+public record ListMembersResponse(IEnumerable<MemberResponse> Data): ListResponse<MemberResponse>(Data: Data);

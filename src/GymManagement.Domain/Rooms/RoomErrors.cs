@@ -12,8 +12,14 @@ public static class RoomErrors
     (code: "Room.NotFound",
       description: $"Room with ID {id} not found.");
 
-    public static Error CannotDisableRoomWithSessions(Guid id) => Error.Validation
-    (code: "Room.CannotDisableRoomWithSessions",
-      description: $"Can not disable Room ID {id} with scheduled sessions.");
+  public static Error CannotDisableRoomWithSessions(Guid id) => Error.Validation
+  (code: "Room.CannotDisableRoomWithSessions",
+    description: $"Can not disable Room ID {id} with scheduled sessions.");
+      
+  public static Error RoomHasOverlappingSession() => Error.Validation
+  (code: "Room.RoomHasOverlappingSession",
+    description: $"The Room already has schedule session on informed dates.");
+  
+  
 
 }

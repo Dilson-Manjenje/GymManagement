@@ -9,8 +9,6 @@ using GymManagement.Application.Subscriptions.Commands.DeleteSubscription;
 using GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
 using GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
 using GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscription;
-using GymManagement.Application.Subscriptions.Queries.Dtos;
-using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByGym;
 using GymManagement.Api.Mappings;
 
 namespace GymManagement.Api.Controllers;
@@ -92,8 +90,7 @@ public class SubscriptionsController : ApiBaseController
         var result = await _mediator.Send(new ListSubscriptionsQuery());
 
         return result.MatchFirst(
-          subscriptions => Ok(new ListSubscriptionsResponse(subscriptions
-                                        .Select(room => ContractMappings.MapToSubscriptionResponse(room)))),
+          subscriptions => Ok(new ListSubscriptionsResponse(subscriptions.Select( subs => ContractMappings.MapToSubscriptionResponse(subs)))),
           error => HandleErrors(result.Errors)
       );
 

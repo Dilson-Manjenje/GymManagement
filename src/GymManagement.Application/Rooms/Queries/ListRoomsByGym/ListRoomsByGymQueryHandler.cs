@@ -6,7 +6,7 @@ using MediatR;
 
 namespace GymManagement.Application.Rooms.Queries.ListRoomsByGym;
 
-public class ListRoomsByGymQueryHandler : IRequestHandler<ListRoomsByGymQuery, ErrorOr<IEnumerable<RoomDetailsDto>?>>
+public class ListRoomsByGymQueryHandler : IRequestHandler<ListRoomsByGymQuery, ErrorOr<IEnumerable<RoomDto>?>>
 {
     private readonly IRoomsRepository _roomsRepository;
     private readonly IGymsRepository _gymsRepository;
@@ -17,7 +17,7 @@ public class ListRoomsByGymQueryHandler : IRequestHandler<ListRoomsByGymQuery, E
         _gymsRepository = gymsRepository;
     }
 
-    public async Task<ErrorOr<IEnumerable<RoomDetailsDto>?>> Handle(ListRoomsByGymQuery query, CancellationToken cancellationToken)
+    public async Task<ErrorOr<IEnumerable<RoomDto>?>> Handle(ListRoomsByGymQuery query, CancellationToken cancellationToken)
     {
         var gym = await _gymsRepository.GetByIdAsync(query.GymId, cancellationToken);
         if (gym is null)
@@ -25,7 +25,7 @@ public class ListRoomsByGymQueryHandler : IRequestHandler<ListRoomsByGymQuery, E
         
         var rooms = await _roomsRepository.ListByGymAsync(query.GymId, cancellationToken);
 
-        var dtos = rooms?.Select(r => RoomDetailsDto.MapToDto(r, r.Gym.Name))
+        var dtos = rooms?.Select(r => RoomDto.MapToDto(r))
                          .ToList();
         
         return dtos;

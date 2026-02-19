@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@subscriptionId = c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
+@subscriptionId = 02992f15-c972-4f33-9f6e-6633420eb17e
 @quibumaBodyRoomId = 40A171F7-5230-4474-B49F-9CF25A50C9E0
 @quibumaKickRoomId = 1a5b1dd9-43e0-4451-845f-3ceae5e5cb43
 
@@ -17,7 +17,7 @@ PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
 Content-Type: {{jsonContentType}}
 
 {
-    "roomId": "{{fightJiuJitsu}}"
+    "roomId": "{{quibumaBodyRoomId}}"
 }
 
 
