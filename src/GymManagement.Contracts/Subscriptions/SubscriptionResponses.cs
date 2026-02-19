@@ -1,3 +1,5 @@
+using GymManagement.Contracts.Common;
+
 namespace GymManagement.Contracts.Subscriptions;
 
 public record SubscriptionResponse(Guid Id,
@@ -8,10 +10,10 @@ public record SubscriptionResponse(Guid Id,
                                    bool IsActive,
                                    string GymName,
                                    int MaxRooms,
-                                   //List<string> Rooms,
+                                   List<string>? Rooms,
                                    int MaxDailySessions,
                                    Guid MemberId,
                                    // string MemberName,
                                    string UserName);
 
-public record ListSubscriptionsResponse(IEnumerable<SubscriptionResponse> Subscriptions);                                   
+public record ListSubscriptionsResponse(IEnumerable<SubscriptionResponse> Data): ListResponse<SubscriptionResponse>(Data: Data);                       

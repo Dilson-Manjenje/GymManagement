@@ -50,33 +50,6 @@ namespace GymManagement.Domain.Subscriptions
             var exist = SubscriptionRooms.Any(sr => sr.RoomId == roomId);
             return exist;
         }
-       
-        public ErrorOr<Success> AddRoom(Guid roomId)
-        {
-            var exist = SubscriptionRooms.Any(sr => sr.RoomId == roomId);
-            if (exist)
-                return SubscriptionErrors.RoomAlreadyAssociated(roomId);
-
-            if (SubscriptionRooms.Count >= SubscriptionType.MaxRooms)
-                return SubscriptionErrors.HasMaxRoomsAllowed(); 
-
-            SubscriptionRooms.Add(new SubscriptionRooms(subscriptionId: Id, roomId: roomId));
-
-            return Result.Success;
-        }
-
-        public ErrorOr<Success> RemoveRoom(Guid roomId)
-        {
-            var subscriptionRoom = SubscriptionRooms.SingleOrDefault(sr => sr.RoomId == roomId);
-            if (subscriptionRoom is null)
-                return SubscriptionErrors.RoomNotInSubscription(roomId);
-
-            // TODO: Remove room physically from Db, allow add another time
-            // Add Event to remove from database
-            SubscriptionRooms.Remove(subscriptionRoom);
-
-            return Result.Success;
-        }
-
+              
     }
 }

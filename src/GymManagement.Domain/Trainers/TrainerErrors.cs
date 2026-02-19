@@ -8,9 +8,9 @@ public static class TrainerErrors
     (code: "Trainer.NotFound",
       description: $"Trainer with ID {id} not found.");
 
-  public static Error CannotRemoveTrainerWithSessions(string name) => Error.Validation
-  (code: "Trainer.CannotRemoveTrainerWithSessions",
-    description: $"Can not remove Trainer {name} with scheduled sessions.");
+  public static Error CantRemoveTrainerWithBookedSession(Guid id) => Error.Validation
+  (code: "Trainer.CantRemoveTrainerWithBookedSession",
+    description: $"Can not remove Trainer with booked sessions. TrainerID: '{id}'");
       
   public static Error TrainerAlreadyAddedToGym(Guid memberId) => Error.Conflict
   (code: "Trainer.TrainerAlreadyAddedToGym",

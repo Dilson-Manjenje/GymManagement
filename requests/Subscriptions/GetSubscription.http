@@ -14,7 +14,7 @@
 
 
 ###
-GET  http://{{host}}/Subscriptions/61a2af3e-bb7a-435e-8d03-0e05b031d1a5
+GET  http://{{host}}/Subscriptions/02992f15-c972-4f33-9f6e-6633420eb17e
 Content-Type: {{jsonContentType}}
 
 ###
@@ -24,6 +24,11 @@ Content-Type: {{jsonContentType}}
 ###
 GET  http://{{host}}/Subscriptions/List
 Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Subscriptions/List/{{gymIdQuibuma}}
+Content-Type: {{jsonContentType}}
+
 
 ###
 GET  http://{{host}}/Subscriptions/List/{{gymIdQuibuma}}

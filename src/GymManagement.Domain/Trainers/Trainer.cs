@@ -17,7 +17,7 @@ public class Trainer : Entity
     public Gym Gym { get; private set; } = null!;
     public Guid MemberId { get; private set; }
     public Member Member { get; private set; } = null!;
-
+    
     private Trainer() { }
     public Trainer(string name,
                    string phone,
@@ -38,9 +38,10 @@ public class Trainer : Entity
 
     public ErrorOr<Success> RemoveTrainer()
     {
-        // TODO: Remove if there are is no sessions, otherwise disable
+        // TODO: Check if Has Booked sessions
+          
         IsActive = false;
-        
+
         return Result.Success;
     }
 

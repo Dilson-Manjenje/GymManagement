@@ -35,18 +35,13 @@ internal class GymsRepository : IGymsRepository
     {
        return await _dbContext.Gyms
                         .Where(g => g.Id == gymId)
-                        // .Include(g => g.Rooms)
-                        // .Include( g => g.Trainers) 
-                        // .AsSplitQuery() // Supprize EF Warning. Generate 1 query for Gym, 1 for Rooms and 1 for Trainers
-                        .FirstOrDefaultAsync();
+                        .SingleOrDefaultAsync();
     }
 
     async Task<IEnumerable<Gym>?> IGymsRepository.ListAsync(CancellationToken cancellationToken)
     {
          return await _dbContext.Gyms
                         .AsNoTracking()
-                        // .Include(g => g.Rooms) 
-                        // .Include( g => g.Trainers) // If needed use projections                         
                         .ToListAsync(cancellationToken);
     }    
 }

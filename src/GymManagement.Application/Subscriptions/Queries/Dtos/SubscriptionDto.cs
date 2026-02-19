@@ -14,7 +14,7 @@ public record SubscriptionDto(Guid Id,
                               bool IsActive,
                               string GymName,
                               int MaxRooms,
-                              //List<string> Rooms,
+                              List<string>? Rooms,
                               int MaxDailySessions,
                               Guid MemberId,
                               string UserName)
@@ -24,6 +24,10 @@ public record SubscriptionDto(Guid Id,
         string gymName = subscription.Member?.Gym?.Name ?? "";
         string UserName = subscription.Member?.UserName ?? "";
 
+        var roomNames = subscription.SubscriptionRooms
+                                            .Select(sr => sr.Room.Name).ToList()
+                                          ?? new List<string>();
+                                           
         return new SubscriptionDto(
             Id: subscription.Id,
             SubscriptionType: subscription.SubscriptionType,
@@ -33,6 +37,7 @@ public record SubscriptionDto(Guid Id,
             IsActive: subscription.IsActive,
             GymName: gymName,
             MaxRooms: subscription.SubscriptionType.MaxRooms,
+            Rooms: roomNames,
             MaxDailySessions: subscription.SubscriptionType.MaxDailySessions,
             MemberId: subscription.MemberId,
             UserName: UserName

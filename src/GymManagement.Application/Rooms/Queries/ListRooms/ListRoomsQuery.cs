@@ -4,4 +4,4 @@ using MediatR;
 
 namespace GymManagement.Application.Rooms.Queries.ListRooms;
 
-public record ListRoomsQuery(): IRequest<ErrorOr<IEnumerable<RoomDetailsDto>?>>;
+public record ListRoomsQuery(): IRequest<ErrorOr<IEnumerable<RoomDto>?>>;

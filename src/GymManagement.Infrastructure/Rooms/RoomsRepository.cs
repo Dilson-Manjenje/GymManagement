@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using GymManagement.Application.Common.Interfaces;
 using GymManagement.Application.Rooms.Queries.Dtos;
 using GymManagement.Domain.Rooms;
@@ -33,16 +29,16 @@ internal class RoomsRepository : IRoomsRepository
     {
         //return await _dbContext.Rooms.FindAsync(roomId, cancellationToken);
         return await _dbContext.Rooms
-                        .Where(r => r.Id == roomId)
-                        .Include(r => r.Gym)
+                        .Where(x => x.Id == roomId)
+                        .Include(x => x.Gym) // TODO: Refactor to use projection on Queries
                         .SingleOrDefaultAsync();
     }
 
-    async Task<RoomDetailsDto?> IRoomsRepository.GetWithDetails(Guid roomId, CancellationToken cancellationToken)
+    async Task<RoomDto?> IRoomsRepository.GetWithDetails(Guid roomId, CancellationToken cancellationToken)
     {
          return await _dbContext.Rooms
             .Where(r => r.Id == roomId)
-            .Select(r => RoomDetailsDto.MapToDto(r, r.Gym.Name))
+            .Select(room => RoomDto.MapToDto(room))
             .SingleOrDefaultAsync(cancellationToken);
     }
     async Task<IEnumerable<Room>?> IRoomsRepository.ListAsync(CancellationToken cancellationToken)
@@ -51,12 +47,26 @@ internal class RoomsRepository : IRoomsRepository
                               .Include(r => r.Gym)
                               .ToListAsync(cancellationToken);
     }
-    
     async Task<IEnumerable<Room>?> IRoomsRepository.ListByGymAsync(Guid gymId, CancellationToken cancellationToken)
     {
         return await _dbContext.Rooms
                                .Where(r => r.GymId == gymId)
                                .Include(r => r.Gym)
                                .ToListAsync(cancellationToken);
+    }
+    
+    async Task<bool> IRoomsRepository.RoomHasOverlappingSession(Guid roomId, DateTime start, DateTime end, CancellationToken cancellationToken)
+    {
+       
+        var sessions = await _dbContext.Sessions
+                    .Where(s =>
+                        s.RoomId == roomId &&
+                        start < s.EndDate &&
+                        end > s.StartDate)
+                    .ToListAsync();
+
+        var exist = sessions.Any(s => s.IsActive());
+
+        return exist;                                            
     }
 }

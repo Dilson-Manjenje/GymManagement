@@ -1,3 +1,5 @@
+using GymManagement.Contracts.Common;
+
 namespace GymManagement.Contracts.Trainers;
 
 public sealed record TrainerResponse(
@@ -11,4 +13,4 @@ public sealed record TrainerResponse(
                                 Guid GymId,
                                 string? GymName = null);
 
-public record ListTrainersResponse(IEnumerable<TrainerResponse> Trainers);
+public record ListTrainersResponse(IEnumerable<TrainerResponse> Data): ListResponse<TrainerResponse>(Data: Data);   
