@@ -6,13 +6,11 @@ using GymManagement.Application.Sessions.Queries.GetSession;
 using GymManagement.Application.Sessions.Queries.ListSessions;
 using GymManagement.Application.Sessions.Commands.UpdateSession;
 using GymManagement.Application.Sessions.Commands.DeleteSession;
-using GymManagement.Application.Sessions.Queries.ListSessionsByGym;
 using GymManagement.Application.Sessions.Queries.ListUpComingSessions;
 using GymManagement.Api.Mappings;
 using GymManagement.Application.Sessions.Commands.CancelSession;
 using GymManagement.Application.Sessions.Commands.FinalizeSession;
 using GymManagement.Application.Bookings.Queries.ListBookingsBySession;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using GymManagement.Contracts.Bookings;
 
 

@@ -8,4 +8,4 @@ using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscription;
 
-public record RemoveRoomToSubscriptionCommand(Guid SubscriptionId, Guid RoomId) : IRequest<ErrorOr<Unit>>;
+public record RemoveRoomFromSubscriptionCommand(Guid SubscriptionId, Guid RoomId) : IRequest<ErrorOr<Unit>>;

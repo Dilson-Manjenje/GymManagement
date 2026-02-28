@@ -50,14 +50,10 @@ public class GymsController : ApiBaseController
     var result = await _mediator.Send(new GetGymQuery(id));
 
     return result.MatchFirst(
-      gym => Ok(MapToResponse(gym)),
+      gym => Ok(ContractMappings.MapToGymResponse(gym)),
       error => HandleErrors(result.Errors));
   }
 
-  private GymResponse MapToResponse(GymDto dto)
-  {
-    return new GymResponse(Id: dto.Id, Name: dto.Name, Address: dto.Address);      
-  }
 
   [HttpGet("List")]
   public async Task<IActionResult> ListAllGyms()
@@ -65,7 +61,7 @@ public class GymsController : ApiBaseController
     var result = await _mediator.Send(new ListGymsQuery());
 
     return result.MatchFirst(
-      gyms => Ok(new ListGymsResponse(gyms.Select(gym => MapToResponse(gym)))),
+      gyms => Ok(new ListGymsResponse(gyms.Select(gym => ContractMappings.MapToGymResponse(gym)))),
       error => HandleErrors(result.Errors));
   }
 

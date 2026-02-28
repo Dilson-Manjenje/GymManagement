@@ -80,14 +80,3 @@ Content-Type: application/json
 ###
 DELETE  http://localhost:5105/Sessions/c697359c-b9d3-4a99-861f-7e44806e3b01
 Content-Type: application/json
-
-
-
-###
-PUT  http://localhost:5105/Sessions/ef35f5ed-b03c-438f-9a3f-20a8c6f4d5cd/Cancel
-Content-Type: application/json
-
-
-###
-PUT  http://localhost:5105/Sessions/837e5886-4067-45a3-b63a-a9dd18bf0abc/Finalize
-Content-Type: application/json

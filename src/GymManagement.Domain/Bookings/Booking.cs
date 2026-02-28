@@ -1,4 +1,5 @@
 using ErrorOr;
+using GymManagement.Domain.Bookings.Events;
 using GymManagement.Domain.Common;
 using GymManagement.Domain.Members;
 using GymManagement.Domain.Sessions;
@@ -33,7 +34,8 @@ public class Booking : Entity
 
         Status = BookingStatus.Canceled;
         
-        //Raise BookingCanceledEvent => Decrease Session Vacancy if active        
+        DomainEvents.Add(new BookingCanceledEvent(BookingId: Id, SessionId: SessionId));    
+
         return Result.Success;
     }    
     
@@ -41,9 +43,10 @@ public class Booking : Entity
     {
         if (BookingStatus.NonCancelableStatus.Contains(Status))
             return BookingErrors.CantChangeBooking(id: Id, statusName: Status.Name);
-           
+
         Status = BookingStatus.Finalized;
 
+        DomainEvents.Add(new BookingCanceledEvent(BookingId: Id, SessionId: SessionId)); 
         return Result.Success;
     }    
 

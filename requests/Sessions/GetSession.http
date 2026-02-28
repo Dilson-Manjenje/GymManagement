@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@sessionId = 6d8be3b7-ec21-4950-af07-7a0d34042654
+@sessionId = 096708d5-ff61-470c-9946-fb18d85b54df
 
 @gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
 @gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	

@@ -18,7 +18,10 @@ public static class BookingErrors
   // public static Error CantFinalizeBookingWithActiveSession(Guid id) => Error.Validation
   // (code: "Booking.CantFinalizeBookingWithActiveSession",
   //    description: $"Cant finalize Booking {id} with Active Session. Finalize or Cancel the Session before.");
-
+  
+  public static Error InvalidBookingDetails() => Error.Validation
+  (code: "Booking.InvalidBookingDetails",
+     description: $"Invalid Booking Details. Need Session and Member information.");
   public static Error InvalidSessionsStatus(Guid id, string statusName) => Error.Validation
   (code: "Booking.InvalidSessionsStatus",
      description: $"Cant create or change Booking with Session '{id}' on status '{statusName}'.");

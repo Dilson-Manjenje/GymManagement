@@ -264,3 +264,5 @@ __pycache__/
 
 /_docs/*
 /.vscode/*
+src/GymManagement.Api/GymManagement.db-shm
+src/GymManagement.Api/GymManagement.db-shm

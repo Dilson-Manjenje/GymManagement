@@ -1,0 +1,28 @@
+
+@hostname = localhost
+@port = 5105
+@host = {{hostname}}:{{port}}
+@jsonContentType = application/json
+
+@quibumaBodyRoom = 40a171f7-5230-4474-b49f-9cf25a50c9e0
+@fightKickRoom = 16b36cd2-c7f8-4c80-8b37-12ecdba3cc23	
+@topFitBodyRoom = 3c0fdef3-a08b-403c-90d5-9891ae458ac5
+
+@quibumaPt1 = 48e2e07c-4b8a-4c01-be87-e4c105c2d149
+@quibumapt2 = dabbfda5-bd6b-4f9c-9daa-8c27ac060d52
+
+@fightMt1 = c7e5bc1a-a7c8-4654-b62e-42c7b39887a1
+
+@topfitPt1 = 80186a62-8869-4e1f-bb98-fba483056964
+
+@sessionId = 635acede-83ee-4742-972c-02de74da78a2
+
+
+###
+PUT  http://localhost:5105/Sessions/a0f1ef63-ff5a-4e15-8d18-d5aafa8044eb/Cancel
+Content-Type: application/json
+
+
+###
+PUT  http://localhost:5105/Sessions/837e5886-4067-45a3-b63a-a9dd18bf0abc/Finalize
+Content-Type: application/json

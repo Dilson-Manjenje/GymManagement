@@ -23,6 +23,10 @@ public static class SubscriptionErrors
   public static Error HasMaxRoomsAllowed() => Error.Validation
   (code: "Subscription.HasMaxRoomsAllowed",
   description: $"Subscription has the maximum of rooms allowed.");
+
+  public static Error CantChangeExpiredSubscription() => Error.Validation
+  (code: "Subscription.CantChangeExpiredSubscription",
+  description: $"Cant change expired subscription.");
     
   public static Error RoomAlreadyAssociated(Guid roomId) => Error.Conflict
   (code: "Subscription.RoomAlreadyAssociated",
