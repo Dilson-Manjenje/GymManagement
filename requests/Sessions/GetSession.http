@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@sessionId = 6d8be3b7-ec21-4950-af07-7a0d34042654
+@sessionId = cbd3d1a1-654a-486d-a32c-0dfde448c86c
 
 @gymIdQuibuma = 38139b2e-e867-4446-9ddb-2d7b673ade27	
 @gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
@@ -33,7 +33,7 @@ GET  http://{{host}}/Sessions/UpCommingSessions/{{gymIdFightSociety}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Sessions/9daa654d-02ce-4060-9ce3-088154c3f101/Bookings
+GET  http://{{host}}/Sessions/cbd3d1a1-654a-486d-a32c-0dfde448c86c/Bookings
 Content-Type: {{jsonContentType}}
 
 

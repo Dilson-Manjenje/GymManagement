@@ -10,6 +10,7 @@ using GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
 using GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
 using GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscription;
 using GymManagement.Api.Mappings;
+using GymManagement.Application.Subscriptions.Commands.DisableSubscription;
 
 namespace GymManagement.Api.Controllers;
 
@@ -24,6 +25,7 @@ public class SubscriptionsController : ApiBaseController
     [HttpPost]
     public async Task<IActionResult> CreateSubscription(CreateSubscriptionRequest request)
     {
+        // TODO: Move this validation to Application, removing api from accessing the domain
         if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
                                                 out var subscriptionType))
         {
@@ -54,6 +56,16 @@ public class SubscriptionsController : ApiBaseController
 
         return result.MatchFirst(
           _ => NoContent(),
+          error => HandleErrors(result.Errors));
+    }
+
+    [HttpPut("{id:guid}/Disable")]
+    public async Task<IActionResult> DisableSubscription(Guid id)
+    {
+        var result = await _mediator.Send(new DisableSubscriptionCommand(id));
+
+        return result.MatchFirst(
+          id => Ok(new { id = id }),
           error => HandleErrors(result.Errors));
     }
 
@@ -110,7 +122,7 @@ public class SubscriptionsController : ApiBaseController
     [HttpDelete("{subscriptionId:guid}/rooms")]
     public async Task<IActionResult> RemoveRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
     {  
-        var result = await _mediator.Send(new RemoveRoomToSubscriptionCommand(SubscriptionId: subscriptionId,
+        var result = await _mediator.Send(new RemoveRoomFromSubscriptionCommand(SubscriptionId: subscriptionId,
                                                                               RoomId: request.RoomId));
 
         return result.MatchFirst<IActionResult>(

@@ -1,11 +1,13 @@
 ﻿
 using GymManagement.Application.Bookings.Queries.Dtos;
+using GymManagement.Application.Gyms.Queries.Dtos;
 using GymManagement.Application.Members.Queries.Dtos;
 using GymManagement.Application.Rooms.Queries.Dtos;
 using GymManagement.Application.Sessions.Queries.Dtos;
 using GymManagement.Application.Subscriptions.Queries.Dtos;
 using GymManagement.Application.Trainers.Queries.Dtos;
 using GymManagement.Contracts.Bookings;
+using GymManagement.Contracts.Gyms;
 using GymManagement.Contracts.Members;
 using GymManagement.Contracts.Rooms;
 using GymManagement.Contracts.Sessions;
@@ -16,6 +18,11 @@ namespace GymManagement.Api.Mappings;
 
 public static class ContractMappings
 {
+	public static GymResponse MapToGymResponse(GymDto dto)
+	{
+		return new GymResponse(Id: dto.Id, Name: dto.Name, Address: dto.Address);
+	}
+  
 	public static RoomResponse MapToRoomResponse(RoomDto room)
 	{
 		return new RoomResponse(Id: room.Id,

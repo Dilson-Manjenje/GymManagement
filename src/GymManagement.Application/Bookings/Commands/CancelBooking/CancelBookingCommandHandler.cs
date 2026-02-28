@@ -37,12 +37,10 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
         var canceled = booking.Cancel();
         if (canceled.IsError)
             return canceled.Errors;
-        
-        session.IncrementVacancy();
-                     
+
         await _bookingsRepository.UpdateAsync(booking);
-        await _sessionsRepository.UpdateAsync(session);
         await _unitOfWork.CommitChangesAsync();
+        // Session is updated by Eventual Consistency (BookingCanceledEvent)
         
         return booking.Id;
     }

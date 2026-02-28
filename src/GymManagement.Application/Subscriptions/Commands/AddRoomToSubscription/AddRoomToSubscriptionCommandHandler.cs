@@ -43,6 +43,9 @@ public class AddRoomToSubscriptionCommandHandler : IRequestHandler<AddRoomToSubs
         if (subscription.NumberOfRooms >= subscription.MaxRoomsAllowed)
             return SubscriptionErrors.HasMaxRoomsAllowed();
 
+        if (!subscription.IsActive)
+            return SubscriptionErrors.CantChangeExpiredSubscription();
+
         var subRoom = new SubscriptionRooms(subscription.Id, room.Id);
 
         await _subscriptionsRepository.AddRoomToSubscriptionAsync(subRoom);

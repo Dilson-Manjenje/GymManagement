@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ErrorOr;
 using GymManagement.Domain.Members;
 using GymManagement.Domain.Common;
+using GymManagement.Domain.Subscriptions.Events;
 
 namespace GymManagement.Domain.Subscriptions
 {
@@ -13,7 +14,7 @@ namespace GymManagement.Domain.Subscriptions
         public SubscriptionType SubscriptionType { get; private set; } = SubscriptionType.Basic;
         public Guid MemberId { get; private set; }
         public Member Member { get; set; } = null!;
-        // TODO: Review usage of SubscriptionRooms in Subscription
+        // TODO: Review usage of SubscriptionRooms
         public List<SubscriptionRooms> SubscriptionRooms { get; private set; } = new(); 
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }         
@@ -50,6 +51,14 @@ namespace GymManagement.Domain.Subscriptions
             var exist = SubscriptionRooms.Any(sr => sr.RoomId == roomId);
             return exist;
         }
-              
+        
+        public ErrorOr<Success> DisableSubscription()
+        {
+            EndDate = DateTime.Now;
+
+            DomainEvents.Add(new SubscriptionDisabledEvent(SubscriptionId: Id));
+            
+            return Result.Success;
+        }
     }
 }

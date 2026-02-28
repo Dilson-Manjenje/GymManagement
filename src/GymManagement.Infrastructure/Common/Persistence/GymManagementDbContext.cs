@@ -8,11 +8,14 @@ using GymManagement.Domain.Trainers;
 using GymManagement.Domain.Common;
 using GymManagement.Domain.Sessions;
 using GymManagement.Domain.Bookings;
+using MediatR;
 
 namespace GymManagement.Infrastructure.Common.Persistence;
 
 public class GymManagementDbContext : DbContext, IUnitOfWork
 {
+    private readonly IPublisher _publisher;
+
     public DbSet<Gym> Gyms { get; set; } = null!;
     public DbSet<Room> Rooms { get; set; } = null!;
     public DbSet<Member> Members { get; set; } = null!;
@@ -21,14 +24,15 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
     public DbSet<SubscriptionRooms> SubscriptionRooms { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
     public DbSet<Booking> Bookings { get; set; } = null!;
-    public GymManagementDbContext(DbContextOptions options) : base(options)
-    {
 
+    public GymManagementDbContext(DbContextOptions options, IPublisher publisher) : base(options)
+    {
+        _publisher = publisher;
     }
 
     public async Task CommitChangesAsync(CancellationToken cancellationToken = default)
     {
-        await SaveChangesAsync(cancellationToken);        
+        await SaveChangesAsync(cancellationToken);
     }
 
     override protected void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,22 +41,45 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
         base.OnModelCreating(modelBuilder);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         //TODO: Change to use SaveChangeInterceptors
         foreach (var entry in ChangeTracker.Entries<Entity>())
         {
-            if (entry.State == EntityState.Added || entry.State == EntityState.Modified )
+            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
             {
                 var now = DateTime.Now;
                 if (entry.State == EntityState.Added)
                     entry.Entity.SetCreationDate(now);
-                
+
                 if (entry.State == EntityState.Modified)
                     entry.Entity.SetLastUpdate(now);
             }
         }
         
-        return base.SaveChangesAsync(cancellationToken);
+        // Publish domain events: 
+        // - BEFORE SaveChanges if domain events are part of the same transaction (Immediate Consistency)
+        // - AFTER SaveChanges if domain events are a separate transaction (Eventual Consistency)
+
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        await PublishDomainEventsAsync(cancellationToken);
+
+        return result;
+    }
+
+    private async Task PublishDomainEventsAsync(CancellationToken cancellationToken)
+    {
+        var entities = ChangeTracker.Entries<Entity>()
+            .Where(e => e.Entity.HasDomainEvents())
+            .Select(e => e.Entity)
+            .ToList();
+
+        var domainEvents = entities.SelectMany(e => e.PopAndClearDomainEvents());
+
+        foreach (var domainEvent in domainEvents)
+        {
+            await _publisher.Publish(domainEvent, cancellationToken);
+        }
     }
 }

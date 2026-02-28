@@ -28,28 +28,29 @@ public class CancelSessionCommandHandler : IRequestHandler<CancelSessionCommand,
         if (session is null)
             return SessionErrors.SessionNotFound(command.SessionId);
 
-        var activeBookings = await _bookingsRepository.ListActiveBookingsBySessionAsync(command.SessionId);
-        var hasBookings = activeBookings is not null && activeBookings.Any();
+        // TODO: Cancel bookings using Eventual Consistency 
+        // var activeBookings = await _bookingsRepository.ListActiveBookingsBySessionAsync(command.SessionId);
+        // var hasBookings = activeBookings is not null && activeBookings.Any();
         
-        if (hasBookings)
-        {
-            foreach (var booking in activeBookings!)
-            {
-                var canceled = booking.Cancel();
-                if (canceled.IsError)
-                    return canceled.Errors;
+        // if (hasBookings)
+        // {
+        //     foreach (var booking in activeBookings!)
+        //     {
+        //         var canceled = booking.Cancel();
+        //         if (canceled.IsError)
+        //             return canceled.Errors;
 
-                session.IncrementVacancy();
-            }
-        }
+        //         session.IncrementVacancy();
+        //     }
+        // }
 
         var result = session.Cancel();
 
         if (result.IsError)
             return result.Errors;
 
-        if (hasBookings)
-            await _bookingsRepository.UpdateRangeAsync(activeBookings!);
+        // if (hasBookings)
+        //     await _bookingsRepository.UpdateRangeAsync(activeBookings!);
 
         await _sessionsRepository.UpdateAsync(session);
         await _unitOfWork.CommitChangesAsync();

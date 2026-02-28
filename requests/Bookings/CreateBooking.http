@@ -4,7 +4,7 @@
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
 
-@fightSession1 = a5c51012-ffd3-48ba-af25-4a9f833f8a9b
+@fightSession1 = 096708d5-ff61-470c-9946-fb18d85b54df
 @fightSession2 = 6d8be3b7-ec21-4950-af07-7a0d34042654
 @quibumaMusculacao = 9f5d9d5a-dac5-4242-9e82-b959543c247c
 
@@ -19,8 +19,8 @@ POST http://localhost:5105/Bookings
 Content-Type: application/json
 
 {
-    "sessionId": "9daa654d-02ce-4060-9ce3-088154c3f101", 
-    "memberId": "{{figthStudent4}}"    
+    "sessionId": "cbd3d1a1-654a-486d-a32c-0dfde448c86c", 
+    "memberId": "{{fightStudent1}}"    
 }
 
 

@@ -22,15 +22,19 @@ Content-Type: {{jsonContentType}}
 
 
 ###
-DELETE  http://{{host}}/Subscriptions/f2457b98-f25e-4caf-b017-eb26dab1b7a4
+PUT http://{{host}}/Subscriptions/f2457b98-f25e-4caf-b017-eb26dab1b7a4
 Content-Type: {{jsonContentType}}
-
+{
 
     "SubscriptionType": "Premium"
 }
 
+###
+PUT   http://{{host}}/Subscriptions/BE342E7C-1886-4808-A8BB-7C64BAAD9D21/Disable
+Content-Type: {{jsonContentType}}
+
 
 ###
-DELETE  http://{{host}}/Subscriptions/f2457b98-f25e-4caf-b017-eb26dab1b7a4
+DELETE  http://{{host}}/Subscriptions/6ECDFA9B-13F3-4C7B-ADC4-719A7F4790C3
 Content-Type: {{jsonContentType}}
 

@@ -2,7 +2,9 @@ using ErrorOr;
 using GymManagement.Domain.Bookings;
 using GymManagement.Domain.Common;
 using GymManagement.Domain.Rooms;
+using GymManagement.Domain.Sessions.Events;
 using GymManagement.Domain.Trainers;
+using Throw;
 
 namespace GymManagement.Domain.Sessions;
 
@@ -57,23 +59,6 @@ public class Session : Entity
 
         return Result.Success;
     }
-    public ErrorOr<Success> DeleteSession()
-    {
-        if (!CanCancelSession())
-            return SessionErrors.CantChangeSession(id: Id);
-
-        Status = SessionStatus.Canceled;
-
-        return Result.Success;
-    }
-
-    private bool HasActiveBooking()
-    {
-        // TODO: Move validation to handler
-        //var hasActiveBooking = Bookings.Any(b => b.Status == BookingStatus.Active);
-
-        return false;
-    }
 
     public ErrorOr<Success> Cancel()
     {
@@ -82,7 +67,8 @@ public class Session : Entity
 
         Status = SessionStatus.Canceled;
 
-        // TODO: Add/Raise SessionCanceledEvent            
+        DomainEvents.Add(new SessionCanceledEvent(SessionId: Id));     
+        
         return Result.Success;
     }
 
@@ -100,7 +86,7 @@ public class Session : Entity
 
     protected bool CanCancelSession()
     {
-        if (HasActiveBooking() || SessionStatus.NonCancelableStatus.Contains(Status))
+        if (SessionStatus.NonCancelableStatus.Contains(Status))
             return false;
 
         return true;

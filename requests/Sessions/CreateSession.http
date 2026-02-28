@@ -30,9 +30,9 @@ Content-Type: application/json
 {
     "roomId": "{{fightKickRoom}}", 
     "trainerId": "{{fightMt1}}",
-    "title": "KickBoxing Morning Session",
-    "startDate":"2026-02-04T07:00",
-    "endDate":"2026-02-04T09:00"
+    "title": "KickBoxing Treino da Tarde",
+    "startDate":"2026-03-31T16:00",
+    "endDate":"2026-03-31T18:00"
 }
 
 ###

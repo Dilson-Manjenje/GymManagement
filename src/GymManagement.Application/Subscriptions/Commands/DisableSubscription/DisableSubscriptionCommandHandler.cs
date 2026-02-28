@@ -8,15 +8,15 @@ using GymManagement.Domain.Members;
 using GymManagement.Domain.Subscriptions;
 using MediatR;
 
-namespace GymManagement.Application.Subscriptions.Commands.DeleteSubscription;
+namespace GymManagement.Application.Subscriptions.Commands.DisableSubscription;
 
-public class DeleteSubscriptionCommandHandler : IRequestHandler<DeleteSubscriptionCommand, ErrorOr<Unit>>
+public class DisableSubscriptionCommandHandler : IRequestHandler<DisableSubscriptionCommand, ErrorOr<Guid>>
 {
     private readonly ISubscriptionsRepository _subscriptionsRepository;
     private readonly IMembersRepository _membersRepository;
     private readonly IUnitOfWork _unitOfWork;
                                            
-    public DeleteSubscriptionCommandHandler(IUnitOfWork unitOfWork,
+    public DisableSubscriptionCommandHandler(IUnitOfWork unitOfWork,
                                             ISubscriptionsRepository subscriptionsRepository,
                                             IMembersRepository membersRepository)
     {
@@ -25,20 +25,23 @@ public class DeleteSubscriptionCommandHandler : IRequestHandler<DeleteSubscripti
         _membersRepository = membersRepository;
     }
 
-    public async Task<ErrorOr<Unit>> Handle(DeleteSubscriptionCommand command, CancellationToken cancellationToken = default)
+    public async Task<ErrorOr<Guid>> Handle(DisableSubscriptionCommand command, CancellationToken cancellationToken = default)
     {
         var subscription = await _subscriptionsRepository.GetByIdAsync(command.SubscriptionId, cancellationToken);
         if (subscription is null)
             return SubscriptionErrors.SubscriptionNotFound(command.SubscriptionId);
 
-        if (subscription.IsActive)
-            return SubscriptionErrors.CantDeleteActiveSubscription();
+        if (!subscription.IsActive)
+            return SubscriptionErrors.CantChangeExpiredSubscription();
+            
+        var disabled = subscription.DisableSubscription();
+        if (disabled.IsError)
+            return disabled.Errors;
 
-        await _subscriptionsRepository.RemoveAsync(subscription, cancellationToken);
+        await _subscriptionsRepository.UpdateAsync(subscription, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
-        // SubscriptionRooms are deleted by database Cascade Behavior.
 
-        return Unit.Value;
+        return subscription.Id;
     }
 }
     

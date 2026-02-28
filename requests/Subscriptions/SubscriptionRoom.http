@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@subscriptionId = 02992f15-c972-4f33-9f6e-6633420eb17e
+@subscriptionId = 3c74a90f-5160-4620-a9c4-f322f8acc9f0
 @quibumaBodyRoomId = 40A171F7-5230-4474-B49F-9CF25A50C9E0
 @quibumaKickRoomId = 1a5b1dd9-43e0-4451-845f-3ceae5e5cb43
 
@@ -32,7 +32,7 @@ Content-Type: {{jsonContentType}}
 
 
 ###
-PUT http://{{host}}/Subscriptions/a53fa148-8256-46c3-bfa8-14d3a1040b76/Rooms
+PUT http://{{host}}/Subscriptions/3c74a90f-5160-4620-a9c4-f322f8acc9f0/Rooms
 Content-Type: {{jsonContentType}}
 
 {

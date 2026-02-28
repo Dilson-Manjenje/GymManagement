@@ -11,7 +11,7 @@
 @figthStudent3 = 258fc6ad-90e7-44a6-8f4f-de3e98355404
 
 ###
-PUT http://localhost:5105/Bookings/CB5AB13B-C1DA-4683-B097-6FB62D12C85D/Cancel
+PUT http://localhost:5105/Bookings/09348108-c896-4b92-88f4-4f27f11d2d90/Cancel
 Content-Type: application/json
 
 
