@@ -46,6 +46,7 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
         //TODO: Change to use SaveChangeInterceptors
         foreach (var entry in ChangeTracker.Entries<Entity>())
         {
+            // Console.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}");
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
             {
                 var now = DateTime.Now;

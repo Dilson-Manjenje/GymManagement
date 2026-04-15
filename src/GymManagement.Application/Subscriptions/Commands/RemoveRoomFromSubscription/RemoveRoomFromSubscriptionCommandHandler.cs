@@ -28,18 +28,17 @@ public class RemoveRoomFromSubscriptionCommandHandler : IRequestHandler<RemoveRo
     {
         var subscription = await _subscriptionsRepository.GetByIdAsync(command.SubscriptionId, cancellationToken);
         if (subscription is null)
-            SubscriptionErrors.SubscriptionNotFound(command.SubscriptionId);
+            return SubscriptionErrors.SubscriptionNotFound(command.SubscriptionId);
 
         var room = await _roomsRepository.GetByIdAsync(command.RoomId);
         if (room is null)
-            RoomErrors.RoomNotFound(command.RoomId);
+            return RoomErrors.RoomNotFound(command.RoomId);
 
-        if (!subscription!.HasRoom(command.RoomId))
-            return SubscriptionErrors.RoomNotInSubscription(command.RoomId);
-
-        var subsRoom = subscription.SubscriptionRooms.Single(sr => sr.RoomId == command.RoomId);
-        
-        await _subscriptionsRepository.RemoveRoomFromSubscriptionAsync(subsRoom);
+        var removed = subscription.RemoveRoom(command.RoomId);
+        if (removed.IsError)
+            return removed.Errors;
+            
+        await _subscriptionsRepository.UpdateAsync(subscription);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
         return Unit.Value;
