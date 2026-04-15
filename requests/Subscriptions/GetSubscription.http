@@ -10,15 +10,15 @@
 @topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
 
 @subscriptionId1 = 19a3e3cb-d4fb-4814-ac34-26c45bce6412 
-@subscriptionId2 = c6f7ebf2-8586-4e56-a785-fa5fc4a42e80
+@subscriptionId2 = 3c74a90f-5160-4620-a9c4-f322f8acc9f0
 
-
-###
-GET  http://{{host}}/Subscriptions/BE342E7C-1886-4808-A8BB-7C64BAAD9D21
-Content-Type: {{jsonContentType}}
 
 ###
 GET  http://{{host}}/Subscriptions/{{subscriptionId2}}
+Content-Type: {{jsonContentType}}
+
+###
+GET  http://{{host}}/Subscriptions/{{subscriptionId1}}
 Content-Type: {{jsonContentType}}
 
 ###

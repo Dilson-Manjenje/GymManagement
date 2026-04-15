@@ -9,6 +9,8 @@ public class SubscriptionRoomsConfiguration : IEntityTypeConfiguration<Subscript
     public void Configure(EntityTypeBuilder<SubscriptionRooms> builder)
     {
         builder.HasKey(sr => sr.Id);
+        builder.Property(x => x.Id)
+               .ValueGeneratedNever();
 
         builder.HasIndex(sr => new { sr.SubscriptionId, sr.RoomId })
                 .IsUnique();

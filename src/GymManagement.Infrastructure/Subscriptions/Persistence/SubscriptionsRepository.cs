@@ -15,11 +15,11 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
         _dbContext = dbContext;
     }
 
-        async Task ISubscriptionsRepository.AddAsync(Subscription subscription, CancellationToken cancellationToken)
+    async Task ISubscriptionsRepository.AddAsync(Subscription subscription, CancellationToken cancellationToken)
     {
         await _dbContext.Subscriptions.AddAsync(subscription, cancellationToken);
     }
-        async Task ISubscriptionsRepository.UpdateAsync(Subscription subscription, CancellationToken cancellationToken)
+    async Task ISubscriptionsRepository.UpdateAsync(Subscription subscription, CancellationToken cancellationToken)
     {
         _dbContext.Subscriptions.Update(subscription);
 
@@ -37,11 +37,11 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
                                             .Include(s => s.Member)
                                             .Include(s => s.Member.Gym)
                                             .Include(s => s.SubscriptionRooms)
-                                                .ThenInclude(sr => sr.Room)              
+                                                .ThenInclude(sr => sr.Room)
                                             .AsSingleQuery()
                                             .SingleOrDefaultAsync(s => s.Id == subscriptionId, cancellationToken);
 
-        return subscription;                    
+        return subscription;
     }
 
     async Task<IEnumerable<Subscription>?> ISubscriptionsRepository.ListAsync(CancellationToken cancellationToken)
@@ -65,7 +65,7 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
                                                     .ToListAsync(cancellationToken);
         return subscriptions;
     }
-    
+
     async Task<IEnumerable<Subscription>?> ISubscriptionsRepository.ListByMemberAsync(Guid memberId, CancellationToken cancellationToken)
     {
         var subscriptions = await _dbContext.Subscriptions.Where(s => s.MemberId == memberId)
@@ -83,7 +83,7 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
             .AsNoTracking()
             .AnyAsync(subscription => subscription.Id == id);
     }
-    
+
     async Task ISubscriptionsRepository.AddRoomToSubscriptionAsync(SubscriptionRooms subscRoom, CancellationToken cancellationToken)
     {
         await _dbContext.SubscriptionRooms.AddAsync(subscRoom);
@@ -92,17 +92,17 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
     async Task ISubscriptionsRepository.RemoveRoomFromSubscriptionAsync(SubscriptionRooms subscRoom, CancellationToken cancellationToken)
     {
         //var entity = await _dbContext.SubscriptionRooms.FindAsync(subscRoom.Id);
-        await Task.FromResult(_dbContext.SubscriptionRooms.Remove(subscRoom));  
+        await Task.FromResult(_dbContext.SubscriptionRooms.Remove(subscRoom));
     }
-    
+
     async Task<IEnumerable<Room>> ISubscriptionsRepository.ListSubscriptionRooms(Guid subscriptionId, CancellationToken cancellationToken)
     {
         var rooms = await _dbContext.Subscriptions
             .Where(s => s.Id == subscriptionId)
             .Include(s => s.Member)
-            .SelectMany(s => s.SubscriptionRooms.Select(sr => sr.Room))            
+            .SelectMany(s => s.SubscriptionRooms.Select(sr => sr.Room))
             .ToListAsync();
-            
+
         return rooms;
     }
 
@@ -121,23 +121,23 @@ internal class SubscriptionsRepository : ISubscriptionsRepository
         return await _dbContext.Subscriptions
                                .AnyAsync(s => s.MemberId == memberId
                                && s.EndDate >= DateTime.Now);
-                
+
     }
-    
-    
+
+
     async Task<Subscription?> ISubscriptionsRepository.GetActiveSubscriptionAsync(Guid memberId, CancellationToken cancellationToken)
     {
         var subscription = await _dbContext.Subscriptions
                                             .Where(s => s.MemberId == memberId
-                                                       && s.EndDate > DateTime.Now )
+                                                       && s.EndDate > DateTime.Now)
                                             .Include(s => s.Member)
                                             .Include(s => s.Member.Gym)
                                             .Include(s => s.SubscriptionRooms)
-                                                .ThenInclude(sr => sr.Room)              
+                                                .ThenInclude(sr => sr.Room)
                                             .AsSingleQuery()
                                             .SingleOrDefaultAsync(cancellationToken);
 
-        return subscription;                    
+        return subscription;
     }
 
 }

@@ -20,10 +20,5 @@ GET  http://{{host}}/Rooms/List
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Rooms/List/{{topFitnessGym}}
-Content-Type: {{jsonContentType}}
-
-
-###
 GET  http://{{host}}/Rooms/40a171f7-5230-4474-b49f-9cf25a50c9e0/Sessions
 Content-Type: {{jsonContentType}}

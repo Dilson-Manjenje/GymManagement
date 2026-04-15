@@ -37,18 +37,12 @@ public class AddRoomToSubscriptionCommandHandler : IRequestHandler<AddRoomToSubs
         if (room.GymId != subscription.Member.GymId)
             return SubscriptionErrors.RoomWasNotFoundInMemberGym(roomId: room.Id);
 
-        if (subscription.HasRoom(command.RoomId))
-            return SubscriptionErrors.RoomAlreadyAssociated(command.RoomId);
+        var result = subscription.AddRoom(command.RoomId);
 
-        if (subscription.NumberOfRooms >= subscription.MaxRoomsAllowed)
-            return SubscriptionErrors.HasMaxRoomsAllowed();
+        if (result.IsError)
+            return result.Errors;
 
-        if (!subscription.IsActive)
-            return SubscriptionErrors.CantChangeExpiredSubscription();
-
-        var subRoom = new SubscriptionRooms(subscription.Id, room.Id);
-
-        await _subscriptionsRepository.AddRoomToSubscriptionAsync(subRoom);
+        await _subscriptionsRepository.UpdateAsync(subscription);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
         return subscription.Id;

@@ -11,6 +11,7 @@
 
 @fightJiuJitsu = 555b756b-de79-449e-82c5-80b7a7552cf6
 @fightKick = 16b36cd2-c7f8-4c80-8b37-12ecdba3cc23
+@fightCrossfit = f1d75d40-3e9e-46e1-a9f8-7a113233c26a
 
 ###
 PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
@@ -26,15 +27,15 @@ DELETE  http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
 Content-Type: {{jsonContentType}}
 
 {
-    "roomId": "{{fightKick}}"
+    "roomId": "{{fightCrossfit}}"
 }
 
 
 
 ###
-PUT http://{{host}}/Subscriptions/3c74a90f-5160-4620-a9c4-f322f8acc9f0/Rooms
+PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
 Content-Type: {{jsonContentType}}
 
 {
-    "roomId": "{{fightKick}}"
+    "roomId": "{{fightCrossfit}}"
 }

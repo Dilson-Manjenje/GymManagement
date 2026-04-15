@@ -39,11 +39,38 @@ namespace GymManagement.Domain.Subscriptions
             
         }
 
-        public ErrorOr<Updated> UpdateSubscription(SubscriptionType subscriptionType)
+        public ErrorOr<Success> UpdateSubscription(SubscriptionType subscriptionType)
         {
             SubscriptionType = subscriptionType;
 
-            return Result.Updated;
+            return Result.Success;
+        }
+
+        public ErrorOr<Success> AddRoom(Guid roomId)
+        {
+            if (HasRoom(roomId))
+                return SubscriptionErrors.RoomAlreadyAssociated(roomId);
+
+            if (NumberOfRooms >= MaxRoomsAllowed)
+                return SubscriptionErrors.HasMaxRoomsAllowed();
+
+            if (!IsActive)
+                return SubscriptionErrors.CantChangeExpiredSubscription();
+
+            var subRoom = new SubscriptionRooms(Id, roomId);
+            SubscriptionRooms.Add(subRoom);
+
+            return Result.Success;
+        }
+        
+        public ErrorOr<Success> RemoveRoom(Guid roomId)
+        {
+            if (!HasRoom(roomId))
+                return SubscriptionErrors.RoomNotInSubscription(roomId);
+            
+            SubscriptionRooms.Remove(SubscriptionRooms.Single(sr => sr.RoomId == roomId));
+
+            return Result.Success;
         }
 
         public bool HasRoom(Guid roomId)
