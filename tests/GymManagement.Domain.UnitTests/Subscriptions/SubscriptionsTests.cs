@@ -10,6 +10,64 @@ namespace GymManagement.Domain.UnitTests.Subscriptions;
 public class SubscriptionsTests
 {
     [Fact]
+    public void CreateSubscription_ShouldSetStatusToActive()
+    {
+        // Arrange
+        var subscription = new Subscription(subscriptionType: Constants.Subscriptions.DefaultSubscriptionType,
+                                            memberId: Constants.Members.Id);
+
+        // Assert
+        subscription.IsActive.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Disable_ActiveSubscription_ShouldChangeIsActiveStatus()
+    {
+        // Arrange
+        var subscription = SubscriptionFactory.CreateSubscription(type: SubscriptionType.Plus,
+                                                                  memberId: Constants.Members.FightStudent1);
+
+        // Act
+        var disableResult = subscription.Disable();
+
+        // Assert 
+        disableResult.IsError.Should().BeFalse();
+        subscription.IsActive.Should().BeFalse();
+    }
+    
+    [Fact]
+    public void Disable_InactiveSubscription_ReturnCantChangeExpiredSubscriptionError()
+    {
+        // Arrange
+        var subscription = SubscriptionFactory.CreateSubscription(type: SubscriptionType.Plus,
+                                                                  memberId: Constants.Members.FightStudent1);
+        subscription.Disable();        
+        // Act
+        var disableResult = subscription.Disable();
+
+        // Assert 
+        disableResult.IsError.Should().BeTrue();
+        disableResult.FirstError.Should().Be(SubscriptionErrors.CantChangeExpiredSubscription());
+        subscription.IsActive.Should().BeFalse();
+    }
+
+    [Fact]
+    public void UpdateSubscription_ShouldChangeSubscriptionTypedWithSucess()
+    {
+        // Arrange
+        var subscription = SubscriptionFactory.CreateSubscription(type: SubscriptionType.Plus,
+                                                                  memberId: Constants.Members.FightStudent1);
+
+        // Act
+        var result = subscription.Update(Constants.Subscriptions.DefaultSubscriptionType);
+
+        // Assert 
+        result.IsError.Should().BeFalse();
+        subscription.SubscriptionType.Should().Be(SubscriptionType.Basic);
+    }
+    
+    //TODO: Add Test to Delete Subscription
+    [Fact]
     public void AddRoom_MoreThanSubscriptionAllows_ReturnHasMaxRoomsError()
     {
         // Arrange
@@ -86,7 +144,7 @@ public class SubscriptionsTests
         // Act
         var firstResult = subscription.AddRoom(defaultRoom.Id);
 
-        subscription.DisableSubscription();
+        subscription.Disable();
         var secondResult = subscription.AddRoom(swimmingRoom.Id);
 
         // Assert 
@@ -134,36 +192,5 @@ public class SubscriptionsTests
         // Assert 
         removeResult.IsError.Should().BeFalse();
         subscription.NumberOfRooms.Should().Be(1);
-    }
-
-    [Fact]
-    public void DisableSubscription_ShouldDisabledWithSucess()
-    {
-        // Arrange
-        var subscription = SubscriptionFactory.CreateSubscription(type: SubscriptionType.Plus,
-                                                                  memberId: Constants.Members.FightStudent1);
-
-        // Act
-        var disableResult = subscription.DisableSubscription();
-
-        // Assert 
-        disableResult.IsError.Should().BeFalse();
-        subscription.IsActive.Should().BeFalse();
-    }
-    
-    
-    [Fact]
-    public void UpdateSubscription_ShouldChangeSubscriptionTypedWithSucess()
-    {
-        // Arrange
-        var subscription = SubscriptionFactory.CreateSubscription(type: SubscriptionType.Plus,
-                                                                  memberId: Constants.Members.FightStudent1);
-
-        // Act
-        var result = subscription.UpdateSubscription(Constants.Subscriptions.DefaultSubscriptionType);
-
-        // Assert 
-        result.IsError.Should().BeFalse();
-        subscription.SubscriptionType.Should().Be(SubscriptionType.Basic);        
     }
 }

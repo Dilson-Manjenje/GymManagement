@@ -30,11 +30,8 @@ public class DisableSubscriptionCommandHandler : IRequestHandler<DisableSubscrip
         var subscription = await _subscriptionsRepository.GetByIdAsync(command.SubscriptionId, cancellationToken);
         if (subscription is null)
             return SubscriptionErrors.SubscriptionNotFound(command.SubscriptionId);
-
-        if (!subscription.IsActive)
-            return SubscriptionErrors.CantChangeExpiredSubscription();
-            
-        var disabled = subscription.DisableSubscription();
+     
+        var disabled = subscription.Disable();
         if (disabled.IsError)
             return disabled.Errors;
 
