@@ -20,7 +20,7 @@ public static class SubscriptionTypeConst
     {
         public const decimal Price = 30000;
         public const int MaxRooms = 2;
-        public const int MaxDailySessions = 3;
+        public const int MaxDailySessions = 2;
 
     }
     
@@ -28,7 +28,7 @@ public static class SubscriptionTypeConst
     {
         public const decimal Price = 50000;
         public const int MaxRooms = 30;
-        public const int MaxDailySessions = 10;
+        public const int MaxDailySessions = 5;
         
     }                
 }

@@ -30,7 +30,7 @@ public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscripti
         if (!subscription.IsActive)
             return SubscriptionErrors.CantChangeExpiredSubscription();
             
-        var result = subscription.UpdateSubscription(command.SubscriptionType);
+        var result = subscription.Update(command.SubscriptionType);
         
         if (result.IsError)
             return result.Errors;

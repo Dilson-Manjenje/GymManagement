@@ -39,7 +39,7 @@ namespace GymManagement.Domain.Subscriptions
             
         }
 
-        public ErrorOr<Success> UpdateSubscription(SubscriptionType subscriptionType)
+        public ErrorOr<Success> Update(SubscriptionType subscriptionType)
         {
             SubscriptionType = subscriptionType;
 
@@ -79,8 +79,11 @@ namespace GymManagement.Domain.Subscriptions
             return exist;
         }
         
-        public ErrorOr<Success> DisableSubscription()
+        public ErrorOr<Success> Disable()
         {
+            if (!IsActive)
+                return SubscriptionErrors.CantChangeExpiredSubscription();
+            
             EndDate = DateTime.Now;
 
             DomainEvents.Add(new SubscriptionDisabledEvent(SubscriptionId: Id));
