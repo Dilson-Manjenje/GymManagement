@@ -11,6 +11,9 @@ public interface IBookingsRepository
     Task<Booking?> GetByMemberAndSessionAsync(Guid memberId, Guid sessionId, CancellationToken cancellationToken = default);
     Task<IEnumerable<Booking>?> ListAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<Booking>?> ListByGymAsync(Guid gymId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<Booking>?> ListByMemberAsync(Guid memberId, CancellationToken cancellationToken = default);        
+    Task<IEnumerable<Booking>?> ListByMemberAsync(Guid memberId, CancellationToken cancellationToken = default);
     Task<IEnumerable<Booking>?> ListActiveBookingsBySessionAsync(Guid sessionId, CancellationToken cancellationToken = default);        
+    Task<IEnumerable<Booking>?> ListBookingsBySessionAsync(Guid sessionId, CancellationToken cancellationToken = default);        
+    
+    
 }

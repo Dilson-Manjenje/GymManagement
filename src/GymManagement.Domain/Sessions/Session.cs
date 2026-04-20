@@ -27,7 +27,7 @@ public class Session : Entity
     // public List<Booking> Bookings { get; set; } = new();
 
     private Session() { }
-    public Session(Guid roomId,
+    private Session(Guid roomId,
                     Guid trainerId,
                     string title,
                     int capacity,
@@ -38,14 +38,31 @@ public class Session : Entity
     {
         Title = title;
         StartDate = startDate;
-        EndDate = endDate;                
+        EndDate = endDate;
         TrainerId = trainerId;
         RoomId = roomId;
         Capacity = capacity;
         Vacancy = vacancy;
     }
 
-    public ErrorOr<Success> UpdateSession(Guid roomId,
+    public static Session Create(Guid roomId,
+                                Guid trainerId,
+                                string title,
+                                DateTime startDate,
+                                DateTime endDate,
+                                int vacancy = 1,
+                                int capacity = 1)
+    {            
+        return new Session(roomId: roomId,
+                           trainerId: trainerId,
+                           title: title,
+                           capacity: capacity,
+                           vacancy: vacancy,
+                           startDate: startDate,
+                           endDate: endDate);
+    }
+    
+    public ErrorOr<Success> Update(Guid roomId,
                                           Guid trainerId,
                                           string? title,
                                           DateTime? startDate,
