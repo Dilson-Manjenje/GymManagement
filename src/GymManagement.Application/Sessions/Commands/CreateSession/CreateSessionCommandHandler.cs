@@ -45,14 +45,15 @@ public class CreateSessionCommandHandler : IRequestHandler<CreateSessionCommand,
 
         if (await _roomsRepository.RoomHasOverlappingSession(command.RoomId, startTime, endTime))
             return RoomErrors.RoomHasOverlappingSession();
-           
-        var session = new Session(roomId: command.RoomId,
+
+        var session = Session.Create(roomId: command.RoomId,
                                   trainerId: command.TrainerId,
                                   title: command.Title,
                                   capacity: room.Capacity,
-                                  vacancy: room.Capacity, 
+                                  vacancy: room.Capacity,
                                   startDate: startTime,
-                                  endDate: endTime );
+                                  endDate: endTime);
+
 
         await _sessionsRepository.AddAsync(session);
         await _unitOfWork.CommitChangesAsync();

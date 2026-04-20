@@ -119,5 +119,20 @@ internal class BookingsRepository : IBookingsRepository
 
         return bookings;
     }
+
+     async Task<IEnumerable<Booking>?> IBookingsRepository.ListBookingsBySessionAsync(Guid sessionId, CancellationToken cancellationToken)
+    {
+        var bookings = await _dbContext.Bookings
+                           .Where(b => b.SessionId == sessionId)
+                           .Include(x => x.Member)
+                           .Include(x => x.Session)
+                               .ThenInclude(x => x.Room)
+                           .Include(x => x.Session)
+                               .ThenInclude(s => s.Trainer)
+                           .AsSingleQuery()
+                           .ToListAsync(cancellationToken);
+
+        return bookings;
+    }
         
 }

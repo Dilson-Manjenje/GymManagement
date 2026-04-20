@@ -58,7 +58,7 @@ public class UpdateSessionCommandHandler : IRequestHandler<UpdateSessionCommand,
 
                 return RoomErrors.RoomHasOverlappingSession();
             
-        var result = session.UpdateSession(roomId: command.RoomId,
+        var result = session.Update(roomId: command.RoomId,
                               trainerId: command.TrainerId,
                               title: command.Title,
                               startDate: command.StartDate ?? session.StartDate,
