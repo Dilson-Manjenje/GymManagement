@@ -24,8 +24,7 @@ public class FinalizeBookingCommandHandler : IRequestHandler<FinalizeBookingComm
         if (booking is null)
             return BookingErrors.BookingNotFound(command.BookingId);
 
-        // Finalize Booking only if session is: Finalized
-        // TODO: On Finalize Session then Evenctually finalize all active bookings
+        // Booking is finalized when sessions is completed
         if ( booking.Session.Status != SessionStatus.Finalized)
             return BookingErrors.InvalidSessionsStatus(id: booking.Session.Id, statusName: booking.Session.Status.Name);
 

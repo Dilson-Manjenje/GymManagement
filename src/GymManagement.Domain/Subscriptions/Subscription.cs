@@ -67,7 +67,10 @@ namespace GymManagement.Domain.Subscriptions
         {
             if (!HasRoom(roomId))
                 return SubscriptionErrors.RoomNotInSubscription(roomId);
-            
+
+            if (!IsActive)
+                return SubscriptionErrors.CantChangeExpiredSubscription();
+                
             SubscriptionRooms.Remove(SubscriptionRooms.Single(sr => sr.RoomId == roomId));
 
             return Result.Success;

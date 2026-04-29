@@ -34,15 +34,15 @@ public class BookingsController : ApiBaseController
         error => HandleErrors(result.Errors));
   }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetBooking(Guid id)
-    {
-        var result = await _mediator.Send(new GetBookingQuery(BookingId: id));
+  [HttpGet("{id:guid}")]
+  public async Task<IActionResult> GetBooking(Guid id)
+  {
+    var result = await _mediator.Send(new GetBookingQuery(BookingId: id));
 
-        return result.MatchFirst(
-          booking => Ok(ContractMappings.MapToBookingResponse(booking)),
-          error => HandleErrors(result.Errors));
-    }
+    return result.MatchFirst(
+      booking => Ok(ContractMappings.MapToBookingResponse(booking)),
+      error => HandleErrors(result.Errors));
+  }
 
   [HttpGet("List")]
   public async Task<IActionResult> ListAll()
@@ -63,15 +63,4 @@ public class BookingsController : ApiBaseController
       id => Ok(new { id = id }),
       error => HandleErrors(result.Errors));
   }
-
-  [HttpPut("{bookingId:guid}/Finalize")]
-  public async Task<IActionResult> Finalize([FromRoute] Guid bookingId)
-  {
-    var result = await _mediator.Send(new FinalizeBookingCommand(BookingId: bookingId));
-
-    return result.MatchFirst<IActionResult>(
-     id => Ok(new { id = id }),
-     error => HandleErrors(result.Errors));
-  }
-  
 }

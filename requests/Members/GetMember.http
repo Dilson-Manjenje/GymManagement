@@ -25,11 +25,6 @@ Content-Type: {{jsonContentType}}
 
 
 ###
-GET  http://{{host}}/Members/List/{{gymIdFightSociety}}
-Content-Type: {{jsonContentType}}
-
-
-###
 GET  http://{{host}}/Members/{{memberId2}}/Subscriptions
 Content-Type: {{jsonContentType}}
 

@@ -28,29 +28,14 @@ public class FinalizeSessionCommandHandler : IRequestHandler<FinalizeSessionComm
         if (session is null)
             return SessionErrors.SessionNotFound(command.SessionId);
 
-        var activeBookings = await _bookingsRepository.ListActiveBookingsBySessionAsync(command.SessionId);
-        var hasBookings = activeBookings is not null && activeBookings.Any();
-
-        if (hasBookings)
-        {
-            foreach (var booking in activeBookings!)
-            {
-                var finalized = booking.Finalize();
-                if (finalized.IsError)
-                    return finalized.Errors;
-            }
-        }
-
         var result = session.Finalize();
 
         if (result.IsError)
             return result.Errors;
 
-        if (hasBookings)
-            await _bookingsRepository.UpdateRangeAsync(activeBookings!);
-            
         await _sessionsRepository.UpdateAsync(session);
         await _unitOfWork.CommitChangesAsync();
+        // Bookings are finalized in Eventual Consistency manner by SessionFinalizedEvent    
         
         return session.Id;
     }

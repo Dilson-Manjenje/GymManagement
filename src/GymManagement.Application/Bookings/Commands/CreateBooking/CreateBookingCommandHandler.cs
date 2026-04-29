@@ -3,6 +3,7 @@ using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Bookings;
 using GymManagement.Domain.Members;
 using GymManagement.Domain.Sessions;
+using GymManagement.Domain.Subscriptions;
 using MediatR;
 
 namespace GymManagement.Application.Bookings.Commands.CreateBooking;
@@ -30,84 +31,38 @@ public record CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand
 
     public async Task<ErrorOr<Guid>> Handle(CreateBookingCommand command, CancellationToken cancellationToken)
     {
-        var member = await _membersRepository.GetByIdAsync(command.MemberId);
-
-        if (member is null)
-            return MemberErrors.MemberNotFound(command.MemberId);
-
-        if (member.GymId is null || member.GymId == Guid.Empty)
-            return MemberErrors.MemberDontHaveGym(command.MemberId);
-
         var session = await _sessionsRepository.GetByIdAsync(command.SessionId);
         if (session is null)
             return SessionErrors.SessionNotFound(command.SessionId);
-        
-        if (session.Vacancy == 0)
-            return SessionErrors.CannotExceedSessionCapacity;
 
-        if (session.Room.GymId != member.GymId)
-            return BookingErrors.MemberNotInTheSameGym(memberId: member.Id);
-
-        if (!SessionStatus.ActiveStatus.Contains(session.Status))
-            return BookingErrors.InvalidSessionsStatus(id: session.Id, statusName: session.Status.Name);
-        
-        var activeSubscription = await _subscriptionRepository.GetActiveSubscriptionAsync(memberId: member.Id);
-        if (activeSubscription is null)
-            return BookingErrors.MemberDontHaveActiveSubscription(member.Id);
-
-        var hasRoom = activeSubscription.HasRoom(session.RoomId);
-        if (!hasRoom)
-            return BookingErrors.SubscriptionDontHaveAccess(subscriptionId: activeSubscription.Id, roomId: session.RoomId);
-
-        var existingBooking = await _bookingsRepository
-                                            .GetByMemberAndSessionAsync(member.Id, session.Id, cancellationToken);
-
-        if (existingBooking is not null)
-            return BookingErrors.DuplicateBooking(member.Id, session.Id);
-        
-        // TODO: Refactor to use ValidateBookingRules() 
-        var booking = new Booking(sessionId: session.Id, memberId: member.Id);
-
-        session.DecrementVacancy();
-
-        // TODO: Add try/catch to handle ConcurrencyException and RaceCondition on save Booking
-        await _bookingsRepository.AddAsync(booking);
-        
-        await _sessionsRepository.UpdateAsync(session); 
-        await _unitOfWork.CommitChangesAsync();
-
-        return booking.Id;
-    }
-
-    private async Task<ErrorOr<Success>> ValidateBookingRules(Member member,
-                                                              Session session,
-                                                              CancellationToken cancellationToken = default)
-    {
+        var member = await _membersRepository.GetByIdAsync(command.MemberId);
+        if (member is null)
+            return MemberErrors.MemberNotFound(command.MemberId);
+       
         if (member.GymId is null || member.GymId == Guid.Empty)
             return MemberErrors.MemberDontHaveGym(member.Id);
-
-        if (session.Vacancy == 0)
-            return SessionErrors.CannotExceedSessionCapacity;
-
-        if (session.Room.GymId != member.GymId)
-            return BookingErrors.MemberNotInTheSameGym(memberId: member.Id);
-
-        if (!SessionStatus.ActiveStatus.Contains(session.Status))
-            return BookingErrors.InvalidSessionsStatus(session.Id, session.Status.Name);
+        
+        var existingBooking = await _bookingsRepository.GetByMemberAndSessionAsync(member.Id, session.Id, cancellationToken);
+        if (existingBooking is not null)
+            return BookingErrors.DuplicateBooking(member.Id, session.Id);
 
         var activeSubscription = await _subscriptionRepository.GetActiveSubscriptionAsync(memberId: member.Id);
         if (activeSubscription is null)
             return BookingErrors.MemberDontHaveActiveSubscription(member.Id);
 
-        var hasRoom = activeSubscription.HasRoom(session.RoomId);
-        if (!hasRoom)
-            return BookingErrors.SubscriptionDontHaveAccess(subscriptionId: activeSubscription.Id, roomId: session.RoomId);
+        var bookingResult = Booking.Create(member, session, activeSubscription);
 
-        var existingBooking = await _bookingsRepository.GetByMemberAndSessionAsync(member.Id, session.Id, cancellationToken);
+        if (bookingResult.IsError)
+            return bookingResult.Errors;
 
-        if (existingBooking is not null)
-            return BookingErrors.DuplicateBooking(member.Id, session.Id);
+        var booking = bookingResult.Value;   
 
-        return Result.Success;
+        // TODO: Add try/catch to handle ConcurrencyException and RaceCondition on save Booking
+        await _bookingsRepository.AddAsync(booking);        
+        await _sessionsRepository.UpdateAsync(session);
+        await _unitOfWork.CommitChangesAsync();
+        // Session Vacancy is decremented in Eventual Consistency manner by BookingCreatedEvent
+
+        return booking.Id;
     }
 }

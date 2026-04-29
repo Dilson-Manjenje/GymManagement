@@ -24,5 +24,5 @@ Content-Type: application/json
 
 
 ###
-PUT  http://localhost:5105/Sessions/096708d5-ff61-470c-9946-fb18d85b54df/Finalize
+PUT  http://localhost:5105/Sessions/0d84fec0-f029-448e-a71b-8bad4b1829b9/Finalize
 Content-Type: application/json

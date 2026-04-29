@@ -20,7 +20,7 @@ Content-Type: application/json
 {
     "roomId": "{{quibumaBodyRoom}}", 
     "trainerId": "{{quibumaPt1}}",
-    "title": "Musculação Session 1"
+    "title": "Musculação Session 2"
 }
 
 ###
