@@ -24,12 +24,3 @@ Content-Type: {{jsonContentType}}
 ###
 GET  http://{{host}}/Subscriptions/List
 Content-Type: {{jsonContentType}}
-
-###
-GET  http://{{host}}/Subscriptions/List/{{gymIdQuibuma}}
-Content-Type: {{jsonContentType}}
-
-
-###
-GET  http://{{host}}/Subscriptions/List/{{gymIdQuibuma}}
-Content-Type: {{jsonContentType}}

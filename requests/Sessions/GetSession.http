@@ -29,11 +29,11 @@ Content-Type: {{jsonContentType}}
 
 
 ###
-GET  http://{{host}}/Sessions/UpCommingSessions/{{gymIdFightSociety}}
+GET  http://{{host}}/Sessions/UpCommingSessions/{{gymIdQuibuma}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Sessions/cbd3d1a1-654a-486d-a32c-0dfde448c86c/Bookings
+GET  http://{{host}}/Sessions/0d84fec0-f029-448e-a71b-8bad4b1829b9/Bookings
 Content-Type: {{jsonContentType}}
 
 

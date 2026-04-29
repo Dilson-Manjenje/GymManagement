@@ -9,3 +9,5 @@ namespace GymManagement.Domain.Bookings.Events;
 public record BookingCreatedEvent(Guid BookingId, Guid SessionId): IDomainEvent;
 
 public record BookingCanceledEvent(Guid BookingId, Guid SessionId): IDomainEvent;
+
+public record BookingFinalizedEvent(Guid BookingId, Guid SessionId) : IDomainEvent;

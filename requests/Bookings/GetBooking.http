@@ -14,7 +14,7 @@
 @topFitBodyRoom = 3c0fdef3-a08b-403c-90d5-9891ae458ac5
 
 ###
-GET  http://{{host}}/Bookings/66C93FB7-16FD-4F73-A866-2EA326C122F5
+GET  http://{{host}}/Bookings/7179471d-83f7-496f-81ba-67c280815ac8
 Content-Type: {{jsonContentType}}
 
 ###

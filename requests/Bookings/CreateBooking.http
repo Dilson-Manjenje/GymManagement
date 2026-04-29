@@ -12,15 +12,17 @@
 @figthStudent2 = 9c8eeb35-8102-4280-8fca-b607f003283e
 @figthStudent3 = 258fc6ad-90e7-44a6-8f4f-de3e98355404 
 @figthStudent4 = f79ab227-bdf6-4d1f-81ab-98d6a84d87d9
-  
+
+@quibumaMember1 = abce4882-6535-4308-86c5-7b5ed2570a13
+@quibumaMember2 = 2c46acb6-c673-4978-861b-f1c8f98db733
 
 ###
 POST http://localhost:5105/Bookings
 Content-Type: application/json
 
 {
-    "sessionId": "cbd3d1a1-654a-486d-a32c-0dfde448c86c", 
-    "memberId": "{{fightStudent1}}"    
+    "sessionId": "c8021df6-4593-41c6-8ba0-06d2cabe5fc1", 
+    "memberId": "{{quibumaMember2}}"    
 }
 
 

@@ -15,9 +15,9 @@ PUT http://localhost:5105/Bookings/09348108-c896-4b92-88f4-4f27f11d2d90/Cancel
 Content-Type: application/json
 
 
-###
-PUT http://localhost:5105/Bookings/1A28528A-6C17-4981-9A95-C6DA71AF8A03/Finalize
-Content-Type: application/json
+# ###
+# PUT http://localhost:5105/Bookings/97b398e3-e8ba-4cbc-82e3-5909207b0e5b/Finalize
+# Content-Type: application/json
 
 
 
