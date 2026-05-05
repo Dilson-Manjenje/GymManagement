@@ -1,6 +1,7 @@
 using ErrorOr;
 using FluentAssertions;
 using GymManagement.Domain.Sessions;
+using GymManagement.Domain.Sessions.Events;
 using TestCommon.Rooms;
 using TestCommon.TestConstants;
 
@@ -12,7 +13,7 @@ public class SessionTests
     public void CreateSession_ShouldSetStatusToScheduled()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.Id,
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
                                   trainerId: Constants.Trainers.Id,
                                   title: Constants.Sessions.Title,
                                   capacity: Constants.Rooms.Capacity,
@@ -24,17 +25,34 @@ public class SessionTests
         session.Status.Should().Be(SessionStatus.Scheduled);
     }
 
-    [Fact]
-    public void Cancel_ActiveSession_ChangeStatusToCanceled()
+     [Fact]
+    public void CreateSession_SetCapacityCorrectly()
     {
         // Arrange
-         var session = Session.Create(roomId: Constants.Rooms.Id,
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
                                   trainerId: Constants.Trainers.Id,
                                   title: Constants.Sessions.Title,
                                   capacity: Constants.Rooms.Capacity,
                                   vacancy: Constants.Rooms.Capacity,
                                   startDate: Constants.Sessions.StartDate,
                                   endDate: Constants.Sessions.EndDate);
+
+        // Assert
+        session.Capacity.Should().Be(Constants.Rooms.Capacity);
+        session.Vacancy.Should().Be(Constants.Rooms.Capacity);
+    }
+
+    [Fact]
+    public void Cancel_ActiveSession_ChangeStatusToCanceled()
+    {
+        // Arrange
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
+                                 trainerId: Constants.Trainers.Id,
+                                 title: Constants.Sessions.Title,
+                                 capacity: Constants.Rooms.Capacity,
+                                 vacancy: Constants.Rooms.Capacity,
+                                 startDate: Constants.Sessions.StartDate,
+                                 endDate: Constants.Sessions.EndDate);
 
         // Act 
         var result = session.Cancel();
@@ -44,11 +62,36 @@ public class SessionTests
         session.Status.Should().Be(SessionStatus.Canceled);
     }
 
+    // TODO: Test Session cancelection side effect all active bookings are Cancelled
+    [Fact]
+    public void Cancel_ShouldRaiseSessionCanceledDomainEvent()
+    {
+        // Arrange        
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
+                                  trainerId: Constants.Trainers.Id,
+                                  title: Constants.Sessions.Title,
+                                  capacity: Constants.Rooms.Capacity,
+                                  vacancy: Constants.Rooms.Capacity,
+                                  startDate: Constants.Sessions.StartDate,
+                                  endDate: Constants.Sessions.EndDate);
+
+        // Act
+        var canceledResult = session.Cancel();
+           
+        var domainEvent = session.PopAndClearDomainEvents()
+                                    .OfType<SessionCanceledEvent>()
+                                    .SingleOrDefault();
+        // Assert 
+        canceledResult.IsError.Should().BeFalse();
+        domainEvent.Should().NotBeNull();
+        domainEvent?.SessionId.Should().Be(session.Id);
+    }
+    
     [Fact]
     public void Cancel_SessionInNonCancelableStatus_ReturnCantChangeSessionError()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.Id,
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
                                   trainerId: Constants.Trainers.Id,
                                   title: Constants.Sessions.Title,
                                   capacity: Constants.Rooms.Capacity,
@@ -69,7 +112,7 @@ public class SessionTests
     public void Finalize_ActiveSession_ChangeStatusToFinalized()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.Id,
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
                                   trainerId: Constants.Trainers.Id,
                                   title: Constants.Sessions.Title,
                                   capacity: Constants.Rooms.Capacity,
@@ -85,11 +128,35 @@ public class SessionTests
         session.Status.Should().Be(SessionStatus.Finalized);
     }
     
+     [Fact]
+    public void Finalize_ShouldRaiseSessionFinalizedDomainEvent()
+    {
+        // Arrange        
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
+                                  trainerId: Constants.Trainers.Id,
+                                  title: Constants.Sessions.Title,
+                                  capacity: Constants.Rooms.Capacity,
+                                  vacancy: Constants.Rooms.Capacity,
+                                  startDate: Constants.Sessions.StartDate,
+                                  endDate: Constants.Sessions.EndDate);
+
+        // Act
+        var finalized = session.Finalize();
+           
+        var domainEvent = session.PopAndClearDomainEvents()
+                                    .OfType<SessionFinalizedEvent>()
+                                    .SingleOrDefault();
+        // Assert 
+        finalized.IsError.Should().BeFalse();
+        domainEvent.Should().NotBeNull();
+        domainEvent?.SessionId.Should().Be(session.Id);
+    }
+    
     [Fact]
     public void Finalize_SessionInNonCancelableStatus_ReturnCantChangeSessionError()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.Id,
+        var session = Session.Create(roomId: Constants.Rooms.NewId,
                                   trainerId: Constants.Trainers.Id,
                                   title: Constants.Sessions.Title,
                                   capacity: Constants.Rooms.Capacity,

@@ -41,6 +41,9 @@ namespace GymManagement.Domain.Subscriptions
 
         public ErrorOr<Success> Update(SubscriptionType subscriptionType)
         {
+            if (!IsActive)
+                return SubscriptionErrors.CantChangeExpiredSubscription();
+
             SubscriptionType = subscriptionType;
 
             return Result.Success;

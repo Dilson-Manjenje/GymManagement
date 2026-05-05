@@ -12,7 +12,16 @@ public static class GymFactory
         return new Gym(
             name: name,
             address: address,
-            id: id ?? Constants.Gyms.Id
+            id: id ?? Constants.Gyms.NewId
+        );
+    }
+
+    public static Gym GetFightGym()
+    {
+        return new Gym(
+            name: Constants.Gyms.Name,
+            address: Constants.Gyms.Address,
+            id: Constants.Gyms.FightGymId
         );
     }
 }

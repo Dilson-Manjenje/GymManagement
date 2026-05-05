@@ -1,5 +1,6 @@
 using System.Reflection.Metadata;
 using GymManagement.Domain.Subscriptions;
+using TestCommon.Rooms;
 using TestCommon.TestConstants;
 
 namespace TestCommon.Subscriptions;
@@ -10,10 +11,12 @@ public static class SubscriptionFactory
                                                   Guid? memberId = null,
                                                   Guid? id = null)
     {
-        return new Subscription(
+        var subs = new Subscription(
             subscriptionType: type ?? Constants.Subscriptions.DefaultSubscriptionType,
             memberId: memberId ?? Constants.Members.AdminId,
-            id: id ?? Constants.Subscriptions.Id
+            id: id ?? Constants.Subscriptions.NewId
         );
+        
+        return subs;
     }
 }
