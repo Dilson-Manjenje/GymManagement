@@ -12,6 +12,15 @@ public static class RoomFactory
         return new Room(
             name: name,
             capacity: capacity,
-            gymId: gymId ?? Constants.Gyms.Id);
+            gymId: gymId ?? Constants.Gyms.NewId);
+    }
+
+    public static Room GetKickBoxigRoomOfFightGym()
+    {
+        return new Room(
+            id: Constants.Rooms.KickBoxingRoomId,
+            name: "Kick-Boxing",
+            capacity: 3,
+            gymId: Constants.Gyms.FightGymId);
     }
 }
