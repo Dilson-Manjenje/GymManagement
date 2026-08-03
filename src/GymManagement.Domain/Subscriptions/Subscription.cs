@@ -65,6 +65,12 @@ namespace GymManagement.Domain.Subscriptions
 
             return Result.Success;
         }
+
+        public bool HasRoom(Guid roomId)
+        {
+            var exist = SubscriptionRooms.Any(sr => sr.RoomId == roomId);
+            return exist;
+        }
         
         public ErrorOr<Success> RemoveRoom(Guid roomId)
         {
@@ -78,13 +84,7 @@ namespace GymManagement.Domain.Subscriptions
 
             return Result.Success;
         }
-
-        public bool HasRoom(Guid roomId)
-        {
-            var exist = SubscriptionRooms.Any(sr => sr.RoomId == roomId);
-            return exist;
-        }
-        
+                
         public ErrorOr<Success> Disable()
         {
             if (!IsActive)
@@ -92,7 +92,7 @@ namespace GymManagement.Domain.Subscriptions
             
             EndDate = DateTime.Now;
 
-            DomainEvents.Add(new SubscriptionDisabledEvent(SubscriptionId: Id));
+            _domainEvents.Add(new SubscriptionDisabledEvent(SubscriptionId: Id));
             
             return Result.Success;
         }

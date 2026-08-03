@@ -61,6 +61,7 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
         // Publish domain events: 
         // - BEFORE SaveChanges if domain events are part of the same transaction (Immediate Consistency)
         // - AFTER SaveChanges if domain events are a separate transaction (Eventual Consistency)
+        // TODO: Add offline processing for domain events using the httcontext...
 
         var result = await base.SaveChangesAsync(cancellationToken);
 

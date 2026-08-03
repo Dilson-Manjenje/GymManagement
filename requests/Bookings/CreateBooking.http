@@ -21,8 +21,8 @@ POST http://localhost:5105/Bookings
 Content-Type: application/json
 
 {
-    "sessionId": "c8021df6-4593-41c6-8ba0-06d2cabe5fc1", 
-    "memberId": "{{quibumaMember2}}"    
+    "sessionId": "DA5E0302-D498-40D8-9781-8B96B5F697D8", 
+    "memberId": "{{quibumaMember1}}"    
 }
 
 

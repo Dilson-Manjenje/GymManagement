@@ -32,19 +32,12 @@ public class ValidationBehavior<TRequest, TResponse> :
         if (validationResult.IsValid)
             return await next(cancellationToken);
 
-        // var errors = validationResult.Errors
-        //             .Select(error => Error.Validation(
-        //                 code: error.PropertyName,
-        //                 description: error.ErrorMessage))
-        //             .ToList();
-
         var errors = validationResult.Errors
                    .ConvertAll(error => Error.Validation(
                        code: error.PropertyName,
                        description: error.ErrorMessage))
                    .ToList();
 
-        //return (TResponse) Errors.ValidationErrors(errors);
         return (dynamic) errors;
     }
 }

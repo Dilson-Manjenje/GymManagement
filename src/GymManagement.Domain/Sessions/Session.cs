@@ -83,7 +83,7 @@ public class Session : Entity
             return SessionErrors.CantChangeSession(id: Id);
 
         Status = SessionStatus.Canceled;
-        DomainEvents.Add(new SessionCanceledEvent(SessionId: Id));     
+        _domainEvents.Add(new SessionCanceledEvent(SessionId: Id));     
         
         return Result.Success;
     }
@@ -94,7 +94,7 @@ public class Session : Entity
             return SessionErrors.CantChangeSession(id: Id);
 
         Status = SessionStatus.Finalized;        
-        DomainEvents.Add(new SessionFinalizedEvent(SessionId: Id));     
+        _domainEvents.Add(new SessionFinalizedEvent(SessionId: Id));     
 
         return Result.Success;
         

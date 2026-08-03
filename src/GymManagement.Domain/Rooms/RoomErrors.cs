@@ -19,7 +19,8 @@ public static class RoomErrors
   public static Error RoomHasOverlappingSession() => Error.Validation
   (code: "Room.RoomHasOverlappingSession",
     description: $"The Room already has schedule session on informed dates.");
-  
-  
-
+   
+  public static Error RoomIsNotIsAvailable(Guid roomId) => Error.Validation
+  (code: "Room.RoomIsNotIsAvailable",
+    description: $"The Room is not available.");
 }

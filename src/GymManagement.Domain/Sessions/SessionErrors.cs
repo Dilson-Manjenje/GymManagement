@@ -23,9 +23,9 @@ public static class SessionErrors
   (code: "Session.TrainerNotInTheSameGym",
     description: $"The Trainer with ID {trainerId} was not found in the Gym of the Room.");
 
-  public static Error CantCancelSessionWithBooking(Guid id) => Error.Validation
-  (code: "Session.CantCancelSessionWithBooking",
-      description: $"Can not cancel/delete Session {id} with active Booking.");
+  public static Error CantCancelOrDeleteSessionWithBooking(Guid id) => Error.Validation
+  (code: "Session.CantCancelOrDeleteSessionWithBooking",
+      description: $"Can not cancel or delete Session {id} with active Booking.");
 
   public static Error CantChangeSession(Guid id) => Error.Validation
   (code: "Session.CantChangeSession",

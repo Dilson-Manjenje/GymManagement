@@ -7,6 +7,11 @@ public interface ISubscriptionsRepository
 {
     Task AddAsync(Subscription subscription, CancellationToken cancellationToken = default);
     Task UpdateAsync(Subscription subscription, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Removes the subscription and related SubscriptionRooms are automatically deleted 
+    /// via database cascade behavior.
+    /// </summary>
     Task RemoveAsync(Subscription subscription, CancellationToken cancellationToken = default);
     Task<Subscription?> GetByIdAsync(Guid subscriptionId, CancellationToken cancellationToken = default);
     Task<Subscription?> GetActiveSubscriptionAsync(Guid memberId, CancellationToken cancellationToken = default);    

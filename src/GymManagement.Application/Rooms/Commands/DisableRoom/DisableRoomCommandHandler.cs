@@ -1,18 +1,23 @@
 using ErrorOr;
 using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Rooms;
+using GymManagement.Domain.Sessions;
 using MediatR;
+using OneOf.Types;
 
 namespace GymManagement.Application.Rooms.Commands.DisableRoom;
 
 public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, ErrorOr<Guid>>
 {
     private readonly IRoomsRepository _roomsRepository;
+    private readonly ISessionsRepository _sessionsRepository;
     private readonly IUnitOfWork _unitOfWork;
     public DisableRoomCommandHandler(IRoomsRepository roomsRepository,
-                                IUnitOfWork unitOfWork)
+                                     ISessionsRepository sessionsRepository,
+                                     IUnitOfWork unitOfWork)
     {
         _roomsRepository = roomsRepository;
+        _sessionsRepository = sessionsRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -22,6 +27,13 @@ public class DisableRoomCommandHandler : IRequestHandler<DisableRoomCommand, Err
 
         if (room is null)
             return RoomErrors.RoomNotFound(command.Id);
+
+        var sessions = await _sessionsRepository.ListByRoomAsync(command.Id);
+        var hasActiveSession = sessions is not null &&
+                               sessions.Any(s => s.IsActive());
+         
+        if (hasActiveSession)
+            return RoomErrors.CannotDisableRoomWithSessions(command.Id);
 
         var result = room.DisableRoom();
 

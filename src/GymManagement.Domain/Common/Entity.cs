@@ -8,7 +8,7 @@ public abstract class Entity
     public DateTime? CreationDate { get; private set; } = null;
     public DateTime? LastUpdateDate { get; private set; } = null;
     [NotMapped]
-    protected List<IDomainEvent> DomainEvents { get; private set; } = new();
+    protected List<IDomainEvent> _domainEvents { get; private set; } = new();
 
     public Entity(Guid id)
     {
@@ -34,14 +34,14 @@ public abstract class Entity
 
     public IList<IDomainEvent> PopAndClearDomainEvents()
     {
-        var copy = DomainEvents.ToList();
-        DomainEvents.Clear();
+        var copy = _domainEvents.ToList();
+        _domainEvents.Clear();
 
         return copy;
     }
     
     public bool HasDomainEvents()
     {
-        return  DomainEvents.Any();
+        return  _domainEvents.Any();
     }
 }

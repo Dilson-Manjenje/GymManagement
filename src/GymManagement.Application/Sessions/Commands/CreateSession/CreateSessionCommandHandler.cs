@@ -30,6 +30,9 @@ public class CreateSessionCommandHandler : IRequestHandler<CreateSessionCommand,
         if (room is null)
             return RoomErrors.RoomNotFound(command.RoomId);
 
+        if (!room.IsAvailable)
+            return RoomErrors.RoomIsNotIsAvailable(command.RoomId);
+
         var trainer = await _trainersRepository.GetByIdAsync(command.TrainerId);
         if (trainer is null)
             return TrainerErrors.TrainerNotFound(command.TrainerId);
@@ -41,7 +44,7 @@ public class CreateSessionCommandHandler : IRequestHandler<CreateSessionCommand,
         //     return SessionErrors.CannotCreateAfterBusinessHours;
             
         var startTime = command.StartDate ?? DateTime.Now.AddMinutes(10); // TODO: Inject Time Zone Provider
-        var endTime = command.EndDate ?? startTime.AddHours(1);
+        var endTime = command.EndDate ?? startTime.AddHours(2);
 
         if (await _roomsRepository.RoomHasOverlappingSession(command.RoomId, startTime, endTime))
             return RoomErrors.RoomHasOverlappingSession();

@@ -24,7 +24,7 @@ public class Booking : Entity
         MemberId = memberId;
         Status = BookingStatus.Active;
 
-        DomainEvents.Add(new BookingCreatedEvent(BookingId: Id, SessionId: sessionId));
+        _domainEvents.Add(new BookingCreatedEvent(BookingId: Id, SessionId: sessionId));
     }
 
     public static ErrorOr<Booking> Create(Member member, Session session, Subscription activeSubscription)
@@ -51,7 +51,7 @@ public class Booking : Entity
 
         Status = BookingStatus.Canceled;
         
-        DomainEvents.Add(new BookingCanceledEvent(BookingId: Id, SessionId: SessionId));    
+        _domainEvents.Add(new BookingCanceledEvent(BookingId: Id, SessionId: SessionId));    
 
         return Result.Success;
     }    
@@ -63,7 +63,7 @@ public class Booking : Entity
 
         Status = BookingStatus.Finalized;
 
-        DomainEvents.Add(new BookingFinalizedEvent(BookingId: Id, SessionId: SessionId)); 
+        _domainEvents.Add(new BookingFinalizedEvent(BookingId: Id, SessionId: SessionId)); 
         return Result.Success;
     }    
 

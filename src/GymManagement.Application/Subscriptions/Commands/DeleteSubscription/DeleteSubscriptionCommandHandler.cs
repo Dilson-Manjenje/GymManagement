@@ -34,9 +34,9 @@ public class DeleteSubscriptionCommandHandler : IRequestHandler<DeleteSubscripti
         if (subscription.IsActive)
             return SubscriptionErrors.CantDeleteActiveSubscription();
 
-        await _subscriptionsRepository.RemoveAsync(subscription, cancellationToken);
+        await _subscriptionsRepository.RemoveAsync(subscription, cancellationToken); 
         await _unitOfWork.CommitChangesAsync(cancellationToken);
-        // SubscriptionRooms are deleted by database Cascade Behavior.
+        
 
         return Unit.Value;
     }

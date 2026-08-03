@@ -61,8 +61,7 @@ internal class RoomsRepository : IRoomsRepository
         var sessions = await _dbContext.Sessions
                     .Where(s =>
                         s.RoomId == roomId &&
-                        start < s.EndDate &&
-                        end > s.StartDate)
+                        start < s.EndDate && end > s.StartDate)
                     .ToListAsync();
 
         var exist = sessions.Any(s => s.IsActive());
