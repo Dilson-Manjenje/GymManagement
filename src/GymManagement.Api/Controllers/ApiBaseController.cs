@@ -36,6 +36,7 @@ public class ApiBaseController : ControllerBase
 
     return base.ValidationProblem(modelState);
   }
+
   private static int MapStatusCode(ErrorType type) => type switch
   {
     ErrorType.Conflict => StatusCodes.Status409Conflict,
@@ -44,4 +45,5 @@ public class ApiBaseController : ControllerBase
     ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
     _ => StatusCodes.Status500InternalServerError
   };
+  
 }

@@ -32,7 +32,7 @@ public class DeleteSessionCommandHandler : IRequestHandler<DeleteSessionCommand,
         var bookings = await _bookingRepository.ListBookingsBySessionAsync(sessionId: session.Id);
 
         if (bookings is not null && bookings.Any())
-            return SessionErrors.CantCancelSessionWithBooking(id: session.Id);
+            return SessionErrors.CantCancelOrDeleteSessionWithBooking(id: session.Id);
 
         await _sessionsRepository.RemoveAsync(session);
         await _unitOfWork.CommitChangesAsync(cancellationToken);

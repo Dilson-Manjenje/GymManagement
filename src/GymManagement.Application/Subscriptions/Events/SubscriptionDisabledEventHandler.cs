@@ -7,7 +7,6 @@ using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Subscriptions;
 using GymManagement.Domain.Subscriptions.Events;
 using MediatR;
-using OneOf.Types;
 
 namespace GymManagement.Application.Subscriptions.Events;
 

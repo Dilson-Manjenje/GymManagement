@@ -20,7 +20,7 @@ Content-Type: application/json
 {
     "roomId": "{{quibumaBodyRoom}}", 
     "trainerId": "{{quibumaPt1}}",
-    "title": "Musculação Session 2"
+    "title": "Musculação Session"
 }
 
 ###
@@ -31,8 +31,8 @@ Content-Type: application/json
     "roomId": "{{fightKickRoom}}", 
     "trainerId": "{{fightMt1}}",
     "title": "KickBoxing Treino da Tarde",
-    "startDate":"2026-03-31T16:00",
-    "endDate":"2026-03-31T18:00"
+    "startDate":"2026-08-03T14:00",
+    "endDate":"2026-08-03T16:00"
 }
 
 ###
@@ -43,8 +43,8 @@ Content-Type: application/json
     "roomId": "{{topFitBodyRoom}}", 
     "trainerId": "{{topfitPt1}}",
     "title": "Musculação de Manhã",
-    "startDate":"2026-02-04T06:00",
-    "endDate":"2026-02-04T09:00"
+    "startDate":"2026-05-05T15:30",
+    "endDate":"2026-05-05T17:00"
 }
 
 # "startDate": "2026-01-07T00:23:34.5637849",

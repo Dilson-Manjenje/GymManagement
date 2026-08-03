@@ -15,7 +15,7 @@ public class SessionBaseValidator : AbstractValidator<SessionBaseCommand>
         RuleFor(x => x.StartDate)
             .GreaterThanOrEqualTo(DateTime.Now)
                 .When(x => x.StartDate != null)
-                .WithMessage("'{PropertyName}' must greater than now.")            
+                .WithMessage("'{PropertyName}' must be greater than now.")            
             .LessThan(x => x.EndDate)
                 .When(x => x.StartDate != null && x.EndDate != null)
                 .WithMessage("'{PropertyName}' must be less than {ComparisonProperty}.")

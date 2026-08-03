@@ -30,11 +30,11 @@ Content-Type: {{jsonContentType}}
 }
 
 ###
-PUT   http://{{host}}/Subscriptions/BE342E7C-1886-4808-A8BB-7C64BAAD9D21/Disable
+PUT   http://{{host}}/Subscriptions/FFF695B4-59BB-464F-8FD6-0D16B7A1FC98/Disable
 Content-Type: {{jsonContentType}}
 
 
 ###
-DELETE  http://{{host}}/Subscriptions/6ECDFA9B-13F3-4C7B-ADC4-719A7F4790C3
+DELETE  http://{{host}}/Subscriptions/FFF695B4-59BB-464F-8FD6-0D16B7A1FC98
 Content-Type: {{jsonContentType}}
 

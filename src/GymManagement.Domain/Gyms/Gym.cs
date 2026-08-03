@@ -22,10 +22,10 @@ public class Gym : Entity
 
     private Gym() { }
 
-    public ErrorOr<Success> UpdateGym(string name, string address)
+    public ErrorOr<Success> UpdateGym(string? name = null, string? address = null)
     {
-        Name = name;
-        Address = address;
+        Name = name ?? Name;
+        Address = address ?? Address;
 
         return Result.Success;
     } 

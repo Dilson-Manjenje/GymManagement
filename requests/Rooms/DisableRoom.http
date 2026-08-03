@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@roomId = 41f00c4b-1b38-41ec-a7a0-1ce5ed644c4c
+@roomId = 40a171f7-5230-4474-b49f-9cf25a50c9e0
 
 ###
 DELETE  http://{{host}}/Rooms/{{roomId}}
