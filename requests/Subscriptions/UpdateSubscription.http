@@ -35,6 +35,6 @@ Content-Type: {{jsonContentType}}
 
 
 ###
-DELETE  http://{{host}}/Subscriptions/FFF695B4-59BB-464F-8FD6-0D16B7A1FC98
+DELETE  http://{{host}}/Subscriptions/9CC2D8B6-805C-4015-8869-FEA6B616847D
 Content-Type: {{jsonContentType}}
 

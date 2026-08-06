@@ -13,9 +13,13 @@ public static class SubscriptionErrors
   description: $"SubscriptionType with name {name} is invalid.");
 
   public static Error CantDeleteActiveSubscription() => Error.Validation
-(code: "Member.CantDeleteActiveSubscription",
+(code: "Subscription.CantDeleteActiveSubscription",
  description: $"Can not delete active susbcription.");
-   
+
+  public static Error CantDeleteSubscriptionWithBookings(Guid id) => Error.Validation
+(code: "Subscription.CantDeleteSubscriptionWithBookings",
+ description: $"Can not delete susbcription with bookings '{id}'.");
+
   public static Error SubscriptionAlreadyExists() => Error.Conflict
   (code: "Subscription.AlreadyExists",
     description: $"Subscription with given details already exists.");
