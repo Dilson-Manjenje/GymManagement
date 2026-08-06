@@ -61,7 +61,7 @@ public class Session : Entity
                            startDate: startDate,
                            endDate: endDate);
     }
-    
+
     public ErrorOr<Success> Update(Guid roomId,
                                           Guid trainerId,
                                           string? title,
@@ -76,7 +76,11 @@ public class Session : Entity
 
         return Result.Success;
     }
-
+    
+    /// <summary>
+    /// Cancel the Session and related Bookings using Eventual Consistency (Session Canceled Event)
+    /// </summary>
+    /// <returns></returns>
     public ErrorOr<Success> Cancel()
     {
         if (!CanCancelSession())

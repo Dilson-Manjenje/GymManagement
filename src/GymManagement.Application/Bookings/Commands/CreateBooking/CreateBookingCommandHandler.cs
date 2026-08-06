@@ -61,7 +61,6 @@ public record CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand
         await _bookingsRepository.AddAsync(booking);        
         await _sessionsRepository.UpdateAsync(session);
         await _unitOfWork.CommitChangesAsync();
-        // Session Vacancy is decremented in Eventual Consistency manner by BookingCreatedEvent
 
         return booking.Id;
     }

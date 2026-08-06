@@ -27,6 +27,9 @@ public class Booking : Entity
         _domainEvents.Add(new BookingCreatedEvent(BookingId: Id, SessionId: sessionId));
     }
 
+    /// <summary>
+    /// Create booking and decrement Session vacancy using Booking Created Event 
+    /// </summary>
     public static ErrorOr<Booking> Create(Member member, Session session, Subscription activeSubscription)
     {
         if (session.Vacancy == 0)
@@ -40,10 +43,13 @@ public class Booking : Entity
 
         if (!activeSubscription.HasRoom(session.RoomId))
             return BookingErrors.SubscriptionDontHaveAccess(subscriptionId: activeSubscription.Id, roomId: session.RoomId);
-        
-        return new Booking(sessionId: session.Id, memberId: member.Id);      
+
+        return new Booking(sessionId: session.Id, memberId: member.Id);
     }
 
+    /// <summary>
+    /// Cancel booking and increment Session vacancy by Booking Canceled Event 
+    /// </summary>
     public ErrorOr<Success> Cancel()
     {
         if (BookingStatus.NonCancelableStatus.Contains(Status))
