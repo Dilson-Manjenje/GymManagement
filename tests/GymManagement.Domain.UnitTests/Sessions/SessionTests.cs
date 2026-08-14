@@ -9,168 +9,130 @@ namespace GymManagement.Domain.UnitTests.Sessions;
 
 public class SessionTests
 {
-    [Fact]
-    public void CreateSession_ShouldSetStatusToScheduled()
+    // TODO: Add Session.Create() to a SetUp method~
+    private Session _session;
+
+    // Runs BEFORE each test (NUnit [SetUp])
+    public SessionTests()
     {
-        // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
+        _session = Session.Create(roomId: Constants.Rooms.KickBoxingRoomId,
                                   trainerId: Constants.Trainers.Id,
                                   title: Constants.Sessions.Title,
                                   capacity: Constants.Rooms.Capacity,
                                   vacancy: Constants.Rooms.Capacity,
                                   startDate: Constants.Sessions.StartDate,
                                   endDate: Constants.Sessions.EndDate);
+    }
 
+    // Runs AFTER each test (NUnit [TearDown])
+    // public void Dispose(){}
+    
+    [Fact]
+    public void CreateSession_ShouldSetStatusToScheduled()
+    {
+        // Arrange
         // Assert
-        session.Status.Should().Be(SessionStatus.Scheduled);
+        _session.Status.Should().Be(SessionStatus.Scheduled);
     }
 
      [Fact]
     public void CreateSession_SetCapacityCorrectly()
     {
-        // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
-                                  trainerId: Constants.Trainers.Id,
-                                  title: Constants.Sessions.Title,
-                                  capacity: Constants.Rooms.Capacity,
-                                  vacancy: Constants.Rooms.Capacity,
-                                  startDate: Constants.Sessions.StartDate,
-                                  endDate: Constants.Sessions.EndDate);
-
+       
         // Assert
-        session.Capacity.Should().Be(Constants.Rooms.Capacity);
-        session.Vacancy.Should().Be(Constants.Rooms.Capacity);
+        _session.Capacity.Should().Be(Constants.Rooms.Capacity);
+        _session.Vacancy.Should().Be(Constants.Rooms.Capacity);
     }
 
     [Fact]
     public void Cancel_ActiveSession_ChangeStatusToCanceled()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
-                                 trainerId: Constants.Trainers.Id,
-                                 title: Constants.Sessions.Title,
-                                 capacity: Constants.Rooms.Capacity,
-                                 vacancy: Constants.Rooms.Capacity,
-                                 startDate: Constants.Sessions.StartDate,
-                                 endDate: Constants.Sessions.EndDate);
-
+     
         // Act 
-        var result = session.Cancel();
+        var result = _session.Cancel();
 
         // Assert
         result.IsError.Should().BeFalse();
-        session.Status.Should().Be(SessionStatus.Canceled);
+        _session.Status.Should().Be(SessionStatus.Canceled);
     }
 
-    // TODO: Test Session cancelection side effect all active bookings are Cancelled
+    // TODO: Test Session canceletion side effect all active bookings are Canceled
     [Fact]
     public void Cancel_ShouldRaiseSessionCanceledDomainEvent()
     {
         // Arrange        
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
-                                  trainerId: Constants.Trainers.Id,
-                                  title: Constants.Sessions.Title,
-                                  capacity: Constants.Rooms.Capacity,
-                                  vacancy: Constants.Rooms.Capacity,
-                                  startDate: Constants.Sessions.StartDate,
-                                  endDate: Constants.Sessions.EndDate);
-
+       
         // Act
-        var canceledResult = session.Cancel();
+        var canceledResult = _session.Cancel();
            
-        var domainEvent = session.PopAndClearDomainEvents()
+        var domainEvent = _session.PopAndClearDomainEvents()
                                     .OfType<SessionCanceledEvent>()
                                     .SingleOrDefault();
         // Assert 
         canceledResult.IsError.Should().BeFalse();
         domainEvent.Should().NotBeNull();
-        domainEvent?.SessionId.Should().Be(session.Id);
+        domainEvent?.SessionId.Should().Be(_session.Id);
     }
     
     [Fact]
     public void Cancel_SessionInNonCancelableStatus_ReturnCantChangeSessionError()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
-                                  trainerId: Constants.Trainers.Id,
-                                  title: Constants.Sessions.Title,
-                                  capacity: Constants.Rooms.Capacity,
-                                  vacancy: Constants.Rooms.Capacity,
-                                  startDate: Constants.Sessions.StartDate,
-                                  endDate: Constants.Sessions.EndDate);
-        session.Cancel();
+  
+        _session.Cancel();
 
         // Act 
-        var result = session.Cancel();
+        var result = _session.Cancel();
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(SessionErrors.CantChangeSession(session.Id));
+        result.FirstError.Should().Be(SessionErrors.CantChangeSession(_session.Id));
     }
 
     [Fact]
     public void Finalize_ActiveSession_ChangeStatusToFinalized()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
-                                  trainerId: Constants.Trainers.Id,
-                                  title: Constants.Sessions.Title,
-                                  capacity: Constants.Rooms.Capacity,
-                                  vacancy: Constants.Rooms.Capacity,
-                                  startDate: Constants.Sessions.StartDate,
-                                  endDate: Constants.Sessions.EndDate);
 
         // Act 
-        var result = session.Finalize();
+        var result = _session.Finalize();
 
         // Assert
         result.IsError.Should().BeFalse();
-        session.Status.Should().Be(SessionStatus.Finalized);
+        _session.Status.Should().Be(SessionStatus.Finalized);
     }
     
      [Fact]
     public void Finalize_ShouldRaiseSessionFinalizedDomainEvent()
     {
         // Arrange        
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
-                                  trainerId: Constants.Trainers.Id,
-                                  title: Constants.Sessions.Title,
-                                  capacity: Constants.Rooms.Capacity,
-                                  vacancy: Constants.Rooms.Capacity,
-                                  startDate: Constants.Sessions.StartDate,
-                                  endDate: Constants.Sessions.EndDate);
 
         // Act
-        var finalized = session.Finalize();
+        var finalized = _session.Finalize();
            
-        var domainEvent = session.PopAndClearDomainEvents()
+        var domainEvent = _session.PopAndClearDomainEvents()
                                     .OfType<SessionFinalizedEvent>()
                                     .SingleOrDefault();
         // Assert 
         finalized.IsError.Should().BeFalse();
         domainEvent.Should().NotBeNull();
-        domainEvent?.SessionId.Should().Be(session.Id);
+        domainEvent?.SessionId.Should().Be(_session.Id);
     }
     
     [Fact]
     public void Finalize_SessionInNonCancelableStatus_ReturnCantChangeSessionError()
     {
         // Arrange
-        var session = Session.Create(roomId: Constants.Rooms.NewId,
-                                  trainerId: Constants.Trainers.Id,
-                                  title: Constants.Sessions.Title,
-                                  capacity: Constants.Rooms.Capacity,
-                                  vacancy: Constants.Rooms.Capacity,
-                                  startDate: Constants.Sessions.StartDate,
-                                  endDate: Constants.Sessions.EndDate);
-        session.Finalize();
+
+        _session.Finalize();
 
         // Act 
-        var result = session.Finalize();
+        var result = _session.Finalize();
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(SessionErrors.CantChangeSession(session.Id));
+        result.FirstError.Should().Be(SessionErrors.CantChangeSession(_session.Id));
     }
     
 }
