@@ -34,7 +34,7 @@ public class ValidationBehaviorTests
     public async Task InvokeBehavior_WhenValidatorResultIsValid_ShouldInvokeNextBehavior()
     {
         // Arrange 
-        var createGymRequest = GymCommandFactory.CreateGymCommand();
+        var createGymRequest = GymCommandFactory.GetCreateGymCommand();
         var gym = GymFactory.CreateGym();
 
         _mockValidator
@@ -57,7 +57,7 @@ public class ValidationBehaviorTests
     public async Task InvokeBehavior_WhenValidatorResultIsNotValid_ShouldReturnListOfErrors()
     {
         // Arrange 
-        var createGymRequest = GymCommandFactory.CreateGymCommand();
+        var createGymRequest = GymCommandFactory.GetCreateGymCommand();
         List<ValidationFailure> validationFailures = [new(propertyName: "Name", errorMessage: "Name is required.")];
 
         var gym = GymFactory.CreateGym("","b");

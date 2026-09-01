@@ -25,12 +25,12 @@ public class CreateMemberCommandValidator : AbstractValidator<CreateMemberComman
 
         RuleFor( c => c)
             .MustAsync(NotExistWithSameUserName)
+            .WithErrorCode("UserName")
             .WithMessage("Informed User Name already exist in the Gym.");
     }
 
     private async Task<bool> NotExistWithSameUserName(CreateMemberCommand command, CancellationToken token)
     {
-        // HACK: Only allow create members with Gym 
         var members = await _membersRepository.ListByGymAsync(command.GymId);
         var member = members?.SingleOrDefault(m => m.UserName.Equals(command.UserName, StringComparison.InvariantCultureIgnoreCase));
 

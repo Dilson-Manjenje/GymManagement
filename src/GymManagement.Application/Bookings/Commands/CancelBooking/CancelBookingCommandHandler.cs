@@ -40,7 +40,6 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
         
         await _bookingsRepository.UpdateAsync(booking);
         await _unitOfWork.CommitChangesAsync();
-        // Session Vacancy is incremented in Eventual Consistency manner by BookingCanceledEvent
         
         return booking.Id;
     }

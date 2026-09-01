@@ -10,7 +10,7 @@ using TestCommon.Rooms;
 using TestCommon.Subscriptions;
 using TestCommon.TestConstants;
 
-namespace GymManagement.Domain.UnitTests.BookingTests;
+namespace GymManagement.Domain.UnitTests.Bookings;
 
 public class BookingTests
 {
@@ -91,6 +91,7 @@ public class BookingTests
     public void Create_WithinSessionCapacity_SetVacancyCorrectly()
     {
         // Act
+        // TODO: Move test do Application Level
         var result1 = Booking.Create(_member, _session, _subscription);
         _session.DecrementVacancy();
         var result2 = Booking.Create(_member, _session, _subscription);

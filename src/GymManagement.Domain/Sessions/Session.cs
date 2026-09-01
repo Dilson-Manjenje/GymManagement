@@ -76,7 +76,7 @@ public class Session : Entity
 
         return Result.Success;
     }
-    
+
     /// <summary>
     /// Cancel the Session and related Bookings using Eventual Consistency (Session Canceled Event)
     /// </summary>
@@ -87,11 +87,15 @@ public class Session : Entity
             return SessionErrors.CantChangeSession(id: Id);
 
         Status = SessionStatus.Canceled;
-        _domainEvents.Add(new SessionCanceledEvent(SessionId: Id));     
-        
+        _domainEvents.Add(new SessionCanceledEvent(SessionId: Id));
+
         return Result.Success;
     }
 
+    /// <summary>
+    /// Finalize Session and related Bookings using Eventual Consistency (Session Finalized Event)
+    /// </summary>
+    /// <returns></returns>
     public ErrorOr<Success> Finalize()
     {
         if (!CanCancelSession())

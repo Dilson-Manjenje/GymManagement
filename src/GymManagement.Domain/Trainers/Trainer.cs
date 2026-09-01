@@ -13,7 +13,7 @@ public class Trainer : Entity
     public string? Email { get; private set; } = null;
     public string Specialization { get; private set; } = string.Empty;
     public bool IsActive { get; private set; } = true;
-    public Guid GymId { get; private set; }
+    public Guid GymId { get; private set; } 
     public Gym Gym { get; private set; } = null!;
     public Guid MemberId { get; private set; }
     public Member Member { get; private set; } = null!;
@@ -38,8 +38,6 @@ public class Trainer : Entity
 
     public ErrorOr<Success> RemoveTrainer()
     {
-        // TODO: Check if Has Booked sessions
-          
         IsActive = false;
 
         return Result.Success;

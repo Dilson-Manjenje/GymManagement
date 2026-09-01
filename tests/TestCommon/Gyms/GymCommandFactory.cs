@@ -5,7 +5,7 @@ namespace TestCommon.Gyms;
 
 public static class GymCommandFactory
 {
-    public static CreateGymCommand CreateGymCommand(string? name = null, string? address = null)
+    public static CreateGymCommand GetCreateGymCommand(string? name = null, string? address = null)
     {
         return new CreateGymCommand(Name: name!,
                                     Address: address!);
