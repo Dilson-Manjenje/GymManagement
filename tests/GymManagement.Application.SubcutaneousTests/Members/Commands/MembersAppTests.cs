@@ -27,7 +27,7 @@ public class MembersAppTests(MediatorFactory mediatorFactory)
     {
         var gym = await CreateGym();
 
-        var command = MemberCommandFactory.CreateMemberCommand(gymId: gym.Id,
+        var command = MemberCommandFactory.GetCreateMemberCommand(gymId: gym.Id,
                                                                             userName: "memberUserName",
                                                                             password: "Abc123");
         var result = await _mediator.Send(command);
@@ -40,7 +40,7 @@ public class MembersAppTests(MediatorFactory mediatorFactory)
     private async Task<GymDto> CreateGym(string? name = null)
     {
         var gymName = name ?? Constants.Gyms.Name;
-        var createGymCommand = GymCommandFactory.CreateGymCommand(gymName, Constants.Gyms.Address);
+        var createGymCommand = GymCommandFactory.GetCreateGymCommand(gymName, Constants.Gyms.Address);
         var createGymResult = await _mediator.Send(createGymCommand);
 
         var gym = await _mediator.Send(new GetGymQuery(GymId: createGymResult.Value));
@@ -57,7 +57,7 @@ public class MembersAppTests(MediatorFactory mediatorFactory)
     {
         var gymId = Guid.NewGuid();
 
-        var command = MemberCommandFactory.CreateMemberCommand(gymId: gymId,
+        var command = MemberCommandFactory.GetCreateMemberCommand(gymId: gymId,
                                                                 userName: "UserName1",
                                                                 password: "Abc123");
         var result = await _mediator.Send(command);
@@ -78,7 +78,7 @@ public class MembersAppTests(MediatorFactory mediatorFactory)
         var userName = new string('a', userNameLength);
         var gym = await CreateGym();
 
-        var command = MemberCommandFactory.CreateMemberCommand(gymId: gym.Id,
+        var command = MemberCommandFactory.GetCreateMemberCommand(gymId: gym.Id,
                                                                 userName: userName,
                                                                 password: "Abc123");
         var result = await _mediator.Send(command);
@@ -94,13 +94,13 @@ public class MembersAppTests(MediatorFactory mediatorFactory)
     {
         var gym = await CreateGym();
 
-        var command = MemberCommandFactory.CreateMemberCommand(gymId: gym.Id,
+        var command = MemberCommandFactory.GetCreateMemberCommand(gymId: gym.Id,
                                                                 userName: "UserName1",
                                                                 password: "Abc123");
         var result = await _mediator.Send(command);
         result.IsError.Should().BeFalse();
 
-        var command2 = MemberCommandFactory.CreateMemberCommand(gymId: gym.Id,
+        var command2 = MemberCommandFactory.GetCreateMemberCommand(gymId: gym.Id,
                                                                 userName: "UserName1",
                                                                 password: "123User1");
 

@@ -51,14 +51,15 @@ namespace GymManagement.Domain.Subscriptions
 
         public ErrorOr<Success> AddRoom(Guid roomId)
         {
+            if (!IsActive)
+                return SubscriptionErrors.CantChangeExpiredSubscription();
+                
             if (HasRoom(roomId))
                 return SubscriptionErrors.RoomAlreadyAssociated(roomId);
 
             if (NumberOfRooms >= MaxRoomsAllowed)
                 return SubscriptionErrors.HasMaxRoomsAllowed();
 
-            if (!IsActive)
-                return SubscriptionErrors.CantChangeExpiredSubscription();
 
             var subRoom = new SubscriptionRooms(Id, roomId);
             SubscriptionRooms.Add(subRoom);
@@ -74,11 +75,11 @@ namespace GymManagement.Domain.Subscriptions
         
         public ErrorOr<Success> RemoveRoom(Guid roomId)
         {
-            if (!HasRoom(roomId))
-                return SubscriptionErrors.RoomNotInSubscription(roomId);
-
-            if (!IsActive)
+            if (!IsActive) 
                 return SubscriptionErrors.CantChangeExpiredSubscription();
+            
+            if (!HasRoom(roomId)) 
+                return SubscriptionErrors.RoomNotInSubscription(roomId);
                 
             SubscriptionRooms.Remove(SubscriptionRooms.Single(sr => sr.RoomId == roomId));
 

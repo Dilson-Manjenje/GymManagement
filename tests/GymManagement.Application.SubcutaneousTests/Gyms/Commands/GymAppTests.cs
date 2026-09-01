@@ -15,7 +15,7 @@ public class GymAppTests(MediatorFactory mediatorFactory)
     {
         // Arrange 
         var gym = GymFactory.CreateGym();
-        var createGymCommand = GymCommandFactory.CreateGymCommand(gym.Name, gym.Address);
+        var createGymCommand = GymCommandFactory.GetCreateGymCommand(gym.Name, gym.Address);
 
         // Act
         var result = await _mediator.Send(createGymCommand);
@@ -34,7 +34,7 @@ public class GymAppTests(MediatorFactory mediatorFactory)
         var gymName = new string('a', nameLength);
 
         // Arrange 
-        var createGymCommand = GymCommandFactory.CreateGymCommand(name: gymName, null);
+        var createGymCommand = GymCommandFactory.GetCreateGymCommand(name: gymName, null);
 
         // Act
         var result = await _mediator.Send(createGymCommand);
@@ -53,7 +53,7 @@ public class GymAppTests(MediatorFactory mediatorFactory)
     {        
         // Arrange 
         var address = new string('a', addressLength);
-        var createGymCommand = GymCommandFactory.CreateGymCommand(name: "Quibuma", address);
+        var createGymCommand = GymCommandFactory.GetCreateGymCommand(name: "Quibuma", address);
 
         // Act
         var result = await _mediator.Send(createGymCommand);

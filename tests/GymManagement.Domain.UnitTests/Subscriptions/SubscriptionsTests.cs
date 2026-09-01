@@ -12,25 +12,15 @@ public class SubscriptionsTests
 {
 
     [Fact]
-    public void Create_ShouldCreateActiveSubscription()
+    public void Create_WithValidData_CreateActiveSubscription()
     {
         var subscription = new Subscription(subscriptionType: Constants.Subscriptions.DefaultSubscriptionType,
                                             memberId: Constants.Members.NewId);
 
         // Assert
         subscription.IsActive.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Create_Subscription_ShouldSetCorrectEndDate()
-    {
-        // Arrange
-        var subscription = new Subscription(subscriptionType: Constants.Subscriptions.DefaultSubscriptionType,
-                                            memberId: Constants.Members.NewId);
-
-        // Assert
         subscription.EndDate.Should().Be(subscription.StartDate.AddDays(subscription.SubscriptionType.DurationInDays));
-    }
+    }   
 
     [Fact]
     public void Disable_ActiveSubscription_ChangeIsActiveToFalse()
@@ -63,7 +53,7 @@ public class SubscriptionsTests
 
 
     [Fact]
-    public void Disable_InactiveSubscription_ReturnCantChangeExpiredSubscriptionError()
+    public void Disable_ExpiredSubscription_ReturnCantChangeExpiredSubscriptionError()
     {        
         var subscription = SubscriptionFactory.CreateSubscription(type: SubscriptionType.Plus,
                                                                   memberId: Constants.Members.FightStudent1);

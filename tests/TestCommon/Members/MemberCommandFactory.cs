@@ -4,7 +4,7 @@ namespace TestCommon.Members;
 
 public static class MemberCommandFactory
 {
-    public static CreateMemberCommand CreateMemberCommand(Guid gymId, string? userName = null, string? password = null )
+    public static CreateMemberCommand GetCreateMemberCommand(Guid gymId, string? userName = null, string? password = null )
     {
         return new CreateMemberCommand(UserName: userName!,
                                        Password: password!,

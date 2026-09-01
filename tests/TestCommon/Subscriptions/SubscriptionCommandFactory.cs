@@ -6,7 +6,7 @@ namespace TestCommon.Subscriptions;
 
 public static class SubscriptionCommandFactory
 {
-    public static CreateSubscriptionCommand CreateCreateSubscriptionCommand(SubscriptionType? type = null,
+    public static CreateSubscriptionCommand GetCreateSubscriptionCommand(SubscriptionType? type = null,
                                                   Guid? memberId = null)
     {
         return new CreateSubscriptionCommand(
