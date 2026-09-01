@@ -16,7 +16,7 @@ public static class SubscriptionFactory
             memberId: memberId ?? Constants.Members.AdminId,
             id: id ?? Constants.Subscriptions.NewId
         );
-        
+
         return subs;
     }
 }

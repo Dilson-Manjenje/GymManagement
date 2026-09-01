@@ -61,6 +61,7 @@ public class SubscriptionsTests
         domainEvent?.SubscriptionId.Should().Be(subscription.Id);
     }
 
+
     [Fact]
     public void Disable_InactiveSubscription_ReturnCantChangeExpiredSubscriptionError()
     {        

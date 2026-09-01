@@ -27,9 +27,6 @@ public class UpdateSubscriptionCommandHandler : IRequestHandler<UpdateSubscripti
         if (subscription is null)
             return SubscriptionErrors.SubscriptionNotFound(command.Id);
 
-        if (!subscription.IsActive)
-            return SubscriptionErrors.CantChangeExpiredSubscription();
-            
         var result = subscription.Update(command.SubscriptionType);
         
         if (result.IsError)

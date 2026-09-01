@@ -18,7 +18,8 @@ public class CreateGymCommandValidator : AbstractValidator<CreateGymCommand>
             .MaximumLength(60).WithMessage("'{PropertyName}' must have at most {MaxLength} characters.");
 
         RuleFor(g => g.Address)
-            .NotEmpty().WithMessage("'{PropertyName}' é obrigatório.")
+            .NotEmpty().WithMessage("'{PropertyName}' is required.")
+            .MinimumLength(5).WithMessage("'{PropertyName}' must have at least {MinLength} characters.")
             .MaximumLength(100).WithMessage("'{PropertyName}' must have '{MaxLength}' characteres maximum.");
 
         RuleFor(g => g)

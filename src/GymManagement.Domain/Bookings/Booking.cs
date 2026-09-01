@@ -48,7 +48,7 @@ public class Booking : Entity
     }
 
     /// <summary>
-    /// Cancel booking and increment Session vacancy by Booking Canceled Event 
+    /// Cancel booking and increment Session vacancy using Eventual Consistency (Booking Canceled Event)
     /// </summary>
     public ErrorOr<Success> Cancel()
     {

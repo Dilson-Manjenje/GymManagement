@@ -35,7 +35,6 @@ public class FinalizeSessionCommandHandler : IRequestHandler<FinalizeSessionComm
 
         await _sessionsRepository.UpdateAsync(session);
         await _unitOfWork.CommitChangesAsync();
-        // Bookings are finalized in Eventual Consistency manner by SessionFinalizedEvent    
         
         return session.Id;
     }
