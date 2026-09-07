@@ -17,10 +17,10 @@ public class GetBookingQueryHandler : IRequestHandler<GetBookingQuery, ErrorOr<B
 
     public async Task<ErrorOr<BookingDto>> Handle(GetBookingQuery query, CancellationToken cancellationToken)
     {
-        var booking = await _bookingsRepository.GetByIdAsync(query.BookingId);
+        var booking = await _bookingsRepository.GetByIdAsync(query.Id);
 
         return (booking is null)
-            ? BookingErrors.BookingNotFound(query.BookingId)
+            ? BookingErrors.BookingNotFound(query.Id)
             : BookingDto.MapToDto(booking);
     }
 }

@@ -28,7 +28,7 @@ public class BookingEntityConfiguration : IEntityTypeConfiguration<Booking>
              .WithMany()
              .HasForeignKey(x => x.SessionId)
              .IsRequired(true)
-             .OnDelete(DeleteBehavior.Restrict); // Prevents session room with booking 
+             .OnDelete(DeleteBehavior.Restrict); // Prevents delete session room with booking 
              
          builder.Property(x => x.Status)
                        .HasConversion(

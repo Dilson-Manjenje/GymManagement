@@ -33,7 +33,7 @@ public static class SessionErrors
 
   public static Error CantChangeGym() => Error.Validation
   (code: "Session.CantChangeGym",
-      description: $"Cant change Gym of the Session, selected a Room from same Gym.");
+      description: $"Cant change Gym of the Session, select a Room from same Gym.");
   
       
 }

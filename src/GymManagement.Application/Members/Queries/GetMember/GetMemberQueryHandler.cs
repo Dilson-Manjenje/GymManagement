@@ -21,10 +21,10 @@ public class GetMemberQueryHandler : IRequestHandler<GetMemberQuery, ErrorOr<Mem
 
     public async Task<ErrorOr<MemberDto>> Handle(GetMemberQuery query, CancellationToken cancellationToken)
     {
-        var member = await _membersRepository.GetByIdAsync(query.MemberId);
+        var member = await _membersRepository.GetByIdAsync(query.Id);
     
         return (member is null)
-           ? MemberErrors.MemberNotFound(query.MemberId)
+           ? MemberErrors.MemberNotFound(query.Id)
            : MemberDto.MapToDto(member);
     }
 }

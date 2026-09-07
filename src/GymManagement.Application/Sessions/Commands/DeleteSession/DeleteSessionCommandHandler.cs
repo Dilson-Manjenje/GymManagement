@@ -2,7 +2,6 @@ using ErrorOr;
 using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Sessions;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 
 namespace GymManagement.Application.Sessions.Commands.DeleteSession;
 

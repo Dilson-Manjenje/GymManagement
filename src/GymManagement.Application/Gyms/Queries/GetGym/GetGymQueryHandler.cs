@@ -17,11 +17,11 @@ public class GetGymQueryHandler : IRequestHandler<GetGymQuery, ErrorOr<GymDto>>
 
     public async Task<ErrorOr<GymDto>> Handle(GetGymQuery query, CancellationToken cancellationToken)
     {
-        var gym = await _gymsRepository.GetByIdAsync(query.GymId);
+        var gym = await _gymsRepository.GetByIdAsync(query.Id);
 
         // TODO: Make repoository return Dto on reading
         return (gym is null)
-            ? GymErrors.GymNotFound(query.GymId)
+            ? GymErrors.GymNotFound(query.Id)
             : GymDto.MapToDto(gym);
     }
 }

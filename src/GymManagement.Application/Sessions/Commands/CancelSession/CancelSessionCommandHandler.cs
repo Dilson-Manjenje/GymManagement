@@ -24,9 +24,9 @@ public class CancelSessionCommandHandler : IRequestHandler<CancelSessionCommand,
 
     public async Task<ErrorOr<Guid>> Handle(CancelSessionCommand command, CancellationToken cancellationToken)
     {
-        var session = await _sessionsRepository.GetByIdAsync(command.SessionId);
+        var session = await _sessionsRepository.GetByIdAsync(command.Id);
         if (session is null)
-            return SessionErrors.SessionNotFound(command.SessionId);
+            return SessionErrors.SessionNotFound(command.Id);
 
         var result = session.Cancel();
 

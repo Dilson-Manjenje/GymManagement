@@ -33,6 +33,10 @@ public class SessionTests
         // Arrange
         // Assert
         _session.Status.Should().Be(SessionStatus.Scheduled);
+        _session.Id.Should().NotBeEmpty();
+        _session.Vacancy.Should().Be(Constants.Rooms.Capacity);
+        _session.Capacity.Should().Be(Constants.Rooms.Capacity);        
+
     }
 
      [Fact]

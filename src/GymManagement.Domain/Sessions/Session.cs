@@ -10,7 +10,7 @@ namespace GymManagement.Domain.Sessions;
 
 public class Session : Entity
 {
-    private DateTime _now = DateTime.Now;
+    private DateTime _now = DateTime.Now; // TODO: Inject IDateTimeProvider
 
     public string Title { get; private set; } = null!;        
     public DateTime StartDate { get; private set; }

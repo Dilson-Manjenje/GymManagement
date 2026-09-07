@@ -24,9 +24,9 @@ public class FinalizeSessionCommandHandler : IRequestHandler<FinalizeSessionComm
 
     public async Task<ErrorOr<Guid>> Handle(FinalizeSessionCommand command, CancellationToken cancellationToken)
     {
-        var session = await _sessionsRepository.GetByIdAsync(command.SessionId);
+        var session = await _sessionsRepository.GetByIdAsync(command.Id);
         if (session is null)
-            return SessionErrors.SessionNotFound(command.SessionId);
+            return SessionErrors.SessionNotFound(command.Id);
 
         var result = session.Finalize();
 

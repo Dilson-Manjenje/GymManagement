@@ -3,4 +3,4 @@ using MediatR;
 
 namespace GymManagement.Application.Sessions.Commands.CancelSession;
 
-public record CancelSessionCommand(Guid SessionId) : IRequest<ErrorOr<Guid>>;
+public record CancelSessionCommand(Guid Id) : IRequest<ErrorOr<Guid>>;

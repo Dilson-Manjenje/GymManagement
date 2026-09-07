@@ -3,4 +3,4 @@ using MediatR;
 
 namespace GymManagement.Application.Sessions.Commands.FinalizeSession;
 
-public record FinalizeSessionCommand(Guid SessionId) : IRequest<ErrorOr<Guid>>;
+public record FinalizeSessionCommand(Guid Id) : IRequest<ErrorOr<Guid>>;

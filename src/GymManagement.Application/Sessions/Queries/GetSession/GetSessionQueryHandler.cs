@@ -17,10 +17,10 @@ public class GetSessionQueryHandler : IRequestHandler<GetSessionQuery, ErrorOr<S
 
     public async Task<ErrorOr<SessionDto>> Handle(GetSessionQuery query, CancellationToken cancellationToken)
     {
-        var session = await _sessionsRepository.GetByIdAsync(query.SessionId);
+        var session = await _sessionsRepository.GetByIdAsync(query.Id);
 
         return (session is null)
-            ? SessionErrors.SessionNotFound(query.SessionId)
+            ? SessionErrors.SessionNotFound(query.Id)
             : SessionDto.MapToDto(session);
     }
 }

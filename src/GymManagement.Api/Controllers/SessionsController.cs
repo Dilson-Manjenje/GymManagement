@@ -111,7 +111,7 @@ public class SessionsController : ApiBaseController
   [HttpPut("{sessionId:guid}/Cancel")]
   public async Task<IActionResult> Cancel([FromRoute] Guid sessionId)
   {
-    var result = await _mediator.Send(new CancelSessionCommand(SessionId: sessionId));
+    var result = await _mediator.Send(new CancelSessionCommand(Id: sessionId));
 
     return result.MatchFirst(
       id => Ok(new { id = id }),
@@ -121,7 +121,7 @@ public class SessionsController : ApiBaseController
   [HttpPut("{sessionId:guid}/Finalize")]
   public async Task<IActionResult> Finalize([FromRoute] Guid sessionId)
   {
-    var result = await _mediator.Send(new FinalizeSessionCommand(SessionId: sessionId));
+    var result = await _mediator.Send(new FinalizeSessionCommand(Id: sessionId));
 
     return result.MatchFirst<IActionResult>(
      id => Ok(new { id = id }),

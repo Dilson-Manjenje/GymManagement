@@ -49,15 +49,13 @@ public class UpdateSessionCommandHandler : IRequestHandler<UpdateSessionCommand,
         var startTime = command.StartDate ?? session.StartDate;
         var endTime = command.EndDate ?? session.EndDate;
 
-        // TODO: Should allow update, if the overlapping is on the same session?
-         
-        if (command.StartDate.HasValue && command.EndDate.HasValue)
-            if (await _roomsRepository.RoomHasOverlappingSession(roomId: command.RoomId,
-                                                           command.StartDate.Value,
-                                                           command.EndDate.Value))
+        // TODO: Should allow update, if the overlapping is on the same session?        
+        if (await _roomsRepository.RoomHasOverlappingSession(roomId: command.RoomId,
+                                                       startTime,
+                                                       endTime))
 
-                return RoomErrors.RoomHasOverlappingSession();
-            
+            return RoomErrors.RoomHasOverlappingSession();
+
         var result = session.Update(roomId: command.RoomId,
                               trainerId: command.TrainerId,
                               title: command.Title,

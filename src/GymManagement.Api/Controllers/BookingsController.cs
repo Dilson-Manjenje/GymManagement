@@ -37,7 +37,7 @@ public class BookingsController : ApiBaseController
   [HttpGet("{id:guid}")]
   public async Task<IActionResult> GetBooking(Guid id)
   {
-    var result = await _mediator.Send(new GetBookingQuery(BookingId: id));
+    var result = await _mediator.Send(new GetBookingQuery(Id: id));
 
     return result.MatchFirst(
       booking => Ok(ContractMappings.MapToBookingResponse(booking)),
