@@ -17,10 +17,10 @@ public class GetRoomQueryHandler : IRequestHandler<GetRoomQuery, ErrorOr<RoomDto
     
     public async Task<ErrorOr<RoomDto>> Handle(GetRoomQuery query, CancellationToken cancellationToken)
     {
-        var room = await _roomsRepository.GetByIdAsync(query.RoomId);
+        var room = await _roomsRepository.GetByIdAsync(query.Id);
 
         return (room is null)
-            ? RoomErrors.RoomNotFound(query.RoomId)
+            ? RoomErrors.RoomNotFound(query.Id)
             : RoomDto.MapToDto(room);
     }
 }

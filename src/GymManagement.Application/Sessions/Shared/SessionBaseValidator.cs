@@ -14,13 +14,11 @@ public class SessionBaseValidator : AbstractValidator<SessionBaseCommand>
 
         RuleFor(x => x.StartDate)
             .GreaterThanOrEqualTo(DateTime.Now)
-                .When(x => x.StartDate != null)
+                .When(x => x.StartDate != null, ApplyConditionTo.CurrentValidator)
                 .WithMessage("'{PropertyName}' must be greater than now.")            
             .LessThan(x => x.EndDate)
-                .When(x => x.StartDate != null && x.EndDate != null)
+                .When(x => x.StartDate != null && x.EndDate != null, ApplyConditionTo.CurrentValidator)
                 .WithMessage("'{PropertyName}' must be less than {ComparisonProperty}.")
-            // .GreaterThanOrEqualTo(DateTime.Today)
-            //     .WithMessage("'{PropertyName}' must be today or later.")
             .Must(date => date == null || date.Value.TimeOfDay <= TimeSpan.FromHours(22)) // 22 is a local business rule, not UTC
                 .WithMessage("Session must start at or before 22:00.");
     }

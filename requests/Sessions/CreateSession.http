@@ -31,8 +31,8 @@ Content-Type: application/json
     "roomId": "{{fightKickRoom}}", 
     "trainerId": "{{fightMt1}}",
     "title": "KickBoxing Treino da Tarde",
-    "startDate":"2026-08-03T14:00",
-    "endDate":"2026-08-03T16:00"
+    "startDate":"2026-09-07T08:00",
+    "endDate":"2026-09-07T10:00"
 }
 
 ###

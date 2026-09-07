@@ -91,7 +91,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         var createGymCommand = GymCommandFactory.GetCreateGymCommand(gymName, Constants.Gyms.Address);
         var createGymResult = await _mediator.Send(createGymCommand);
 
-        var queryResult = await _mediator.Send(new GetGymQuery(GymId: createGymResult.Value));
+        var queryResult = await _mediator.Send(new GetGymQuery(Id: createGymResult.Value));
 
         // Assert
         createGymResult.IsError.Should().BeFalse();
@@ -107,7 +107,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
                                                                             password: "Abc123");
         var createMemberResult = await _mediator.Send(createMemberCommand);
 
-        var queryResult = await _mediator.Send(new GetMemberQuery(MemberId: createMemberResult.Value));
+        var queryResult = await _mediator.Send(new GetMemberQuery(Id: createMemberResult.Value));
 
 
         // Assert
@@ -280,7 +280,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         result.IsError.Should().BeFalse();
         result.Value.Should().NotBeEmpty();
 
-        var queryResult = await _mediator.Send(new GetRoomQuery(RoomId: result.Value));
+        var queryResult = await _mediator.Send(new GetRoomQuery(Id: result.Value));
         result.IsError.Should().BeFalse();
         result.Value.Should().NotBeEmpty();
 
@@ -435,7 +435,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
                                                                             
         var result = await _mediator.Send(command);
 
-        var queryResult = await _mediator.Send(new GetBookingQuery(BookingId: result.Value));
+        var queryResult = await _mediator.Send(new GetBookingQuery(Id: result.Value));
 
         // Assert
         result.IsError.Should().BeFalse();
@@ -450,7 +450,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
                                                                             
         var result = await _mediator.Send(command);
 
-        var queryResult = await _mediator.Send(new GetSessionQuery(SessionId: result.Value));
+        var queryResult = await _mediator.Send(new GetSessionQuery(Id: result.Value));
 
 
         // Assert
@@ -470,7 +470,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
                                                                             
         var result = await _mediator.Send(command);
 
-        var queryResult = await _mediator.Send(new GetTrainerQuery(TrainerId: result.Value));
+        var queryResult = await _mediator.Send(new GetTrainerQuery(Id: result.Value));
 
 
         // Assert

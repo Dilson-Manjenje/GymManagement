@@ -4,4 +4,4 @@ using MediatR;
 
 namespace GymManagement.Application.Trainers.Queries.GetTrainer;
 
-public sealed record GetTrainerQuery(Guid TrainerId): IRequest<ErrorOr<TrainerDto>>;
+public sealed record GetTrainerQuery(Guid Id): IRequest<ErrorOr<TrainerDto>>;

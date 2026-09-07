@@ -21,10 +21,10 @@ public class GetTrainerQueryHandler : IRequestHandler<GetTrainerQuery, ErrorOr<T
 
     public async Task<ErrorOr<TrainerDto>> Handle(GetTrainerQuery query, CancellationToken cancellationToken)
     {
-        var trainer = await _trainerRepository.GetByIdAsync(query.TrainerId);
+        var trainer = await _trainerRepository.GetByIdAsync(query.Id);
 
         return (trainer is null)
-            ? TrainerErrors.TrainerNotFound(query.TrainerId)
+            ? TrainerErrors.TrainerNotFound(query.Id)
             : TrainerDto.MapToDto(trainer);
     }
 }

@@ -43,7 +43,7 @@ public class MembersAppTests(MediatorFactory mediatorFactory)
         var createGymCommand = GymCommandFactory.GetCreateGymCommand(gymName, Constants.Gyms.Address);
         var createGymResult = await _mediator.Send(createGymCommand);
 
-        var gym = await _mediator.Send(new GetGymQuery(GymId: createGymResult.Value));
+        var gym = await _mediator.Send(new GetGymQuery(Id: createGymResult.Value));
 
         // Assert
         createGymResult.IsError.Should().BeFalse();

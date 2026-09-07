@@ -39,10 +39,7 @@ public class CreateSessionCommandHandler : IRequestHandler<CreateSessionCommand,
 
         if (room.GymId != trainer.GymId)
             return SessionErrors.TrainerNotInTheSameGym(trainerId: trainer.Id);
-
-        // if (DateTime.Now.TimeOfDay >= TimeSpan.FromHours(21))
-        //     return SessionErrors.CannotCreateAfterBusinessHours;
-            
+    
         var startTime = command.StartDate ?? DateTime.Now.AddMinutes(10); // TODO: Inject Time Zone Provider
         var endTime = command.EndDate ?? startTime.AddHours(2);
 
