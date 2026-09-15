@@ -21,8 +21,7 @@ public class Session : Entity
     public Trainer Trainer { get; set; } = null!;    
     public Guid RoomId { get; private set; }
     public Room Room { get; set; } = null!;    
-    public int Capacity { get; private set; }
-    
+    public int Capacity { get; private set; }    
     public int Vacancy { get; private set; }
     // public List<Booking> Bookings { get; set; } = new();
 

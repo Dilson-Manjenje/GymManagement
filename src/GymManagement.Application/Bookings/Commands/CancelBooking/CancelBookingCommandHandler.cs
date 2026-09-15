@@ -23,17 +23,17 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
 
     public async Task<ErrorOr<Guid>> Handle(CancelBookingCommand command, CancellationToken cancellationToken)
     {
-        var booking = await _bookingsRepository.GetByIdAsync(command.BookingId);
+        var booking = await _bookingsRepository.GetByIdAsync(command.Id);
         if (booking is null)
-            return BookingErrors.BookingNotFound(command.BookingId);
-
+            return BookingErrors.BookingNotFound(command.Id);
+        
         var session = await _sessionsRepository.GetByIdAsync(booking.SessionId);
         if (session is null)
             return SessionErrors.SessionNotFound(booking.SessionId);
 
-        if (session.Status == SessionStatus.Finalized)
-            return BookingErrors.InvalidSessionsStatus(id: booking.Session.Id, statusName: session.Status.Name);
-        
+        if (SessionStatus.NonCancelableStatus.Contains(session.Status))
+            return BookingErrors.InvalidSessionsStatus(id: session.Id, statusName: session.Status.Name);
+
         var canceled = booking.Cancel();
         if (canceled.IsError)
             return canceled.Errors;

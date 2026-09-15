@@ -8,4 +8,4 @@ using MediatR;
 
 namespace GymManagement.Application.Bookings.Commands.FinalizeBooking;
 
-public record FinalizeBookingCommand(Guid BookingId) : IRequest<ErrorOr<Guid>>;
+public record FinalizeBookingCommand(Guid Id) : IRequest<ErrorOr<Guid>>;

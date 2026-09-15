@@ -8,4 +8,4 @@ using MediatR;
 
 namespace GymManagement.Application.Bookings.Commands.CancelBooking;
 
-public record CancelBookingCommand(Guid BookingId) : IRequest<ErrorOr<Guid>>;
+public record CancelBookingCommand(Guid Id) : IRequest<ErrorOr<Guid>>;

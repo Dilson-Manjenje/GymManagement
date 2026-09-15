@@ -41,14 +41,14 @@ public record CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand
        
         if (member.GymId is null || member.GymId == Guid.Empty)
             return MemberErrors.MemberDontHaveGym(member.Id);
-        
-        var existingBooking = await _bookingsRepository.GetByMemberAndSessionAsync(member.Id, session.Id, cancellationToken);
-        if (existingBooking is not null)
-            return BookingErrors.DuplicateBooking(member.Id, session.Id);
 
         var activeSubscription = await _subscriptionRepository.GetActiveSubscriptionAsync(memberId: member.Id);
         if (activeSubscription is null)
             return BookingErrors.MemberDontHaveActiveSubscription(member.Id);
+
+        var existingBooking = await _bookingsRepository.GetByMemberAndSessionAsync(member.Id, session.Id, cancellationToken);
+        if (existingBooking is not null)
+            return BookingErrors.DuplicateBooking(member.Id, session.Id);
 
         var bookingResult = Booking.Create(member, session, activeSubscription);
 

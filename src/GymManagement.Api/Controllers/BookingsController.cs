@@ -57,7 +57,7 @@ public class BookingsController : ApiBaseController
   [HttpPut("{bookingId:guid}/Cancel")]
   public async Task<IActionResult> Cancel([FromRoute] Guid bookingId)
   {
-    var result = await _mediator.Send(new CancelBookingCommand(BookingId: bookingId));
+    var result = await _mediator.Send(new CancelBookingCommand(Id: bookingId));
 
     return result.MatchFirst(
       id => Ok(new { id = id }),

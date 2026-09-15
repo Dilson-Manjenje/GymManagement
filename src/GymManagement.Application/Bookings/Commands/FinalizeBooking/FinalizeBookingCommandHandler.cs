@@ -20,9 +20,9 @@ public class FinalizeBookingCommandHandler : IRequestHandler<FinalizeBookingComm
 
     public async Task<ErrorOr<Guid>> Handle(FinalizeBookingCommand command, CancellationToken cancellationToken)
     {
-        var booking = await _bookingsRepository.GetByIdAsync(command.BookingId);
+        var booking = await _bookingsRepository.GetByIdAsync(command.Id);
         if (booking is null)
-            return BookingErrors.BookingNotFound(command.BookingId);
+            return BookingErrors.BookingNotFound(command.Id);
 
         // Booking is finalized when sessions is completed
         if ( booking.Session.Status != SessionStatus.Finalized)
