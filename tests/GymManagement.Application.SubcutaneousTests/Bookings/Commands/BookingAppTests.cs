@@ -25,17 +25,9 @@ using GymManagement.Application.Trainers.Queries.Dtos;
 using TestCommon.Trainers;
 using GymManagement.Application.Trainers.Queries.GetTrainer;
 using GymManagement.Domain.Sessions;
-using ErrorOr;
-using Humanizer;
-using GymManagement.Domain.Rooms;
-using GymManagement.Application.Rooms.Commands.DisableRoom;
-using GymManagement.Domain.Trainers;
-using GymManagement.Application.Sessions.Commands.DeleteSession;
 using GymManagement.Application.Sessions.Commands.CancelSession;
 using GymManagement.Application.Sessions.Commands.FinalizeSession;
 using GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
-using GymManagement.Application.Sessions.Commands.UpdateSession;
-using System.Threading.Tasks;
 using GymManagement.Domain.Bookings;
 using GymManagement.Domain.Members;
 using GymManagement.Application.Subscriptions.Commands.DisableSubscription;
@@ -544,7 +536,7 @@ public class BookingAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task ListBookings_ReturnCountOfBookingsCorrectly()
+    public async Task ListBookings_ReturnCorrectBookings()
     {
         var member = await CreateMember(_gym.Id, "Member 2");
         var subscription = await CreateSubscription(SubscriptionType.Basic, member.Id);
@@ -562,7 +554,7 @@ public class BookingAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task ListBookingsByGym_ReturnCorrectNumberOfBookings()
+    public async Task ListBookingsByGym_ReturnCorrectBookings()
     {
         var gym2 = await CreateGym("Gym Two");
         var room2 = await CreateRoom(gym2.Id, "Room 2");
@@ -594,7 +586,7 @@ public class BookingAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task ListBookingsByMember_ReturnCorrectNumberOfBookings()
+    public async Task ListBookingsByMember_ReturnCorrectBookings()
     {
         var gym2 = await CreateGym("Gym Two");
         var room2 = await CreateRoom(gym2.Id, "Room Two");
@@ -634,7 +626,7 @@ public class BookingAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
     }
     
     [Fact]
-    public async Task ListBookingsBySession_ReturnCorrectNumberOfBookings()
+    public async Task ListBookingsBySession_ReturnCorrectBookings()
     {        
         var member2 = await CreateMember(_gym.Id, "Member 2");
         var subscription2 = await CreateSubscription(SubscriptionType.Basic, member2.Id);

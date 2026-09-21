@@ -27,9 +27,9 @@ public class DisableSubscriptionCommandHandler : IRequestHandler<DisableSubscrip
 
     public async Task<ErrorOr<Guid>> Handle(DisableSubscriptionCommand command, CancellationToken cancellationToken = default)
     {
-        var subscription = await _subscriptionsRepository.GetByIdAsync(command.SubscriptionId, cancellationToken);
+        var subscription = await _subscriptionsRepository.GetByIdAsync(command.Id, cancellationToken);
         if (subscription is null)
-            return SubscriptionErrors.SubscriptionNotFound(command.SubscriptionId);
+            return SubscriptionErrors.SubscriptionNotFound(command.Id);
      
         var disabled = subscription.Disable();
         if (disabled.IsError)

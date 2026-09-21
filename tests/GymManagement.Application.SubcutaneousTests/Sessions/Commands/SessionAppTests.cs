@@ -21,6 +21,7 @@ using GymManagement.Application.Bookings.Queries.GetBooking;
 using GymManagement.Application.Sessions.Queries.Dtos;
 using GymManagement.Application.Sessions.Commands.CreateSession;
 using GymManagement.Application.Sessions.Queries.GetSession;
+using GymManagement.Application.Sessions.Queries.ListSessions;
 using GymManagement.Application.Trainers.Queries.Dtos;
 using TestCommon.Trainers;
 using GymManagement.Application.Trainers.Queries.GetTrainer;
@@ -35,11 +36,17 @@ using GymManagement.Application.Sessions.Commands.CancelSession;
 using GymManagement.Application.Sessions.Commands.FinalizeSession;
 using GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
 using GymManagement.Application.Sessions.Commands.UpdateSession;
+using GymManagement.Application.Sessions.Queries.ListSessionsByGym;
+using GymManagement.Application.Sessions.Queries.ListUpComingSessions;
+using GymManagement.Application.Sessions.Queries.ListSessionsByMember;
+using GymManagement.Application.Bookings.Commands.CancelBooking;
+using GymManagement.Application.Sessions.Queries.ListSessionsByRoom;
+using GymManagement.Application.Sessions.Queries.ListSessionsByTrainer;
 
 namespace GymManagement.Application.SubcutaneousTests.Sessions;
 
 [Collection(MediatorFactoryCollection.CollectionName)]
-public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
+public class SessionAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
 {
     private readonly IMediator _mediator = mediatorFactory.CreateMediator();
     private GymDto _gym = null!;
@@ -55,7 +62,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
     public async Task InitializeAsync()
     {
         _gym = await CreateGym();
-        _trainerMember = await CreateMember(_gym.Id,"Trainer 1");
+        _trainerMember = await CreateMember(_gym.Id, "Trainer 1");
         _trainer = await CreateTrainer(_trainerMember.Id);
         _participant = await CreateMember(_gym.Id, "Participant One");
         _room = await CreateRoom(_gym.Id, "Room 1", _roomCapacity);
@@ -78,7 +85,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
         session.EndDate.Should().Be(_session.StartDate.AddHours(2));
 
     }
-    
+
     private async Task<GymDto> CreateGym(string? name = null)
     {
         var gymName = name ?? Constants.Gyms.Name;
@@ -141,7 +148,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
 
         return queryResult.Value;
     }
-    
+
     private async Task<TrainerDto> CreateTrainer(Guid memberId,
                                                  string name = "Pt1",
                                                  string phone = "923000001",
@@ -306,7 +313,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
     public async Task CreateSession_WhenRoomHasStartDateOverlaping_ReturnRoomHasOverlappingSessionError()
     {
         var room = await CreateRoom(_gym.Id, "Room 2", 2);
-        
+
         DateTime startDate = DateTime.Now.AddMinutes(10);
 
         var createSession1Cmd = new CreateSessionCommand(room.Id, _trainer.Id, _title, startDate);
@@ -371,7 +378,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
 
     [Fact]
     public async Task DeleteSession_WhenSessionIsCanceled_ReturnCantChangeSessionError()
-    {        
+    {
 
         var cancelCmd = new CancelSessionCommand(Id: _session.Id);
         var cancelResult = await _mediator.Send(cancelCmd);
@@ -387,7 +394,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
 
     [Fact]
     public async Task DeleteSession_WhenSessionIsFinalized_ReturnCantChangeSessionError()
-    {       
+    {
         var finalizeCmd = new FinalizeSessionCommand(Id: _session.Id);
         var finalizeResult = await _mediator.Send(finalizeCmd);
         finalizeResult.IsError.Should().BeFalse();
@@ -426,7 +433,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
 
         var queryResult = await _mediator.Send(new GetSessionQuery(Id: _session.Id));
         queryResult.IsError.Should().BeFalse();
-        
+
         var session = queryResult.Value;
 
         // Assert
@@ -473,7 +480,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(SessionErrors.CantChangeSession(cmd.Id));
     }
-    
+
     [Fact]
     public async Task CancelSession_WhenSessionIsActive_FinalizeWithSucess()
     {
@@ -484,7 +491,7 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
 
         var queryResult = await _mediator.Send(new GetSessionQuery(Id: _session.Id));
         queryResult.IsError.Should().BeFalse();
-        
+
         var session = queryResult.Value;
 
         // Assert
@@ -577,12 +584,12 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(RoomErrors.RoomNotFound(command.RoomId));
     }
-    
+
     [Fact]
     public async Task UpdateSession_WhenTrainerDontExist_ReturnNotFoundError()
     {
         var command = new UpdateSessionCommand(Id: _session.Id, _room.Id, Guid.NewGuid(), _title);
-        
+
         var result = await _mediator.Send(command);
 
         // Assert
@@ -590,10 +597,10 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
         result.FirstError.Should().Be(TrainerErrors.TrainerNotFound(command.TrainerId));
     }
 
-    
+
     [Fact]
     public async Task UpdateSession_WhenSessionIsCanceled_ReturnCantChangeSessionError()
-    {       
+    {
         var cancelCmd = new CancelSessionCommand(Id: _session.Id);
         var cancelResult = await _mediator.Send(cancelCmd);
         cancelResult.IsError.Should().BeFalse();
@@ -649,16 +656,16 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
         result.IsError.Should().BeTrue();
         result.FirstError.Should().Be(SessionErrors.TrainerNotInTheSameGym(updateCmd.TrainerId));
     }
-    
+
     [Fact]
     public async Task Update_WhenRoomHasStartDateOverlaping_ReturnRoomHasOverlappingSessionError()
     {
-        var room = await CreateRoom(_gym.Id, "Room 2", 2);        
+        var room = await CreateRoom(_gym.Id, "Room 2", 2);
         DateTime startDate = DateTime.Now.AddMinutes(10);
 
         var updateCmd = new UpdateSessionCommand(Id: _session.Id, _room.Id, _trainer.Id, _title, startDate);
         var updateResult = await _mediator.Send(updateCmd);
-        
+
         // Assert
         updateResult.IsError.Should().BeTrue();
         updateResult.FirstError.Should().Be(RoomErrors.RoomHasOverlappingSession());
@@ -669,10 +676,10 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
     {
         DateTime startDate = DateTime.Now.AddMinutes(10); // 9
         DateTime endDate = startDate.AddHours(2); // 11
-        
+
         var updateCmd = new UpdateSessionCommand(Id: _session.Id, _room.Id, _trainer.Id, _title, startDate, endDate);
         var updateResult = await _mediator.Send(updateCmd);
-        
+
         // Assert
         updateResult.IsError.Should().BeTrue();
         updateResult.FirstError.Should().Be(RoomErrors.RoomHasOverlappingSession());
@@ -694,10 +701,12 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
         return queryResult.Value;
     }
 
-    private async Task<SessionDto> CreateSession(Guid roomId, Guid trainerId, string title)
+    private async Task<SessionDto> CreateSession(Guid roomId, Guid trainerId, string title, DateTime? start = null)
     {
-        var command = new CreateSessionCommand(roomId, trainerId, title);
+        var startDate = start ?? DateTime.Now.AddMinutes(2);
+        var command = new CreateSessionCommand(roomId, trainerId, title, startDate);
         var result = await _mediator.Send(command);
+        result.IsError.Should().BeFalse(); 
 
         var queryResult = await _mediator.Send(new GetSessionQuery(Id: result.Value));
         queryResult.IsError.Should().BeFalse();
@@ -707,5 +716,165 @@ public class SessionAppTests(MediatorFactory mediatorFactory):  IAsyncLifetime
         result.Value.Should().NotBeEmpty();
 
         return queryResult.Value;
-    }   
+    }
+
+    [Fact]
+    public async Task ListSessions_ReturnCorrectBookings()
+    {
+        var room2 = await CreateRoom(_gym.Id, "Room 2");
+        var memberPt = await CreateMember(_gym.Id, "Pt-Member");
+        var trainer2 = await CreateTrainer(memberPt.Id, "PT2", "923000033", "PT22@gmail.com");
+        var member = await CreateMember(_gym.Id, "Member 2");
+        var session = await CreateSession(room2.Id, trainer2.Id, "Session 2");
+
+        var listResult = await _mediator.Send(new ListSessionsQuery());
+        listResult.IsError.Should().BeFalse();
+
+        var bookings = listResult.Value.ToList();
+
+        // Assert        
+        bookings.Count().Should().Be(2);
+        bookings.Should().BeOfType<List<SessionDto>>();
+    }
+
+    [Fact]
+    public async Task ListSessionByGym_ReturnCorrectBookings()
+    {
+        var gym2 = await CreateGym("Gym Two");
+        var room2 = await CreateRoom(gym2.Id, "Room 2");
+        var memberPt = await CreateMember(gym2.Id, "Pt-Member");
+        var trainer2 = await CreateTrainer(memberPt.Id, "PT2", "923000033", "PT22@gmail.com");
+        var member2 = await CreateMember(gym2.Id, "Member 2");
+        await CreateSession(room2.Id, trainer2.Id, "Session 2");
+
+        var listResult = await _mediator.Send(new ListSessionsByGymQuery(GymId: _gym.Id));
+        listResult.IsError.Should().BeFalse();
+        var sessions1 = listResult.Value.ToList();
+
+        var list2Result = await _mediator.Send(new ListSessionsByGymQuery(GymId: gym2.Id));
+        list2Result.IsError.Should().BeFalse();
+        var sessions2 = list2Result.Value.ToList();
+
+        // Assert        
+        sessions1.Count().Should().Be(1);
+        sessions1.Should().BeOfType<List<SessionDto>>();
+        sessions2.Count().Should().Be(1);
+        sessions2.Should().BeOfType<List<SessionDto>>();
+    }
+
+    [Fact]
+    public async Task ListUpCommingSessionsByGym_ReturnCorrectBookings()
+    {
+        var gym2 = await CreateGym("Gym Two");
+        var room2 = await CreateRoom(gym2.Id, "Room 2");
+        var memberPt = await CreateMember(gym2.Id, "Pt-Member");
+        var trainer2 = await CreateTrainer(memberPt.Id, "PT2", "923000033", "PT22@gmail.com");
+        var member2 = await CreateMember(gym2.Id, "Member 2");
+        await CreateSession(room2.Id, trainer2.Id, "Session 2");
+
+        var listResult = await _mediator.Send(new ListUpComingSessionsQuery(GymId: _gym.Id));
+        listResult.IsError.Should().BeFalse();
+        var sessions1 = listResult.Value.ToList();
+
+        var list2Result = await _mediator.Send(new ListUpComingSessionsQuery(GymId: gym2.Id));
+        list2Result.IsError.Should().BeFalse();
+        var sessions2 = list2Result.Value.ToList();
+
+        // Assert        
+        sessions1.Count().Should().Be(1);
+        sessions1.Should().BeOfType<List<SessionDto>>();
+        sessions2.Count().Should().Be(1);
+        sessions2.Should().BeOfType<List<SessionDto>>();
+    }
+
+    [Fact]
+    public async Task ListSessionsByMember_ReturnCorrectBookings()
+    {
+
+        var addRoomResult = await _mediator.Send(new AddRoomToSubscriptionCommand(_subscription.Id, _room.Id));
+        addRoomResult.IsError.Should().BeFalse();
+
+        var createResult = await _mediator.Send(new CreateBookingCommand(SessionId: _session.Id, MemberId: _participant.Id));
+        createResult.IsError.Should().BeFalse();
+
+        var cancel = await _mediator.Send(new CancelBookingCommand(Id: createResult.Value));
+        cancel.IsError.Should().BeFalse();
+
+        createResult = await _mediator.Send(new CreateBookingCommand(SessionId: _session.Id, MemberId: _participant.Id));
+        createResult.IsError.Should().BeFalse();
+
+        var member2 = await CreateMember(_gym.Id, "Member 2");
+        var subs2 = await CreateSubscription(SubscriptionType.Basic, member2.Id);
+        addRoomResult = await _mediator.Send(new AddRoomToSubscriptionCommand(subs2.Id, _room.Id));
+        addRoomResult.IsError.Should().BeFalse();
+
+        createResult = await _mediator.Send(new CreateBookingCommand(SessionId: _session.Id, MemberId: member2.Id));
+        createResult.IsError.Should().BeFalse();
+
+        var listResult1 = await _mediator.Send(new ListSessionsByMemberQuery(MemberId: _participant.Id));
+        listResult1.IsError.Should().BeFalse();
+        var sessions1 = listResult1.Value.ToList();
+
+        var listResult2 = await _mediator.Send(new ListSessionsByMemberQuery(MemberId: member2.Id));
+        listResult2.IsError.Should().BeFalse();
+        var sessions2 = listResult2.Value.ToList();
+
+        // Assert        
+        sessions1.Count().Should().Be(2);
+        sessions1.Should().BeOfType<List<SessionDto>>();
+        sessions2.Count().Should().Be(1);
+        sessions2.Should().BeOfType<List<SessionDto>>();
+    }
+
+    [Fact]
+    public async Task ListSessionsByRoom_ReturnCorrectBookings()
+    {
+        var room2 = await CreateRoom(_gym.Id, "Room 2");
+        var memberPt = await CreateMember(_gym.Id, "Pt-Member");
+        var trainer2 = await CreateTrainer(memberPt.Id, "PT2", "923000033", "PT22@gmail.com");
+        
+        await CreateSession(room2.Id, trainer2.Id, "Session 2");
+        await CreateSession(_room.Id, _trainer.Id, "Session 3", _session.EndDate.AddMinutes(10));
+
+        var listResult = await _mediator.Send(new ListSessionsByRoomQuery(RoomId: _room.Id));
+        listResult.IsError.Should().BeFalse();
+        var sessions1 = listResult.Value.ToList();
+
+        var list2Result = await _mediator.Send(new ListSessionsByRoomQuery(RoomId: room2.Id));
+        list2Result.IsError.Should().BeFalse();
+        var sessions2 = list2Result.Value.ToList();
+
+        // Assert        
+        sessions1.Count().Should().Be(2);
+        sessions1.Should().BeOfType<List<SessionDto>>();
+        
+        sessions2.Count().Should().Be(1);
+        sessions2.Should().BeOfType<List<SessionDto>>();
+    }
+    
+    [Fact]
+    public async Task ListSessionsByTrainer_ReturnCorrectBookings()
+    {
+        var room2 = await CreateRoom(_gym.Id, "Room 2");
+        var memberPt = await CreateMember(_gym.Id, "Pt-Member");
+        var trainer2 = await CreateTrainer(memberPt.Id, "PT2", "923000033", "PT22@gmail.com");
+        
+        await CreateSession(room2.Id, trainer2.Id, "Session 2");
+        await CreateSession(_room.Id, _trainer.Id, "Session 3", _session.EndDate.AddMinutes(10));
+
+        var listResult = await _mediator.Send(new ListSessionsByTrainerQuery(TrainerId: _trainer.Id));
+        listResult.IsError.Should().BeFalse();
+        var sessions1 = listResult.Value.ToList();
+
+        var list2Result = await _mediator.Send(new ListSessionsByTrainerQuery(TrainerId: trainer2.Id));
+        list2Result.IsError.Should().BeFalse();
+        var sessions2 = list2Result.Value.ToList();
+
+        // Assert        
+        sessions1.Count().Should().Be(2);
+        sessions1.Should().BeOfType<List<SessionDto>>();
+        
+        sessions2.Count().Should().Be(1);
+        sessions2.Should().BeOfType<List<SessionDto>>();
+    }
 }

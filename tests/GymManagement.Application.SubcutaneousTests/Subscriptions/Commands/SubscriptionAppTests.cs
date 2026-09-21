@@ -2,11 +2,8 @@ using MediatR;
 using TestCommon.Subscriptions;
 using GymManagement.Application.SubcutaneousTests.Common;
 using FluentAssertions;
-using ErrorOr;
 using TestCommon.Gyms;
-using GymManagement.Domain.Gyms;
 using GymManagement.Domain.Members;
-using FluentAssertions.Equivalency;
 using TestCommon.Members;
 using GymManagement.Domain.Subscriptions;
 using TestCommon.TestConstants;
@@ -22,7 +19,6 @@ using GymManagement.Application.Rooms.Queries.GetRoom;
 using GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
 using GymManagement.Application.Subscriptions.Commands.DisableSubscription;
 using GymManagement.Application.Subscriptions.Commands.UpdateSubscription;
-using Microsoft.EntityFrameworkCore.Metadata;
 using GymManagement.Application.Subscriptions.Commands.DeleteSubscription;
 using GymManagement.Application.Trainers.Queries.Dtos;
 using TestCommon.Trainers;
@@ -35,6 +31,9 @@ using GymManagement.Application.Bookings.Commands.CreateBooking;
 using GymManagement.Application.Bookings.Queries.GetBooking;
 using GymManagement.Domain.Rooms;
 using GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscription;
+using GymManagement.Application.Subscriptions.Queries.ListSubscriptions;
+using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByMember;
+using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByGym;
 
 namespace GymManagement.Application.SubcutaneousTests.Subscriptions;
 
@@ -106,17 +105,37 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
                                                                             userName: userName,
                                                                             password: "Abc123");
         var createMemberResult = await _mediator.Send(createMemberCommand);
-
-        var queryResult = await _mediator.Send(new GetMemberQuery(Id: createMemberResult.Value));
-
-
-        // Assert
         createMemberResult.IsError.Should().BeFalse();
         createMemberResult.Value.Should().NotBeEmpty();
 
+        var queryResult = await _mediator.Send(new GetMemberQuery(Id: createMemberResult.Value));
+        queryResult.IsError.Should().BeFalse();
+
+        // Assert
         return queryResult.Value;
     }
 
+
+    [Fact]
+    public async Task CreateSubscription_WhenMemberDontHaveGym_ReturnGymNotFoundError()
+    {
+        // Arrange 
+        var queryResult = await _mediator.Send(new GetMemberQuery(Id: Guid.Parse("7d555faf-06b9-409f-a3ba-60d2a6bfc228")));
+        queryResult.IsError.Should().BeFalse();
+        var member = queryResult.Value;
+
+        // Act
+        var createSubsCommand = SubscriptionCommandFactory.GetCreateSubscriptionCommand(type: Constants.Subscriptions.DefaultSubscriptionType,
+                                                                                           memberId: member.Id);
+
+        var result = await _mediator.Send(createSubsCommand);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(MemberErrors.MemberDontHaveGym(member.Id, member.UserName));
+
+    }
+    
     [Fact]
     public async Task CreateSubscription_WhenMemberDontExist_ShouldReturnMemberNotFoundError()
     {
@@ -136,7 +155,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
     }
 
     [Fact]
-    public async Task CreateSubscription_WhenMemberHasActiveSubscription_ReturnMemberHaveActiveSubscriptionError()
+    public async Task CreateSubscription_WhenMemberAlreadyHasActiveSubscription_ReturnMemberHaveActiveSubscriptionError()
     {
         // Arrange 
         var gym = await CreateGym();
@@ -169,7 +188,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         var subscription = await CreateSubscription(type: SubscriptionType.Plus, memberId: member.Id);
 
         // Act
-        var disableSubsCmd = new DisableSubscriptionCommand(SubscriptionId: subscription.Id);
+        var disableSubsCmd = new DisableSubscriptionCommand(Id: subscription.Id);
 
         var disableSubsResult = await _mediator.Send(disableSubsCmd);
         disableSubsResult.IsError.Should().BeFalse();
@@ -190,13 +209,13 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
     public async Task Disable_WhenSubscriptionDontExist_ShouldReturnNoFoundError()
     {
         // Act
-        var disableSubsCmd = new DisableSubscriptionCommand(SubscriptionId: Guid.NewGuid());
+        var disableSubsCmd = new DisableSubscriptionCommand(Id: Guid.NewGuid());
 
         var disableSubsResult = await _mediator.Send(disableSubsCmd);
 
         // Assert                 
         disableSubsResult.IsError.Should().BeTrue();
-        disableSubsResult.FirstError.Should().Be(SubscriptionErrors.SubscriptionNotFound(disableSubsCmd.SubscriptionId));
+        disableSubsResult.FirstError.Should().Be(SubscriptionErrors.SubscriptionNotFound(disableSubsCmd.Id));
     }
 
     [Fact]
@@ -257,7 +276,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         addRoom2Result.IsError.Should().BeFalse();
 
         // Act
-        var disableSubsCmd = new DisableSubscriptionCommand(SubscriptionId: subscription.Id);
+        var disableSubsCmd = new DisableSubscriptionCommand(Id: subscription.Id);
 
         var disableSubsResult = await _mediator.Send(disableSubsCmd);
         disableSubsResult.IsError.Should().BeFalse();
@@ -415,7 +434,7 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         var session = await CreateSession(room.Id, trainer.Id, "Session 1");
         var booking = await CreateBooking(session.Id, memberParticipante.Id);
         
-        var disableSubsCmd = new DisableSubscriptionCommand(SubscriptionId: subscription.Id);
+        var disableSubsCmd = new DisableSubscriptionCommand(Id: subscription.Id);
         var disableSubsResult = await _mediator.Send(disableSubsCmd);
         disableSubsResult.IsError.Should().BeFalse();
 
@@ -698,8 +717,8 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         result2.IsError.Should().BeTrue();
         result2.FirstError.Should().Be(SubscriptionErrors.RoomNotInSubscription(command.RoomId));
     }
-    
-     [Fact]
+
+    [Fact]
     public async Task RemoveRoom_WhenSubscriptionIsExpired_ShouldReturnCantChangeExpiredSubscriptionError()
     {
         // Act
@@ -720,5 +739,152 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         result2.FirstError.Should().Be(SubscriptionErrors.CantChangeExpiredSubscription());
 
     }
-    
+
+    [Fact]
+    public async Task ListSubscriptions_ReturnCorrectSubscriptions()
+    {
+        // Arrange 
+        var gym = await CreateGym();
+        var member = await CreateMember(gym.Id, "Member1");
+        await CreateSubscription(SubscriptionType.Plus, member.Id);
+
+        var member2 = await CreateMember(gym.Id, "Member2");
+        await CreateSubscription(SubscriptionType.Basic, member2.Id);
+
+        var member3 = await CreateMember(gym.Id, "Member3");
+        await CreateSubscription(SubscriptionType.Plus, member3.Id);
+
+        // Act
+        var listResult = await _mediator.Send(new ListSubscriptionsQuery());
+        listResult.IsError.Should().BeFalse();
+
+        var subscriptions = listResult.Value.ToList();
+
+        // Assert        
+        subscriptions.Count().Should().Be(3);
+        subscriptions.Should().BeOfType<List<SubscriptionDto>>();
+    }
+
+    [Fact]
+    public async Task ListSubscriptions_WhenThereIsNoSubscriptions_ReturnCorrectSubscriptions()
+    {
+        // Arrange 
+
+        // Act
+        var listResult = await _mediator.Send(new ListSubscriptionsQuery());
+        listResult.IsError.Should().BeFalse();
+
+        var subscriptions = listResult.Value.ToList();
+
+        // Assert        
+        subscriptions.Count().Should().Be(0);
+        subscriptions.Should().BeOfType<List<SubscriptionDto>>();
+    }
+
+    [Fact]
+    public async Task ListSubscriptionsByMember_ReturnCorrectSubscriptions()
+    {
+        // Arrange 
+        var gym = await CreateGym();
+        var member = await CreateMember(gym.Id, "Member1");
+        var subs = await CreateSubscription(SubscriptionType.Basic, member.Id);
+
+        // TODO: Create then, Expire and create another subscription
+        // var disableResult = await _mediator.Send(new DisableSubscriptionCommand(Id: subs.Id));
+        // disableResult.IsError.Should().BeFalse();
+
+        // var queryResult = await _mediator.Send(new GetMemberQuery(member.Id));
+        // queryResult.IsError.Should().BeFalse();
+
+        // member = queryResult.Value;
+        // await CreateSubscription(SubscriptionType.Plus, member.Id);
+
+        var member2 = await CreateMember(gym.Id, "Member2");
+        await CreateSubscription(SubscriptionType.Basic, member2.Id);
+
+
+        // Act
+        var listResult = await _mediator.Send(new ListSubscriptionsByMemberQuery(MemberId: member.Id));
+        listResult.IsError.Should().BeFalse();
+        var subscriptions1 = listResult.Value.ToList();
+
+        var list2Result = await _mediator.Send(new ListSubscriptionsByMemberQuery(MemberId: member2.Id));
+        list2Result.IsError.Should().BeFalse();
+        var subscriptions2 = list2Result.Value.ToList();
+
+        // Assert        
+        subscriptions1.Count().Should().Be(1);
+        subscriptions1.Should().BeOfType<List<SubscriptionDto>>();
+
+        subscriptions2.Count().Should().Be(1);
+        subscriptions2.Should().BeOfType<List<SubscriptionDto>>();
+    }
+
+    [Fact]
+    public async Task ListSubscriptionsByMember_WhenThereIsNoSubscriptions_ReturnCorrectSubscriptions()
+    {
+        // Arrange 
+        var gym = await CreateGym();
+        var member = await CreateMember(gym.Id);
+
+        // Act
+        var listResult = await _mediator.Send(new ListSubscriptionsByMemberQuery(member.Id));
+        listResult.IsError.Should().BeFalse();
+
+        var subscriptions = listResult.Value.ToList();
+
+        // Assert        
+        subscriptions.Count().Should().Be(0);
+        subscriptions.Should().BeOfType<List<SubscriptionDto>>();
+    }
+
+    [Fact]
+    public async Task ListSubscriptionsByGym_ReturnCorrectSubscriptions()
+    {
+        // Arrange 
+        var gym = await CreateGym();
+        var member = await CreateMember(gym.Id, "Member1");
+
+        var subs = await CreateSubscription(SubscriptionType.Basic, member.Id);
+
+        var gym2 = await CreateGym("Gym-Two");
+        var member2 = await CreateMember(gym2.Id, "Member2");
+        await CreateSubscription(SubscriptionType.Basic, member2.Id);
+
+        var member3 = await CreateMember(gym.Id, "Member3");
+        await CreateSubscription(SubscriptionType.Basic, member3.Id);
+
+        // Act
+        var listResult = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gym.Id));
+        listResult.IsError.Should().BeFalse();
+        var subscriptions1 = listResult.Value.ToList();
+
+        var list2Result = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gym2.Id));
+        list2Result.IsError.Should().BeFalse();
+        var subscriptions2 = list2Result.Value.ToList();
+
+        // Assert        
+        subscriptions1.Count().Should().Be(2);
+        subscriptions1.Should().BeOfType<List<SubscriptionDto>>();
+
+        subscriptions2.Count().Should().Be(1);
+        subscriptions2.Should().BeOfType<List<SubscriptionDto>>();
+    }
+
+     [Fact]
+    public async Task ListSubscriptionsByGym_WhenThereIsNoSubscriptions_ReturnCorrectSubscriptions()
+    {
+        // Arrange 
+        var gym = await CreateGym();
+       
+        // Act
+        var listResult = await _mediator.Send(new ListSubscriptionsByMemberQuery(gym.Id));
+        listResult.IsError.Should().BeFalse();
+
+        var subscriptions = listResult.Value.ToList();
+
+        // Assert        
+        subscriptions.Count().Should().Be(0);
+        subscriptions.Should().BeOfType<List<SubscriptionDto>>();
+    }
 }

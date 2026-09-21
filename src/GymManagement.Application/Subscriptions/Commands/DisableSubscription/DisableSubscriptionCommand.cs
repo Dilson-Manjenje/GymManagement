@@ -8,4 +8,4 @@ using MediatR;
 
 namespace GymManagement.Application.Subscriptions.Commands.DisableSubscription;
 
-public record DisableSubscriptionCommand(Guid SubscriptionId) : IRequest<ErrorOr<Guid>>;
+public record DisableSubscriptionCommand(Guid Id) : IRequest<ErrorOr<Guid>>;
