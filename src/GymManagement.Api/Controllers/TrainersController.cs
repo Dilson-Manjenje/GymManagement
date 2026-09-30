@@ -22,7 +22,7 @@ public class TrainersController : ApiBaseController
   }
 
   [HttpPost]
-  public async Task<IActionResult> CreateTrainer(TrainerRequest request)
+  public async Task<IActionResult> CreateTrainer(CreateTrainerRequest request)
   {
     var cmd = new CreateTrainerCommand(Name: request.Name,
                                        Phone: request.Phone,
@@ -61,7 +61,7 @@ public class TrainersController : ApiBaseController
   }
 
   [HttpPut("{id:guid}")]
-  public async Task<IActionResult> Update([FromRoute] Guid id, TrainerRequest request)
+  public async Task<IActionResult> Update([FromRoute] Guid id, UpdateTrainerRequest request)
   {
     var cmd = new UpdateTrainerCommand(Id: id,
                                        Name: request.Name,

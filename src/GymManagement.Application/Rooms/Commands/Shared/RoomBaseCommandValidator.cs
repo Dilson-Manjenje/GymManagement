@@ -10,9 +10,9 @@ public class RoomBaseCommandValidator : AbstractValidator<RoomBaseCommand>
         RuleFor( r => r.Name)
             .NotEmpty().WithMessage("'{PropertyName}' is required.")
             .MinimumLength(3).WithMessage("'{PropertyName}' must have at least {MinLength} characters.")
-            .MaximumLength(100).WithMessage("'{PropertyName}' must have at most {MaxLength} characters.");
+            .MaximumLength(60).WithMessage("'{PropertyName}' must have at most {MaxLength} characters.");
 
         RuleFor( r => r.Capacity)
-            .GreaterThanOrEqualTo(1).WithMessage("'{PropertyName}' must be greater than 1.");
+            .GreaterThanOrEqualTo(1).WithMessage("'{PropertyName}' must be greater or equal to 1.");
     }
 }

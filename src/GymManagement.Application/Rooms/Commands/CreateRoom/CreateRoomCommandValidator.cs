@@ -12,7 +12,7 @@ public class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
     {
         _roomsRepository = roomsRepository;
 
-       Include(new RoomBaseCommandValidator());
+        Include(new RoomBaseCommandValidator());
 
         RuleFor( c => c)
             .MustAsync(NotExistWithSameName)

@@ -11,5 +11,8 @@ public interface ITrainersRepository
     Task<Trainer?> GetByMemberIdAsync(Guid memberId, CancellationToken cancellationToken = default);
     Task<IEnumerable<Trainer>?> ListAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<Trainer>?> ListByGymIdAsync(Guid gymId, CancellationToken cancellationToken = default);
-    bool IsTrainerInGymAsync(Guid gymId, Guid memberId);    
+    Task<bool> IsTrainerInGymAsync(Guid gymId, Guid memberId);
+    Task<bool> HasSessionAsync(Guid trainerId);
+    Task<bool> ExistsWithEmailAsync(Guid gymId, string email, Guid? trainerId);
+    Task<bool> ExistsWithPhoneAsync(Guid gymId, string phone, Guid? trainerId );
 }

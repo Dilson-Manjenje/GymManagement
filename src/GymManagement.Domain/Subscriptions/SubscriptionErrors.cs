@@ -19,11 +19,6 @@ public static class SubscriptionErrors
   public static Error CantDeleteSubscriptionWithBookings(Guid id) => Error.Validation
 (code: "Subscription.CantDeleteSubscriptionWithBookings",
  description: $"Can not delete susbcription with bookings '{id}'.");
-
-  public static Error SubscriptionAlreadyExists() => Error.Conflict
-  (code: "Subscription.AlreadyExists",
-    description: $"Subscription with given details already exists.");
-
   public static Error HasMaxRoomsAllowed() => Error.Validation
   (code: "Subscription.HasMaxRoomsAllowed",
   description: $"Subscription has the maximum of rooms allowed.");

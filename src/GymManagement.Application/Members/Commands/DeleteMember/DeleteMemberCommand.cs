@@ -4,4 +4,4 @@ using MediatR;
 
 namespace GymManagement.Application.Members.Commands.DeleteMember;
 
-public sealed record DeleteMemberCommand(Guid MemberId): IRequest<ErrorOr<Unit>>;
+public sealed record DeleteMemberCommand(Guid Id): IRequest<ErrorOr<Unit>>;

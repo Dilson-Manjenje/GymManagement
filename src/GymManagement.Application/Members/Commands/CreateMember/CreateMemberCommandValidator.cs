@@ -31,6 +31,7 @@ public class CreateMemberCommandValidator : AbstractValidator<CreateMemberComman
 
     private async Task<bool> NotExistWithSameUserName(CreateMemberCommand command, CancellationToken token)
     {
+        // TODO: Move validation to the handler
         var members = await _membersRepository.ListByGymAsync(command.GymId);
         var member = members?.SingleOrDefault(m => m.UserName.Equals(command.UserName, StringComparison.InvariantCultureIgnoreCase));
 
