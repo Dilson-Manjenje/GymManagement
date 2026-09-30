@@ -26,12 +26,11 @@ public class DeleteTrainerCommandHandler : IRequestHandler<DeleteTrainerCommand,
 
         if (trainer is null)
             return TrainerErrors.TrainerNotFound(command.Id);
-        
-        var sessions = await _sessionsRepository.ListByTrainer(command.Id);
-        var hasSession = sessions is not null && sessions.Any();
+
+        var hasSession = await _trainersRepository.HasSessionAsync(command.Id);
 
         if (hasSession)
-            return TrainerErrors.CantRemoveTrainerWithBookedSession(command.Id);
+            return TrainerErrors.CantRemoveTrainerWithSession(command.Id);
             
         var result = trainer.RemoveTrainer();
 

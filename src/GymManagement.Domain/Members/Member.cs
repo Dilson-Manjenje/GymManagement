@@ -33,7 +33,7 @@ public class Member : Entity
     }
 
     private Member() { }
-     public ErrorOr<Success> Update(string? usarName = null,
+    public ErrorOr<Success> Update(string? usarName = null,
                                     string? password = null)
     {
         UserName = usarName ?? UserName;

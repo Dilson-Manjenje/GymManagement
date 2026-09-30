@@ -1,40 +1,49 @@
 using ErrorOr;
 using MediatR;
 using GymManagement.Application.Common.Interfaces;
-using GymManagement.Domain.Gyms;
 using GymManagement.Domain.Trainers;
-using GymManagement.Domain.Members;
 
 
 namespace GymManagement.Application.Trainers.Commands.UpdateTrainer;
 
 public class UpdateTrainerCommandHandler : IRequestHandler<UpdateTrainerCommand, ErrorOr<Guid>>
 {
-    private readonly ITrainersRepository _trainerRepository;
+    private readonly ITrainersRepository _trainersRepository;
     private readonly IUnitOfWork _unitOfWork;
     public UpdateTrainerCommandHandler(IUnitOfWork unitOfWork,
-                                    ITrainersRepository trainerRepository)
+                                      ITrainersRepository trainersRepository)
     {
         _unitOfWork = unitOfWork;
-        _trainerRepository = trainerRepository;        
+        _trainersRepository = trainersRepository;
     }
 
     public async Task<ErrorOr<Guid>> Handle(UpdateTrainerCommand command, CancellationToken cancellationToken = default)
     {
-        var trainer = await _trainerRepository.GetByIdAsync(command.Id);
+        var trainer = await _trainersRepository.GetByIdAsync(command.Id);
         if (trainer is null)
             return TrainerErrors.TrainerNotFound(command.Id);
+
+        var phoneAlreadyUsed = await _trainersRepository.ExistsWithPhoneAsync(trainer.GymId, command.Phone, command.Id);
+        if (phoneAlreadyUsed)
+            return TrainerErrors.TrainerPhoneAlreadyExists(command.Phone);
+
+        if (!string.IsNullOrEmpty(command.Email))
+        {
+            var emailAlreadyUsed = await _trainersRepository.ExistsWithEmailAsync(trainer.GymId, command.Email, command.Id);
+            if (emailAlreadyUsed)
+                return TrainerErrors.TrainerEmailAlreadyExists(command.Email!);
+        }
 
         var result = trainer.Update(
              name: command.Name,
              phone: command.Phone,
-             email: command.Email,
+             email: command.Email?.ToLower(),
              specialization: command.Specialization);
 
         if (result.IsError)
             return result.Errors;
         
-        await _trainerRepository.AddAsync(trainer, cancellationToken);
+        await _trainersRepository.UpdateAsync(trainer, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 
         return trainer.Id;

@@ -62,6 +62,7 @@ public class SubscriptionsController : ApiBaseController
     [HttpPut("{id:guid}/Disable")]
     public async Task<IActionResult> DisableSubscription(Guid id)
     {
+        //TODO: Create background job or windows service to disable all end subscription everyday
         var result = await _mediator.Send(new DisableSubscriptionCommand(id));
 
         return result.MatchFirst(

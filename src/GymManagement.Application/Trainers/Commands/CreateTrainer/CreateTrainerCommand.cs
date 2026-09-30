@@ -1,4 +1,5 @@
 using ErrorOr;
+using GymManagement.Application.Trainers.Shared;
 using GymManagement.Domain.Trainers;
 using MediatR;
 
@@ -8,4 +9,7 @@ public sealed record CreateTrainerCommand(string Name,
                                           string Phone,
                                           string? Email,
                                           string Specialization,
-                                          Guid MemberId) : IRequest<ErrorOr<Guid>>;
+                                          Guid MemberId) : TrainerBaseCommand(Name,
+                                                                              Phone,
+                                                                              Email,
+                                                                              Specialization);

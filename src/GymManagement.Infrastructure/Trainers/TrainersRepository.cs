@@ -1,7 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using GymManagement.Application.Common.Interfaces;
 using GymManagement.Domain.Trainers;
 using GymManagement.Infrastructure.Common.Persistence;
-using Microsoft.EntityFrameworkCore;
+using GymManagement.Domain.Sessions;
 
 namespace GymManagement.Infrastructure.Trainers.Persistence;
 
@@ -61,9 +62,39 @@ internal class TraneirsRepository : ITrainersRepository
                                .ToListAsync(cancellationToken);
     }
 
-    bool ITrainersRepository.IsTrainerInGymAsync(Guid gymId, Guid memberId)
+    async Task<bool> ITrainersRepository.IsTrainerInGymAsync(Guid gymId, Guid memberId)
     {
-        var exist =_dbContext.Trainers.Any(t => t.GymId == gymId && t.MemberId == memberId);
+        var exist = await _dbContext.Trainers.AnyAsync(t => t.GymId == gymId && t.MemberId == memberId);
         return exist;
-    }    
+    }
+
+    async Task<bool> ITrainersRepository.HasSessionAsync(Guid trainerId)
+    {
+        var exist = await _dbContext.Sessions.AnyAsync(x => x.TrainerId == trainerId);
+                                            // && (x.Status == SessionStatus.Scheduled || x.Status == SessionStatus.InProgress ));
+        return exist;
+    }
+    
+    async Task<bool> ITrainersRepository.ExistsWithEmailAsync(Guid gymId, string email, Guid? trainerId)
+    {
+        var emailValue = email?.ToLower(); 
+        var exist = await _dbContext.Trainers
+                .AnyAsync(t =>
+                    t.GymId == gymId &&
+                    (t.Email == emailValue) &&
+                    (trainerId == null || t.Id != trainerId));
+                    
+        return exist;
+    }
+
+    async Task<bool> ITrainersRepository.ExistsWithPhoneAsync(Guid gymId, string phone, Guid? trainerId)
+    {
+        var exist = await _dbContext.Trainers
+              .AnyAsync(t =>
+                  t.GymId == gymId &&
+                  t.Phone == phone &&
+                  (trainerId == null || t.Id != trainerId));
+        
+        return exist;
+    }
 }

@@ -4,10 +4,6 @@ namespace GymManagement.Domain.Rooms;
 
 public static class RoomErrors
 {
-    public static readonly Error CannotExceedRoomCapacity = Error.Validation(
-        "Room.CannotExceedRoomCapacity",
-        "Cant exceed room capacity.");
-
     public static Error RoomNotFound(Guid id) => Error.NotFound
     (code: "Room.NotFound",
       description: $"Room with ID {id} not found.");
