@@ -12,6 +12,7 @@ using GymManagement.Application.Sessions.Commands.CancelSession;
 using GymManagement.Application.Sessions.Commands.FinalizeSession;
 using GymManagement.Application.Bookings.Queries.ListBookingsBySession;
 using GymManagement.Contracts.Bookings;
+using GymManagement.Api.Common;
 
 
 namespace GymManagement.Api.Controllers;
@@ -36,8 +37,8 @@ public class SessionsController : ApiBaseController
 
     return result.MatchFirst(
         id => CreatedAtAction(actionName: nameof(GetSession),
-                                   routeValues: new { id = id },
-                                   value: null),
+                                   routeValues: new { id },
+                                   value: new ResourceIdentifier(id)),
         error => HandleErrors(result.Errors));
   }
 
@@ -94,7 +95,7 @@ public class SessionsController : ApiBaseController
     var result = await _mediator.Send(cmd);
 
     return result.MatchFirst(
-      id => Ok(new { Id = id }),
+      id => Ok(new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
 
@@ -114,7 +115,7 @@ public class SessionsController : ApiBaseController
     var result = await _mediator.Send(new CancelSessionCommand(Id: sessionId));
 
     return result.MatchFirst(
-      id => Ok(new { id = id }),
+      id => Ok(new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
 
@@ -124,7 +125,7 @@ public class SessionsController : ApiBaseController
     var result = await _mediator.Send(new FinalizeSessionCommand(Id: sessionId));
 
     return result.MatchFirst<IActionResult>(
-     id => Ok(new { id = id }),
+     id => Ok(new ResourceIdentifier(id)),
      error => HandleErrors(result.Errors));
   }
   

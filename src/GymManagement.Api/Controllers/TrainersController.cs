@@ -9,6 +9,7 @@ using GymManagement.Application.Trainers.Commands.UpdateTrainer;
 using GymManagement.Application.Sessions.Queries.ListSessionsByTrainer;
 using GymManagement.Contracts.Sessions;
 using GymManagement.Api.Mappings;
+using GymManagement.Api.Common;
 
 
 namespace GymManagement.Api.Controllers;
@@ -34,16 +35,16 @@ public class TrainersController : ApiBaseController
     
     return result.MatchFirst(
       id => CreatedAtAction(actionName: nameof(GetTrainer),
-                                 routeValues: new { trainerId = id },
-                                 value: null),
+                                 routeValues: new { id },
+                                 value: new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));    
       
   }
 
-  [HttpGet("{trainerId:guid}")]
-  public async Task<IActionResult> GetTrainer(Guid trainerId)
+  [HttpGet("{id:guid}")]
+  public async Task<IActionResult> GetTrainer(Guid id)
   {
-    var result = await _mediator.Send(new GetTrainerQuery(trainerId));
+    var result = await _mediator.Send(new GetTrainerQuery(id));
 
     return result.MatchFirst(
       trainer => Ok(ContractMappings.MapToTrainerResponse(trainer)),
@@ -72,7 +73,7 @@ public class TrainersController : ApiBaseController
     var result = await _mediator.Send(cmd);
 
     return result.MatchFirst(
-      id => Ok(new { Id = id }),
+      id => Ok(new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
   

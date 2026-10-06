@@ -37,6 +37,7 @@ internal class TraneirsRepository : ITrainersRepository
         //return await _dbContext.Trainers.FindAsync(trainerId, cancellationToken);
         return await _dbContext.Trainers
                     .Where(t => t.Id == trainerId)
+                    .Include(t => t.Gym)
                     .SingleOrDefaultAsync(cancellationToken);
     }
 
@@ -44,6 +45,7 @@ internal class TraneirsRepository : ITrainersRepository
     {
         return await _dbContext.Trainers
                     .Where(t => t.MemberId == memberId)
+                    .Include(t => t.Gym)
                     .SingleOrDefaultAsync(cancellationToken);
     }
     

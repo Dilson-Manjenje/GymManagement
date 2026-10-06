@@ -12,12 +12,12 @@ using GymManagement.Application.Gyms.Queries.GetGym;
 using GymManagement.Application.Gyms.Queries.ListGyms;
 using GymManagement.Application.Gyms.Commands.DeleteGym;
 using GymManagement.Application.Gyms.Commands.UpdateGym;
-using GymManagement.Application.Gyms.Queries.Dtos;
 using GymManagement.Application.Sessions.Queries.ListSessionsByGym;
 using GymManagement.Application.Members.Queries.ListMembersByGym;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByGym;
 using GymManagement.Application.Rooms.Queries.ListRoomsByGym;
 using GymManagement.Application.Trainers.Queries.ListTrainersByGym;
+using GymManagement.Api.Common;
 
 namespace GymManagement.Api.Controllers;
 
@@ -40,7 +40,9 @@ public class GymsController : ApiBaseController
     return result.MatchFirst(
       id => CreatedAtAction(actionName: nameof(GetGym),
                               routeValues: new { id = id },
-                              value: null),
+                              // value: ContractMappings.MapToGymResponse(new GymDto(id, request.Name, request.Address))),
+                              // value: new { id }),
+                              value: new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));    
   }
 
@@ -81,7 +83,7 @@ public class GymsController : ApiBaseController
     var result = await _mediator.Send(new UpdateGymCommand(id, request.Name, request.Address));
 
     return result.MatchFirst(
-      id => Ok(new { gymId = id }),
+      id => Ok(new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
 

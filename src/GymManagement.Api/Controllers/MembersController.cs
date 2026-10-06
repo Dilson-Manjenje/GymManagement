@@ -12,6 +12,7 @@ using GymManagement.Application.Members.Commands.DeleteMember;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByMember;
 
 using GymManagement.Application.Bookings.Queries.ListBookingsByMember;
+using GymManagement.Api.Common;
 
 
 namespace GymManagement.Api.Controllers;
@@ -35,8 +36,8 @@ public class MembersController : ApiBaseController
 
     return result.MatchFirst(      
       id => CreatedAtAction(actionName: nameof(GetMember),
-                                 routeValues: new { id = id },
-                                 value: null),
+                                 routeValues: new { id },
+                                 value: new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
 
@@ -60,7 +61,7 @@ public class MembersController : ApiBaseController
     var result = await _mediator.Send(cmd);
 
     return result.MatchFirst(
-      id => Ok(new { Id = id }),
+      id => Ok(new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
 

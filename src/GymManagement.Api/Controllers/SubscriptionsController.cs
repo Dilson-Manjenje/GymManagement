@@ -11,6 +11,7 @@ using GymManagement.Application.Subscriptions.Commands.AddRoomToSubscription;
 using GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscription;
 using GymManagement.Api.Mappings;
 using GymManagement.Application.Subscriptions.Commands.DisableSubscription;
+using GymManagement.Api.Common;
 
 namespace GymManagement.Api.Controllers;
 
@@ -37,8 +38,8 @@ public class SubscriptionsController : ApiBaseController
 
         return result.MatchFirst(
             id => CreatedAtAction(actionName: nameof(GetSubscription),
-                                            routeValues: new { subscriptionId = id },
-                                            value: null // Pass null or the created resource   
+                                            routeValues: new { id },
+                                            value: new ResourceIdentifier(id)  
                                             ),          
             error => HandleErrors(result.Errors));
     }
@@ -49,6 +50,17 @@ public class SubscriptionsController : ApiBaseController
                        detail: $"Subscription type '{subscriptionType}' is invalid.");
     }
 
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetSubscription(Guid id)
+    {
+        var result = await _mediator.Send(new GetSubscriptionQuery(id));
+
+        return result.MatchFirst(
+          subscription => Ok(ContractMappings.MapToSubscriptionResponse(subscription)),
+          error => HandleErrors(result.Errors)
+      );
+    }
+    
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteSubscription(Guid id)
     {
@@ -86,17 +98,6 @@ public class SubscriptionsController : ApiBaseController
           error => HandleErrors(result.Errors));
     }
 
-    [HttpGet("{subscriptionId:guid}")]
-    public async Task<IActionResult> GetSubscription(Guid subscriptionId)
-    {
-        var result = await _mediator.Send(new GetSubscriptionQuery(subscriptionId));
-
-        return result.MatchFirst(
-          subscription => Ok(ContractMappings.MapToSubscriptionResponse(subscription)),
-          error => HandleErrors(result.Errors)
-      );
-    }
-
     [HttpGet("List")]
     public async Task<IActionResult> ListSubscriptions()
     {
@@ -122,12 +123,23 @@ public class SubscriptionsController : ApiBaseController
 
     [HttpDelete("{subscriptionId:guid}/rooms")]
     public async Task<IActionResult> RemoveRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
-    {  
+    {
         var result = await _mediator.Send(new RemoveRoomFromSubscriptionCommand(SubscriptionId: subscriptionId,
                                                                               RoomId: request.RoomId));
 
         return result.MatchFirst<IActionResult>(
          _ => NoContent(),
-         error => HandleErrors(result.Errors));          
+         error => HandleErrors(result.Errors));
     }
+
+    // TODO: Implement an endpoint to list all rooms that subscriptions has access  
+    // [HttpGet("{subscriptionId:guid}/rooms")]
+    // public async Task<IActionResult> ListRooms([FromRoute] Guid subscriptionId)
+    // {
+    //     var result = await _mediator.Send(new ListSubscriptionRoomsQuery(SubscriptionId: subscriptionId);
+
+    //     return result.MatchFirst(
+    //       subscriptions => Ok(new ListSubscriptionRoomsResponse()),
+    //       error => HandleErrors(result.Errors)
+    // }
 }

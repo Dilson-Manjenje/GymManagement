@@ -6,10 +6,10 @@ using GymManagement.Application.Rooms.Queries.GetRoom;
 using GymManagement.Application.Rooms.Queries.ListRooms;
 using GymManagement.Application.Rooms.Commands.DisableRoom;
 using GymManagement.Application.Rooms.Commands.UpdateRoom;
-using GymManagement.Application.Rooms.Queries.ListRoomsByGym;
 using GymManagement.Application.Sessions.Queries.ListSessionsByRoom;
 using GymManagement.Contracts.Sessions;
 using GymManagement.Api.Mappings;
+using GymManagement.Api.Common;
 
 namespace GymManagement.Api.Controllers;
 
@@ -32,15 +32,15 @@ public class RoomsController : ApiBaseController
 
     return result.MatchFirst(
         id => CreatedAtAction(actionName: nameof(GetRoom),
-                                        routeValues: new { roomId = id },
-                                        value: null ),
+                                        routeValues: new { id },
+                                        value: new ResourceIdentifier(id) ),
         error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{roomId:guid}")]
-  public async Task<IActionResult> GetRoom(Guid roomId)
+  [HttpGet("{id:guid}")]
+  public async Task<IActionResult> GetRoom(Guid id)
   {
-    var result = await _mediator.Send(new GetRoomQuery(roomId));
+    var result = await _mediator.Send(new GetRoomQuery(id));
 
     return result.MatchFirst(
       room => Ok(ContractMappings.MapToRoomResponse(room)),
@@ -79,7 +79,7 @@ public class RoomsController : ApiBaseController
     var result = await _mediator.Send(cmd);
 
     return result.MatchFirst(
-      id => Ok(new { Id = id }),
+      id => Ok(new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
 

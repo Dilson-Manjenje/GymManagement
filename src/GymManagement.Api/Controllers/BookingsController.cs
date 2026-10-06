@@ -6,7 +6,7 @@ using GymManagement.Application.Bookings.Commands.CreateBooking;
 using GymManagement.Application.Bookings.Queries.GetBooking;
 using GymManagement.Application.Bookings.Queries.ListBookings;
 using GymManagement.Application.Bookings.Commands.CancelBooking;
-using GymManagement.Application.Bookings.Commands.FinalizeBooking;
+using GymManagement.Api.Common;
 
 
 namespace GymManagement.Api.Controllers;
@@ -29,8 +29,8 @@ public class BookingsController : ApiBaseController
 
     return result.MatchFirst(
         id => CreatedAtAction(actionName: nameof(GetBooking),
-                                   routeValues: new { id = id },
-                                   value: null),
+                                   routeValues: new { id },
+                                   value: new ResourceIdentifier(id)),
         error => HandleErrors(result.Errors));
   }
 
@@ -60,7 +60,7 @@ public class BookingsController : ApiBaseController
     var result = await _mediator.Send(new CancelBookingCommand(Id: bookingId));
 
     return result.MatchFirst(
-      id => Ok(new { id = id }),
+      id => Ok(new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));
   }
 }
