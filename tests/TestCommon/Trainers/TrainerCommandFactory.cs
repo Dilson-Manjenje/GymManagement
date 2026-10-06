@@ -7,6 +7,10 @@ public static class TrainerCommandFactory
 {
     public static CreateTrainerCommand GetCreateTrainerCommand(Guid memberId, string name, string phone, string? email, string specialization)
     {
-        return new CreateTrainerCommand(name, phone, email, specialization, memberId);
+        return new CreateTrainerCommand(Name: name,
+                                        Phone: phone,
+                                        Email: email,
+                                        Specialization: specialization,
+                                        MemberId: memberId);
     }
 }

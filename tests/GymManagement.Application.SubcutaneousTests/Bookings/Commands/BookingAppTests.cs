@@ -253,7 +253,7 @@ public class BookingAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
 
         var disableSubsResult = await _mediator.Send(new DisableSubscriptionCommand(_subscription.Id));
         disableSubsResult.IsError.Should().BeFalse();
-
+        
         var command = new CreateBookingCommand(SessionId: _session.Id, MemberId: _participant.Id);
         var result = await _mediator.Send(command);
 
@@ -327,7 +327,7 @@ public class BookingAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Create_WhenSessionIsFully_ReturnCannotExceedSessionCapacityError()
+    public async Task Create_WhenSessionIsFull_ReturnCannotExceedSessionCapacityError()
     {
         var member2 = await CreateMember(_gym.Id, "Member Two");
         var member3 = await CreateMember(_gym.Id, "Member Three");

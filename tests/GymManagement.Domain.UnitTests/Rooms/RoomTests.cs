@@ -11,7 +11,7 @@ public class RoomTests
 {
 
     [Fact]
-    public void Create_ReturnValidRoom()
+    public void Create_ReturnValidId()
     {
         var gym = GymFactory.GetFightGym();
 
