@@ -91,9 +91,8 @@ public class BookingTests
     public void Create_WithinSessionCapacity_SetVacancyCorrectly()
     {
         // Act
-        // TODO: Move test do Application Level
         var result1 = Booking.Create(_member, _session, _subscription);
-        _session.DecrementVacancy();
+        _session.DecrementVacancy(); // TODO: Move to application level
         var result2 = Booking.Create(_member, _session, _subscription);
         _session.DecrementVacancy();
 
@@ -109,16 +108,17 @@ public class BookingTests
 
         // Arrange
         var result1 = Booking.Create(_member, _session, _subscription);
+        result1.IsError.Should().BeFalse();
         _session.DecrementVacancy();
+        
         var result2 = Booking.Create(_member, _session, _subscription);
         _session.DecrementVacancy();
+        result2.IsError.Should().BeFalse();
 
         // act        
         var bookingResult = Booking.Create(_member, _session, _subscription);
 
         // Assert
-        result1.IsError.Should().BeFalse();
-        result2.IsError.Should().BeFalse();
         bookingResult.IsError.Should().BeTrue();
         bookingResult.FirstError.Should().Be(SessionErrors.CannotExceedSessionCapacity);
     }
