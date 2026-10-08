@@ -13,17 +13,5 @@ public class CreateRoomCommandValidator : AbstractValidator<CreateRoomCommand>
         _roomsRepository = roomsRepository;
 
         Include(new RoomBaseCommandValidator());
-
-        RuleFor( c => c)
-            .MustAsync(NotExistWithSameName)
-            .WithMessage("A room with the same name already exists in this Gym.");
-    }
-
-    private async Task<bool> NotExistWithSameName(CreateRoomCommand command, CancellationToken token)
-    {
-        var rooms = await _roomsRepository.ListByGymAsync(command.GymId);
-        var room = rooms?.SingleOrDefault(r => r.Name.Equals(command.Name, StringComparison.InvariantCultureIgnoreCase));
-        
-        return room is null;
     }
 }

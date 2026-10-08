@@ -16,6 +16,5 @@ Content-Type: {{jsonContentType}}
 
 {
   "name": "Yoga",
-  "capacity": 20,
-  "gymId": "{{topFitnessGym}}"
+  "capacity": 20
 }

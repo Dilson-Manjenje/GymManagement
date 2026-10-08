@@ -137,7 +137,7 @@ public class RoomAppTests(MediatorFactory mediatorFactory): IAsyncLifetime
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Description.ToLower().Should().Contain("already exist");
+       result.FirstError.Should().Be(RoomErrors.RoomNameAlreadyExist(command.Name));
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public class RoomAppTests(MediatorFactory mediatorFactory): IAsyncLifetime
     public async Task Update_WhenCommandIsValid_UpdateWithSucess()
     {
         // Act
-        var command = new UpdateRoomCommand(Id: _room.Id, Name: "Room 2", Capacity: 3, _gym.Id);
+        var command = new UpdateRoomCommand(Id: _room.Id, Name: "Room 2", Capacity: 3);
         var result = await _mediator.Send(command);
         result.IsError.Should().BeFalse();
 
@@ -166,24 +166,12 @@ public class RoomAppTests(MediatorFactory mediatorFactory): IAsyncLifetime
         // Assert
         room.Name.Should().BeEquivalentTo(command.Name);
         room.Capacity.Should().Be(command.Capacity);
-        room.GymId.Should().Be(command.GymId);
     }
 
     [Fact]
-    public async Task Update_WhenGymDontExist_ReturnNotFoundError()
-    {
-        var command = new UpdateRoomCommand(_room.Id, "Room 2", _roomCapacity, Guid.NewGuid());
-        var result = await _mediator.Send(command);
-
-        // Assert
-        result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(GymErrors.GymNotFound(command.GymId));
-    }
-
-     [Fact]
     public async Task Update_WhenRoomDontExist_ReturnNotFoundError()
     {
-        var command = new UpdateRoomCommand(Guid.NewGuid(), "Room 2", _roomCapacity, _gym.Id);
+        var command = new UpdateRoomCommand(Guid.NewGuid(), "Room 2", _roomCapacity);
         var result = await _mediator.Send(command);
 
         // Assert
@@ -193,19 +181,20 @@ public class RoomAppTests(MediatorFactory mediatorFactory): IAsyncLifetime
 
 
     [Fact]
-    public async Task Update_WhenOtherGymAlreadyHasTheName_ReturnValidationError()
+    public async Task Update_WhenOtherRoomAlreadyHasTheName_ReturnValidationError()
     {
         // Arrange 
         var room = await CreateRoom(_gym.Id, "Room Two", _roomCapacity);
 
         // Act
-        var command = new UpdateRoomCommand(Id: room.Id, Name: "Room 1", Capacity: 3, _gym.Id);
+        var command = new UpdateRoomCommand(Id: room.Id, Name: "Room 1", Capacity: 3);
         var result = await _mediator.Send(command);
 
         // Assert
         result.IsError.Should().BeTrue();
         // result.FirstError.Code.ToLower().Should().Be("Name");
-        result.FirstError.Description.ToLower().Should().Contain("name already used");
+        // result.FirstError.Description.ToLower().Should().Contain("name already used");
+        result.FirstError.Should().Be(RoomErrors.RoomNameAlreadyExist(command.Name));
     }
 
     // Update no id informet, name and address validator
@@ -218,7 +207,7 @@ public class RoomAppTests(MediatorFactory mediatorFactory): IAsyncLifetime
         var roomName = new string('a', nameLength);
 
         // Arrange 
-        var command = new UpdateRoomCommand(_room.Id, roomName, _roomCapacity, _gym.Id);
+        var command = new UpdateRoomCommand(_room.Id, roomName, _roomCapacity);
 
         // Act
         var result = await _mediator.Send(command);
@@ -235,7 +224,7 @@ public class RoomAppTests(MediatorFactory mediatorFactory): IAsyncLifetime
     public async Task Update_WithInvalidCapacity_ReturnValidationError(int capacity)
     {
         // Arrange        
-        var command = new UpdateRoomCommand(_room.Id, "Room 2", capacity, _gym.Id);
+        var command = new UpdateRoomCommand(_room.Id, "Room 2", capacity);
         
         // Act
         var result = await _mediator.Send(command);

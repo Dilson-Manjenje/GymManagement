@@ -22,7 +22,7 @@ public class RoomsController : ApiBaseController
   }
 
   [HttpPost]
-  public async Task<IActionResult> CreateRoom(RoomRequest request)
+  public async Task<IActionResult> CreateRoom(CreateRoomRequest request)
   {
     var cmd = new CreateRoomCommand(request.Name,
                                 request.Capacity,
@@ -69,12 +69,11 @@ public class RoomsController : ApiBaseController
   }
 
   [HttpPut("{id:guid}")]
-  public async Task<IActionResult> UpdateRoomm([FromRoute] Guid id, RoomRequest request)
+  public async Task<IActionResult> UpdateRoomm([FromRoute] Guid id, UpdateRoomRequest request)
   {
     var cmd = new UpdateRoomCommand(id,
                                     request.Name,
-                                    request.Capacity,
-                                    request.GymId);
+                                    request.Capacity);
 
     var result = await _mediator.Send(cmd);
 

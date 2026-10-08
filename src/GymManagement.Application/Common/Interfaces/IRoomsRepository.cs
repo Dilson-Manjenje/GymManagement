@@ -12,5 +12,5 @@ public interface IRoomsRepository
     Task<IEnumerable<Room>?> ListAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<Room>?> ListByGymAsync(Guid gymId, CancellationToken cancellationToken = default);
     Task<bool> RoomHasOverlappingSession(Guid roomId, DateTime start, DateTime end, CancellationToken cancellationToken = default);
-
+    Task<bool> ExistWithNameAsync(Guid gymId, string roomName, Guid? roomId, CancellationToken cancellationToken = default);
 }

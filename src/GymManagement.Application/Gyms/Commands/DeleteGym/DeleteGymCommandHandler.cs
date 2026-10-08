@@ -26,7 +26,7 @@ public class DeleteGymCommandHandler : IRequestHandler<DeleteGymCommand, ErrorOr
         if (gym is null)
             return GymErrors.GymNotFound(command.Id);
 
-        var rooms = await _roomsRepository.ListByGymAsync(command.Id);
+        var rooms = await _roomsRepository.ListByGymAsync(command.Id, cancellationToken);
 
         if (rooms is not null && rooms.Any())
             return GymErrors.CannotDeleteGymWithRooms(command.Id);

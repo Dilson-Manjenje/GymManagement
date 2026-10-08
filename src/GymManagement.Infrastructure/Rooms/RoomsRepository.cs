@@ -68,4 +68,15 @@ internal class RoomsRepository : IRoomsRepository
 
         return exist;                                            
     }
+
+    async Task<bool> IRoomsRepository.ExistWithNameAsync(Guid gymId, string roomName, Guid? roomId, CancellationToken cancellationToken)
+    {
+        var exist = await _dbContext.Rooms
+              .AnyAsync(x =>
+                  x.GymId == gymId &&
+                  x.Name == roomName &&
+                  (roomId == null || x.Id != roomId));
+        
+        return exist;
+    }
 }

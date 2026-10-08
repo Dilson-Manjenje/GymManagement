@@ -22,18 +22,17 @@ public class UpdateRoomCommandHandler : IRequestHandler<UpdateRoomCommand, Error
 
     public async Task<ErrorOr<Guid>> Handle(UpdateRoomCommand command, CancellationToken cancellationToken)
     {
-        var gym = await _gymsRepository.GetByIdAsync(command.GymId, cancellationToken);
-        if (gym is null)
-            return GymErrors.GymNotFound(command.GymId);
-        
         var room = await _roomsRepository.GetByIdAsync(command.Id, cancellationToken);
-        
+
         if (room is null)
             return RoomErrors.RoomNotFound(command.Id);
+            
+        var nameAlreadyExist = await _roomsRepository.ExistWithNameAsync(room.GymId, command.Name, room.Id);
+        if (nameAlreadyExist)
+            return RoomErrors.RoomNameAlreadyExist(command.Name);
 
         var result = room.UpdateRoom(command.Name,
-                                     command.Capacity,
-                                     command.GymId);
+                                     command.Capacity);
 
         if (result.IsError)
             return result.Errors;

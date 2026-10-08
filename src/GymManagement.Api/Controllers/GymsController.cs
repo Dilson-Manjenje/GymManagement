@@ -30,12 +30,12 @@ public class GymsController : ApiBaseController
   }
 
   [HttpPost]
-  public async Task<IActionResult> CreateGym(GymRequest request)
+  public async Task<IActionResult> CreateGym(GymRequest request, CancellationToken cancellationToken = default)
   {
     var cmd = new CreateGymCommand(request.Name,
                                   request.Address);
 
-    var result = await _mediator.Send(cmd);
+    var result = await _mediator.Send(cmd, cancellationToken);
         
     return result.MatchFirst(
       id => CreatedAtAction(actionName: nameof(GetGym),
@@ -45,9 +45,9 @@ public class GymsController : ApiBaseController
   }
 
   [HttpGet("{id:guid}")]
-  public async Task<IActionResult> GetGym(Guid id)
+  public async Task<IActionResult> GetGym(Guid id, CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new GetGymQuery(id));
+    var result = await _mediator.Send(new GetGymQuery(id), cancellationToken);
 
     return result.MatchFirst(
       gym => Ok(ContractMappings.MapToGymResponse(gym)),
@@ -56,9 +56,9 @@ public class GymsController : ApiBaseController
 
 
   [HttpGet("List")]
-  public async Task<IActionResult> ListAllGyms()
+  public async Task<IActionResult> ListAllGyms(CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new ListGymsQuery());
+    var result = await _mediator.Send(new ListGymsQuery(), cancellationToken);
 
     return result.MatchFirst(
       gyms => Ok(new ListGymsResponse(gyms.Select(gym => ContractMappings.MapToGymResponse(gym)))),
@@ -66,9 +66,9 @@ public class GymsController : ApiBaseController
   }
 
   [HttpDelete("{id:guid}")]
-  public async Task<IActionResult> DeleteGym(Guid id)
+  public async Task<IActionResult> DeleteGym(Guid id, CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new DeleteGymCommand(id));
+    var result = await _mediator.Send(new DeleteGymCommand(id), cancellationToken);
 
     return result.MatchFirst<IActionResult>(
       _ => NoContent(),
@@ -76,9 +76,9 @@ public class GymsController : ApiBaseController
   }
 
   [HttpPut("{id:guid}")]
-  public async Task<IActionResult> UpdateGym([FromRoute] Guid id, GymRequest request)
+  public async Task<IActionResult> UpdateGym([FromRoute] Guid id, GymRequest request, CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new UpdateGymCommand(id, request.Name, request.Address));
+    var result = await _mediator.Send(new UpdateGymCommand(id, request.Name, request.Address), cancellationToken);
 
     return result.MatchFirst(
       id => Ok(new ResourceIdentifier(id)),
@@ -86,9 +86,9 @@ public class GymsController : ApiBaseController
   }
 
   [HttpGet("{gymId:guid}/Rooms")]
-  public async Task<IActionResult> ListRooms([FromRoute] Guid gymId)
+  public async Task<IActionResult> ListRooms([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new ListRoomsByGymQuery(GymId: gymId));
+    var result = await _mediator.Send(new ListRoomsByGymQuery(GymId: gymId), cancellationToken);
 
     return result.MatchFirst(
       rooms => Ok(new ListRoomsResponse(rooms.Select(room => ContractMappings.MapToRoomResponse(room)))),
@@ -96,9 +96,9 @@ public class GymsController : ApiBaseController
   }
   
   [HttpGet("{gymId:guid}/Trainers")]
-  public async Task<IActionResult> ListTrainers([FromRoute] Guid gymId)
+  public async Task<IActionResult> ListTrainers([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new ListTrainersByGymQuery(GymId: gymId));
+    var result = await _mediator.Send(new ListTrainersByGymQuery(GymId: gymId), cancellationToken);
 
     return result.MatchFirst(
       trainers => Ok(new ListTrainersResponse(trainers.Select(trainer => ContractMappings.MapToTrainerResponse(trainer)))),
@@ -107,9 +107,9 @@ public class GymsController : ApiBaseController
 
 
   [HttpGet("{gymId:guid}/Sessions")]
-  public async Task<IActionResult> ListSessions(Guid gymId)
+  public async Task<IActionResult> ListSessions(Guid gymId, CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new ListSessionsByGymQuery(GymId: gymId));
+    var result = await _mediator.Send(new ListSessionsByGymQuery(GymId: gymId), cancellationToken);
 
     return result.MatchFirst(
       sessions => Ok(new ListSessionsResponse(sessions.Select(session => ContractMappings.MapToSessionResponse(session)))),
@@ -117,9 +117,9 @@ public class GymsController : ApiBaseController
   }
 
   [HttpGet("{gymId:guid}/Members")]
-  public async Task<IActionResult> ListMembers([FromRoute] Guid gymId)
+  public async Task<IActionResult> ListMembers([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
   {
-    var result = await _mediator.Send(new ListMembersByGymQuery(GymId: gymId));
+    var result = await _mediator.Send(new ListMembersByGymQuery(GymId: gymId), cancellationToken);
 
     return result.MatchFirst(
       members => Ok(new ListMembersResponse(members.Select(member => ContractMappings.MapToMemberResponse(member)))),
@@ -128,9 +128,9 @@ public class GymsController : ApiBaseController
 
   
     [HttpGet("{gymId:guid}/Subscriptions")]
-    public async Task<IActionResult> ListSubscriptions([FromRoute] Guid gymId)
+    public async Task<IActionResult> ListSubscriptions([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
     {
-        var result = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gymId));
+        var result = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gymId), cancellationToken);
 
         return result.MatchFirst(
           subscriptions => Ok(new ListSubscriptionsResponse(subscriptions.Select(subs => ContractMappings.MapToSubscriptionResponse(subs)))),

@@ -26,6 +26,10 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Error
         if (gym is null)
             return GymErrors.GymNotFound(command.GymId);
         
+        var nameAlreadyExist = await _roomsRepository.ExistWithNameAsync(command.GymId, command.Name, null);
+        if (nameAlreadyExist)
+            return RoomErrors.RoomNameAlreadyExist(command.Name);
+
         var room = new Room(
             name: command.Name,
             capacity: command.Capacity,

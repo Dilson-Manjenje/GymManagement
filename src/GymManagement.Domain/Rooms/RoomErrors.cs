@@ -15,8 +15,12 @@ public static class RoomErrors
   public static Error RoomHasOverlappingSession() => Error.Validation
   (code: "Room.RoomHasOverlappingSession",
     description: $"The Room already has schedule session on informed dates.");
-   
+
   public static Error RoomIsNotIsAvailable(Guid roomId) => Error.Validation
   (code: "Room.RoomIsNotIsAvailable",
     description: $"The Room is not available.");
+    
+  public static Error RoomNameAlreadyExist(string name) => Error.Conflict
+  (code: "Room.RoomNameAlreadyExist",
+    description: $"Already exist a Room with name '{name}' in the Gym.");
 }

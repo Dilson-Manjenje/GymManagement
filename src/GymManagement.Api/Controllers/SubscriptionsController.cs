@@ -119,7 +119,7 @@ public class SubscriptionsController : ApiBaseController
                                                                            RoomId: request.RoomId));
 
         return result.MatchFirst(
-          id => Ok(new { id = id }),
+          id => Ok(new { id }),
           error => HandleErrors(result.Errors));
     }
 

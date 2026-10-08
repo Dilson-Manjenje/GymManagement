@@ -71,38 +71,38 @@ internal class TraneirsRepository : ITrainersRepository
                                .ToListAsync(cancellationToken);
     }
 
-    async Task<bool> ITrainersRepository.IsTrainerInGymAsync(Guid gymId, Guid memberId)
+    async Task<bool> ITrainersRepository.IsTrainerInGymAsync(Guid gymId, Guid memberId, CancellationToken cancellationToken)
     {
-        var exist = await _dbContext.Trainers.AnyAsync(t => t.GymId == gymId && t.MemberId == memberId);
+        var exist = await _dbContext.Trainers.AnyAsync(t => t.GymId == gymId && t.MemberId == memberId, cancellationToken: cancellationToken);
         return exist;
     }
 
-    async Task<bool> ITrainersRepository.HasSessionAsync(Guid trainerId)
+    async Task<bool> ITrainersRepository.HasSessionAsync(Guid trainerId, CancellationToken cancellationToken)
     {
-        var exist = await _dbContext.Sessions.AnyAsync(x => x.TrainerId == trainerId);
+        var exist = await _dbContext.Sessions.AnyAsync(x => x.TrainerId == trainerId, cancellationToken: cancellationToken);
                                             // && (x.Status == SessionStatus.Scheduled || x.Status == SessionStatus.InProgress ));
         return exist;
     }
     
-    async Task<bool> ITrainersRepository.ExistsWithEmailAsync(Guid gymId, string email, Guid? trainerId)
+    async Task<bool> ITrainersRepository.ExistsWithEmailAsync(Guid gymId, string email, Guid? trainerId, CancellationToken cancellationToken)
     {
         var emailValue = email?.ToLower(); 
         var exist = await _dbContext.Trainers
                 .AnyAsync(t =>
                     t.GymId == gymId &&
                     (t.Email == emailValue) &&
-                    (trainerId == null || t.Id != trainerId));
+                    (trainerId == null || t.Id != trainerId), cancellationToken: cancellationToken);
                     
         return exist;
     }
 
-    async Task<bool> ITrainersRepository.ExistsWithPhoneAsync(Guid gymId, string phone, Guid? trainerId)
+    async Task<bool> ITrainersRepository.ExistsWithPhoneAsync(Guid gymId, string phone, Guid? trainerId, CancellationToken cancellationToken)
     {
         var exist = await _dbContext.Trainers
               .AnyAsync(t =>
                   t.GymId == gymId &&
                   t.Phone == phone &&
-                  (trainerId == null || t.Id != trainerId));
+                  (trainerId == null || t.Id != trainerId), cancellationToken: cancellationToken);
         
         return exist;
     }
