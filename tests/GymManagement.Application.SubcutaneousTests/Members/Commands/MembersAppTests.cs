@@ -263,10 +263,26 @@ public class MembersAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
 
         var command = new DeleteMemberCommand(Id: _member.Id);
         var result = await _mediator.Send(command);
+
+        // Assert
+        result.IsError.Should().BeTrue();
+        result.FirstError.Should().Be(MemberErrors.CannotRemoveMemberWithBooking(command.Id));
+    }
+    
+    [Fact]
+    public async Task Delete_WhenMemberHasSubscription_ReturnCannotDeleteMemberWithSubscriptionError()
+    {
+
+        _subscription = await CreateSubscription(SubscriptionType.Plus, _member.Id);
+        _session = await CreateSession(_room.Id, _trainer.Id, "Session 1");
+        // _booking = await CreateBooking(_session.Id, _member.Id);
+
+        var command = new DeleteMemberCommand(Id: _member.Id);
+        var result = await _mediator.Send(command);
         
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Should().Be(MemberErrors.CannotRemoveMemberWithBookingSessions(command.Id));        
+        result.FirstError.Should().Be(MemberErrors.CannotDeleteMemberWithSubscription(command.Id));        
     }
 
     private async Task<SubscriptionDto> CreateSubscription(SubscriptionType type, Guid memberId)

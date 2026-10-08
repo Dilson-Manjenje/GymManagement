@@ -34,6 +34,7 @@ using GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscriptio
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptions;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByMember;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByGym;
+using GymManagement.Application.Subscriptions.Queries.ListSubscriptionRooms;
 
 namespace GymManagement.Application.SubcutaneousTests.Subscriptions;
 
@@ -871,12 +872,12 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         subscriptions2.Should().BeOfType<List<SubscriptionDto>>();
     }
 
-     [Fact]
+    [Fact]
     public async Task ListSubscriptionsByGym_WhenThereIsNoSubscriptions_ReturnCorrectSubscriptions()
     {
         // Arrange 
         var gym = await CreateGym();
-       
+
         // Act
         var listResult = await _mediator.Send(new ListSubscriptionsByMemberQuery(gym.Id));
         listResult.IsError.Should().BeFalse();
@@ -887,4 +888,100 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         subscriptions.Count().Should().Be(0);
         subscriptions.Should().BeOfType<List<SubscriptionDto>>();
     }
+
+    [Fact]
+    public async Task ListSubscriptionsRooms_ReturnCorrectRooms()
+    {
+        // Arrange 
+        var gym = await CreateGym("Gym-Two");
+        var room1 = await CreateRoom(gym.Id, "Room 1", 2);
+        var room2 = await CreateRoom(gym.Id, "Room 2", 3);
+
+        var member1 = await CreateMember(gym.Id, "Member1");
+        var subs1 = await CreateSubscription(SubscriptionType.Plus, member1.Id);
+
+        var command1 = new AddRoomToSubscriptionCommand(SubscriptionId: subs1.Id, RoomId: room1.Id);
+        var addRoom1Result = await _mediator.Send(command1);
+        addRoom1Result.IsError.Should().BeFalse();
+
+        var command2 = new AddRoomToSubscriptionCommand(SubscriptionId: subs1.Id, RoomId: room2.Id);
+        var addRoom2Result = await _mediator.Send(command2);
+        addRoom2Result.IsError.Should().BeFalse();
+
+        // Act
+        var listResult = await _mediator.Send(new ListRoomsInSubscriptionQuery(SubscriptionId: subs1.Id));
+        listResult.IsError.Should().BeFalse();
+        var rooms = listResult.Value.ToList();
+
+        // Assert        
+        rooms.Count().Should().Be(2);
+        rooms.Should().BeOfType<List<RoomDto>>();
+    }
+
+    [Fact]
+    public async Task ListSubscriptionsRooms_WhenSubscriptionDontExist_ReturnCorrectRooms()
+    {
+        // Arrange 
+        var gym = await CreateGym("Gym-Two");
+        var room1 = await CreateRoom(gym.Id, "Room 1", 2);
+        var room2 = await CreateRoom(gym.Id, "Room 2", 3);
+
+        // Act
+        var query = new ListRoomsInSubscriptionQuery(SubscriptionId: Guid.NewGuid());
+        var listResult = await _mediator.Send(query);
+        listResult.IsError.Should().BeTrue();
+
+        // Assert        
+        listResult.FirstError.Should().Be(SubscriptionErrors.SubscriptionNotFound(query.SubscriptionId));
+    }
+    
+     [Fact]
+    public async Task ListSubscriptionsRooms_WhenSubscriptionIsExpired_ReturnCorrectRooms()
+    {
+        // Arrange 
+        var gym = await CreateGym("Gym-Two");
+        var room1 = await CreateRoom(gym.Id, "Room 1", 2);
+        var room2 = await CreateRoom(gym.Id, "Room 2", 3);
+
+        var member1 = await CreateMember(gym.Id, "Member1");
+        var subs1 = await CreateSubscription(SubscriptionType.Plus, member1.Id);
+
+        var command1 = new AddRoomToSubscriptionCommand(SubscriptionId: subs1.Id, RoomId: room1.Id);
+        var addRoom1Result = await _mediator.Send(command1);
+        addRoom1Result.IsError.Should().BeFalse();
+
+        var command2 = new DisableSubscriptionCommand(Id: subs1.Id);
+        var addRoom2Result = await _mediator.Send(command2);
+        addRoom2Result.IsError.Should().BeFalse();
+
+        // Act
+        var query = new ListRoomsInSubscriptionQuery(SubscriptionId:subs1.Id);
+        var listResult = await _mediator.Send(query);
+        listResult.IsError.Should().BeTrue();
+
+        // Assert        
+        listResult.FirstError.Should().Be(SubscriptionErrors.ExpiredSubscription(query.SubscriptionId));       
+    }
+    
+    [Fact]
+    public async Task ListSubscriptionsRooms_WhenThereIsNotRoom_ReturnCorrectRooms()
+    {
+        var gym = await CreateGym("Gym-Two");
+        var room1 = await CreateRoom(gym.Id, "Room 1", 2);
+        var room2 = await CreateRoom(gym.Id, "Room 2", 3);
+
+        var member1 = await CreateMember(gym.Id, "Member1");
+        var subs1 = await CreateSubscription(SubscriptionType.Plus, member1.Id);
+        
+        // Act
+        var query = new ListRoomsInSubscriptionQuery(SubscriptionId: subs1.Id);
+        var listResult = await _mediator.Send(query);
+        listResult.IsError.Should().BeFalse();       
+        var rooms = listResult.Value.ToList();
+
+        // Assert        
+        rooms.Count().Should().Be(0);
+        rooms.Should().BeOfType<List<RoomDto>>();
+    }
+
 }

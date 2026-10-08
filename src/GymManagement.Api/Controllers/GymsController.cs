@@ -39,9 +39,7 @@ public class GymsController : ApiBaseController
         
     return result.MatchFirst(
       id => CreatedAtAction(actionName: nameof(GetGym),
-                              routeValues: new { id = id },
-                              // value: ContractMappings.MapToGymResponse(new GymDto(id, request.Name, request.Address))),
-                              // value: new { id }),
+                              routeValues: new { id },
                               value: new ResourceIdentifier(id)),
       error => HandleErrors(result.Errors));    
   }

@@ -37,6 +37,7 @@ public class DeleteTrainerCommandHandler : IRequestHandler<DeleteTrainerCommand,
         if (result.IsError)
             return result.Errors;
         
+        // TODO: Decide if will delete from db or just soft delete
         await _trainersRepository.RemoveAsync(trainer, cancellationToken);
         await _unitOfWork.CommitChangesAsync(cancellationToken);
 

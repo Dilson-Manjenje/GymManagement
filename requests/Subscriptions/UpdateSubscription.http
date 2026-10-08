@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@subscriptionId = 02992f15-c972-4f33-9f6e-6633420eb17e
+@subscriptionId = f958a02f-6d3f-4ffb-af85-d803276c7c80
 @subscriptionId2 = 06a19606-09e1-4690-a79b-0ba1ef80b17f
 
 @quibumaBodyRoomId = 40A171F7-5230-4474-B49F-9CF25A50C9E0

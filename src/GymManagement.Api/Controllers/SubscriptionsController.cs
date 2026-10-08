@@ -12,6 +12,8 @@ using GymManagement.Application.Subscriptions.Commands.RemoveRoomFromSubscriptio
 using GymManagement.Api.Mappings;
 using GymManagement.Application.Subscriptions.Commands.DisableSubscription;
 using GymManagement.Api.Common;
+using GymManagement.Application.Subscriptions.Queries.ListSubscriptionRooms;
+using GymManagement.Contracts.Rooms;
 
 namespace GymManagement.Api.Controllers;
 
@@ -132,14 +134,13 @@ public class SubscriptionsController : ApiBaseController
          error => HandleErrors(result.Errors));
     }
 
-    // TODO: Implement an endpoint to list all rooms that subscriptions has access  
-    // [HttpGet("{subscriptionId:guid}/rooms")]
-    // public async Task<IActionResult> ListRooms([FromRoute] Guid subscriptionId)
-    // {
-    //     var result = await _mediator.Send(new ListSubscriptionRoomsQuery(SubscriptionId: subscriptionId);
+    [HttpGet("{subscriptionId:guid}/rooms")]
+    public async Task<IActionResult> ListRooms([FromRoute] Guid subscriptionId)
+    {
+        var result = await _mediator.Send(new ListRoomsInSubscriptionQuery(SubscriptionId: subscriptionId));
 
-    //     return result.MatchFirst(
-    //       subscriptions => Ok(new ListSubscriptionRoomsResponse()),
-    //       error => HandleErrors(result.Errors)
-    // }
+        return result.MatchFirst(
+          rooms => Ok(new ListRoomsResponse(rooms.Select(room => ContractMappings.MapToRoomResponse(room)))),
+          error => HandleErrors(result.Errors));
+    }
 }

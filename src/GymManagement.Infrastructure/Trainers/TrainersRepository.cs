@@ -20,15 +20,22 @@ internal class TraneirsRepository : ITrainersRepository
         await _dbContext.Trainers.AddAsync(trainer, cancellationToken);
     }
 
-        async Task ITrainersRepository.UpdateAsync(Trainer trainer, CancellationToken cancellationToken)
+    async Task ITrainersRepository.UpdateAsync(Trainer trainer, CancellationToken cancellationToken)
     {
         _dbContext.Trainers.Update(trainer);
         await Task.CompletedTask;
     }
     
+    /// <summary>
+    /// Delete trainer and respect member
+    /// </summary>    
     async Task ITrainersRepository.RemoveAsync(Trainer trainer, CancellationToken cancellationToken)
     {
+        var member = await _dbContext.Members.SingleAsync(m => m.Id == trainer.MemberId);
+
         _dbContext.Trainers.Remove(trainer);
+        _dbContext.Members.Remove(member);
+
         await Task.CompletedTask;            
     }
 

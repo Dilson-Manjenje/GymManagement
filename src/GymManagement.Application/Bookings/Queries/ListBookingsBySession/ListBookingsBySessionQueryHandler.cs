@@ -16,7 +16,7 @@ public class ListBookingsBySessionQueryHandler : IRequestHandler<ListBookingsByS
 
     public async Task<ErrorOr<IEnumerable<BookingDto>?>> Handle(ListBookingsBySessionQuery query, CancellationToken cancellationToken)
     {
-        var bookings = await _bookingsRepository.ListActiveBookingsBySessionAsync(query.SessionId);
+        var bookings = await _bookingsRepository.ListBookingsBySessionAsync(query.SessionId);
 
         if (bookings is null || !bookings.Any())
             return new List<BookingDto>();

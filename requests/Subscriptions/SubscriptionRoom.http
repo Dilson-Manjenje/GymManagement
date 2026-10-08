@@ -3,7 +3,7 @@
 @port = 5105
 @host = {{hostname}}:{{port}}
 @jsonContentType = application/json
-@subscriptionId = 3c74a90f-5160-4620-a9c4-f322f8acc9f0
+@subscriptionId = f958a02f-6d3f-4ffb-af85-d803276c7c80
 @quibumaBodyRoomId = 40A171F7-5230-4474-B49F-9CF25A50C9E0
 @quibumaKickRoomId = 1a5b1dd9-43e0-4451-845f-3ceae5e5cb43
 
@@ -13,12 +13,16 @@
 @fightKick = 16b36cd2-c7f8-4c80-8b37-12ecdba3cc23
 @fightCrossfit = f1d75d40-3e9e-46e1-a9f8-7a113233c26a
 
+@victoryFitRoom = 7390b7d4-855c-4003-8100-5e318480d882
+@victoryBodyBuildRoom = da741fd0-909f-46c9-bd2d-bce76b57a849
+
+
 ###
 PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
 Content-Type: {{jsonContentType}}
 
 {
-    "roomId": "{{quibumaBodyRoomId}}"
+    "roomId": "{{victoryFitRoom}}"
 }
 
 
@@ -39,3 +43,8 @@ Content-Type: {{jsonContentType}}
 {
     "roomId": "{{fightCrossfit}}"
 }
+
+
+###
+GET  http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
+Content-Type: {{jsonContentType}}

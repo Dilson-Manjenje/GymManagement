@@ -34,8 +34,13 @@ public static class SubscriptionErrors
   public static Error RoomWasNotFoundInMemberGym(Guid roomId) => Error.NotFound
   (code: "Subscription.RoomWasNotFoundInMemberGym",
     description: $"The Room with ID {roomId} was not found on member's gym.");
-  
-   public static Error RoomNotInSubscription(Guid roomId) => Error.NotFound
-  (code: "Subscription.RoomNotInSubscription",
-    description: $"The Room with ID {roomId} was not found in the Subscription.");
+
+  public static Error RoomNotInSubscription(Guid roomId) => Error.NotFound
+ (code: "Subscription.RoomNotInSubscription",
+   description: $"The Room with ID {roomId} was not found in the Subscription.");
+    
+  public static Error ExpiredSubscription(Guid subscriptionId) => Error.Validation
+  (code: "Subscription.ExpiredSubscription",
+  description: $"Cant perform the operation on expired subscription '{subscriptionId}'.");
+    
 }

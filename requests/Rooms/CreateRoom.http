@@ -8,15 +8,15 @@
 @gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
 @gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
 @topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
-
+@vitoryGym = c8089dac-530a-4207-b631-3359333a2a6f
 ###
 POST http://localhost:5105/Rooms
 Content-Type: application/json
 
 {
-    "Name": "CrossFit", 
-    "Capacity": 3,
-    "GymId": "{{gymIdFightSociety}}"
+    "Name": "FitRoom", 
+    "Capacity": 2,
+    "GymId": "{{vitoryGym}}"
 }
 
 ###
