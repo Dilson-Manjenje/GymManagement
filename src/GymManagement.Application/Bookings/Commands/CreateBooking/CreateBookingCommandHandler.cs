@@ -59,7 +59,6 @@ public record CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand
 
         // TODO: Add try/catch to handle ConcurrencyException and RaceCondition on save Booking
         await _bookingsRepository.AddAsync(booking);        
-        await _sessionsRepository.UpdateAsync(session);
         await _unitOfWork.CommitChangesAsync();
 
         return booking.Id;

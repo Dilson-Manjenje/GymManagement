@@ -5,32 +5,35 @@ using GymManagement.Api.Common;
 using GymManagement.Api.IntegrationTests.Common;
 using GymManagement.Contracts.Gyms;
 using GymManagement.Contracts.Members;
-using GymManagement.Contracts.Subscriptions;
-using TestCommon.TestConstants;
+using GymManagement.Contracts.Trainers;
 
-namespace GymManagement.Api.IntegrationTests.Controllers.Subscriptions;
+namespace GymManagement.Api.IntegrationTests.Controllers.Trainers;
 
 [Collection(GymManagementApiFactoryCollection.CollectionName)]
-public class CreateSubscriptionTests
+public class CreateTrainerTests
 {
     private readonly HttpClient _client;
 
-    public CreateSubscriptionTests(GymManagementApiFactory apiFactory)
+    public CreateTrainerTests(GymManagementApiFactory apiFactory)
     {
         _client = apiFactory.HttpClient;
         apiFactory.ResetDatabase();
     }
 
     [Fact]
-    public async Task CreateSubscription_WhenRequestIsValid_CreateSubscription()
+    public async Task CreateTrainer_WhenRequestIsValid_CreateTrainer()
     {
         // Arrange
         var gym = await CreateGym("Gym-Two", "Luanda");
         var member = await CreateMember("dilson", "abc123", gym.Id);
-        var request = new CreateSubscriptionRequest(SubscriptionType: SubstriptionType.Plus, member.Id);
+        var request = new CreateTrainerRequest("Raimundo",
+                                               "929001002",
+                                               "raimundo.pt@victorygym.com",
+                                               "body builder",
+                                               member.Id);
 
         // Act
-        var httpResponse = await _client.PostAsJsonAsync("Subscriptions", request);
+        var httpResponse = await _client.PostAsJsonAsync("Trainers", request);
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -39,7 +42,7 @@ public class CreateSubscriptionTests
         var resourceId = await httpResponse.Content.ReadFromJsonAsync<ResourceIdentifier>();
         resourceId.Should().NotBeNull();
         resourceId.Id.Should().NotBeEmpty();
-        httpResponse.Headers.Location!.PathAndQuery.Should().Be($"/Subscriptions/{resourceId.Id}");
+        httpResponse.Headers.Location!.PathAndQuery.Should().Be($"/Trainers/{resourceId.Id}");
     }
 
     private async Task<MemberResponse> CreateMember(string userName, string password, Guid gymId)
@@ -84,41 +87,4 @@ public class CreateSubscriptionTests
 
         return gymResponse;
     }
-
-    // [Theory]
-    // [MemberData(nameof(ListSubscriptionTypes))]
-    // public async Task CreateSubscription_WhenValidSubscription_ShouldCreateSubscription(SubstriptionType subscriptionType)
-    // {
-    //     // Arrange
-    //     var createSubscriptionRequest = new CreateSubscriptionRequest(
-    //         SubscriptionType: subscriptionType,
-    //         MemberId: Constants.Members.AdminId);
-
-    //     // Act
-    //     var response = await _client.PostAsJsonAsync("Subscriptions", createSubscriptionRequest);
-
-    //     // Assert
-    //     response.StatusCode.Should().Be(HttpStatusCode.Created);
-    //     response.Headers.Location.Should().NotBeNull();
-
-    //     var subscriptionResponse = await response.Content.ReadFromJsonAsync<SubscriptionResponse>();
-    //     subscriptionResponse.Should().NotBeNull();
-    //     subscriptionResponse!.SubscriptionType.Should().Be(subscriptionType);
-
-    //     response.Headers.Location!.PathAndQuery.Should().Be($"/Subscriptions/{subscriptionResponse.Id}");
-    // }
-
-    // public static TheoryData<SubstriptionType> ListSubscriptionTypes()
-    // {
-    //     var subscriptionTypes = Enum.GetValues<SubstriptionType>().ToList();
-
-    //     var theoryData = new TheoryData<SubstriptionType>();
-
-    //     foreach (var subscriptionType in subscriptionTypes)
-    //     {
-    //         theoryData.Add(subscriptionType);
-    //     }
-
-    //     return theoryData;
-    // }
 }
