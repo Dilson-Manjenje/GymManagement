@@ -22,5 +22,5 @@ GET  http://{{host}}/Subscriptions/{{subscriptionId1}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Subscriptions/List
+GET  http://{{host}}/Subscriptions
 Content-Type: {{jsonContentType}}

@@ -17,14 +17,14 @@ public class GymService : BaseHttpService
     public async Task<GymResponse?> CreateGym(string name, string address)
     {
         var request = new GymRequest(name, address);
-        var response = await PostAsync("Gyms", request);
+        var response = await PostAsync($"{ApiEndPoints.Gyms.Create}", request);
 
         if (!response.IsSuccessStatusCode)
             return null;
 
         var resourceId = await response.Content.ReadFromJsonAsync<ResourceIdentifier>();
-
-        var gym = await GetAsync<GymResponse>($"Gyms/{resourceId?.Id}");
+        //var gym = await GetAsync<GymResponse>($"Gyms/{resourceId?.Id}");
+        var gym = await GetGymAsync(resourceId!.Id);
 
         return gym!;
     }
@@ -32,7 +32,7 @@ public class GymService : BaseHttpService
     public async Task<GymResponse?> GetGymAsync(Guid id, CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await _client.GetAsync($"{ApiEndPoints.Gyms.Base}/{id}", cancellationToken);
-
+        
         if (!response.IsSuccessStatusCode)
             return null;
             

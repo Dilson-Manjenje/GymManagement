@@ -37,6 +37,9 @@ public class AddRoomToSubscriptionCommandHandler : IRequestHandler<AddRoomToSubs
         if (room.GymId != subscription.Member.GymId)
             return SubscriptionErrors.RoomWasNotFoundInMemberGym(roomId: room.Id);
 
+        if (!room.IsAvailable)
+            return RoomErrors.RoomIsNotIsAvailable(command.RoomId);            
+
         var result = subscription.AddRoom(command.RoomId);
 
         if (result.IsError)

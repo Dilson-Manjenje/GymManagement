@@ -41,7 +41,7 @@ public class MembersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{id:guid}")]
+  [HttpGet(ApiEndPoints.Members.Get)]
   public async Task<IActionResult> GetMember(Guid id)
   {
     var result = await _mediator.Send(new GetMemberQuery(id));
@@ -51,7 +51,7 @@ public class MembersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpPut("{id:guid}")]
+  [HttpPut(ApiEndPoints.Members.Update)]
   public async Task<IActionResult> Update([FromRoute] Guid id, UpdateMemberRequest request)
   {
     var cmd = new UpdateMemberCommand(Id: id,
@@ -65,7 +65,7 @@ public class MembersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpDelete("{id:guid}")]
+  [HttpDelete(ApiEndPoints.Members.Delete)]
   public async Task<IActionResult> DeleteMember(Guid id)
   {
     var result = await _mediator.Send(new DeleteMemberCommand(id));
@@ -75,7 +75,7 @@ public class MembersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
   
-  [HttpGet("List")]
+  [HttpGet(ApiEndPoints.Members.List)]
   public async Task<IActionResult> ListAllMembers()
   {
     var result = await _mediator.Send(new ListMembersQuery());
@@ -85,7 +85,7 @@ public class MembersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
   
-  [HttpGet("{memberId:guid}/Subscriptions")]
+  [HttpGet(ApiEndPoints.Members.Subscriptions)]
   public async Task<IActionResult> ListSubscriptions(Guid memberId)
   {
     var result = await _mediator.Send(new ListSubscriptionsByMemberQuery(MemberId: memberId));
@@ -96,7 +96,7 @@ public class MembersController : ApiBaseController
   }
 
 
-  [HttpGet("{memberId:guid}/Bookings")]
+  [HttpGet(ApiEndPoints.Members.Bookings)]
   public async Task<IActionResult> ListBookings(Guid memberId)
   {
     var result = await _mediator.Send(new ListBookingsByMemberQuery(MemberId: memberId));

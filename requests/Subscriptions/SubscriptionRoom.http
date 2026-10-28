@@ -18,33 +18,18 @@
 
 
 ###
-PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
-Content-Type: {{jsonContentType}}
-
-{
-    "roomId": "{{victoryFitRoom}}"
-}
+PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms/{{victoryFitRoom}}
 
 
 ###
-DELETE  http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
-Content-Type: {{jsonContentType}}
+DELETE  http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms/{{fightCrossfit}}
+##Content-Type: {{jsonContentType}}
 
-{
-    "roomId": "{{fightCrossfit}}"
-}
-
+###
+PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms/{{fightCrossfit}}
+##Content-Type: {{jsonContentType}}
 
 
 ###
-PUT http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
-Content-Type: {{jsonContentType}}
-
-{
-    "roomId": "{{fightCrossfit}}"
-}
-
-
-###
-GET  http://{{host}}/Subscriptions/{{subscriptionId}}/Rooms
-Content-Type: {{jsonContentType}}
+GET  http://{{host}}/Subscriptions/8ec2af63-1b18-4a94-b59f-c33055650fda/Rooms
+##Content-Type: {{jsonContentType}}

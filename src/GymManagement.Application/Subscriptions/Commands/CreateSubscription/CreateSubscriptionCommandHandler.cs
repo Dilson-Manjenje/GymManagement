@@ -33,12 +33,6 @@ public class CreateSubscriptionCommandHandler : IRequestHandler<CreateSubscripti
         if (member.GymId is null || member.GymId.Value == Guid.Empty)
             return MemberErrors.MemberDontHaveGym(userName: member.UserName, memberId: member.Id);
 
-        var gymId = member.GymId.Value;        
-        var gym = await _gymsRepository.GetByIdAsync(gymId, cancellationToken);
-
-        if (gym is null)
-            return GymErrors.GymNotFound(gymId);
-
         bool hasActiveSubscription = await _subscriptionsRepository.HasActiveSubscription(memberId: command.MemberId);
 
         if (hasActiveSubscription)

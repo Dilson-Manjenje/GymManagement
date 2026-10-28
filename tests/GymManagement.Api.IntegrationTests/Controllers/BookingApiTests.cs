@@ -10,28 +10,30 @@ using GymManagement.Contracts.Rooms;
 using GymManagement.Contracts.Sessions;
 using GymManagement.Contracts.Subscriptions;
 using GymManagement.Contracts.Trainers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GymManagement.Api.IntegrationTests.Controllers.Bookings;
 
 [Collection(GymManagementApiFactoryCollection.CollectionName)]
-public class CreateBookingTests
+public class BookingApiTests
 {
     private readonly HttpClient _client;
 
-    public CreateBookingTests(GymManagementApiFactory apiFactory)
+    public BookingApiTests(GymManagementApiFactory apiFactory)
     {
         _client = apiFactory.HttpClient;
         apiFactory.ResetDatabase();
     }
 
     [Fact]
-    public async Task CreateBooking_WhenRequestIsValid_CreateBooking()
+    public async Task CreateBooking_WhenRequestIsValid_ReturnCreated()
     {
         // Arrange
         var gym = await CreateGym("Gym-One", "Luanda");
         var room = await CreateRoom("Room-One", gym.Id);
         var memberTrainer = await CreateMember("Trainer-One", "password123", gym.Id);
-        var trainer = await CreateTrainer("Trainer-One", "trainer1@gmail.com", memberTrainer.Id);
+        var trainer = await CreateTrainer("Trainer-One", "trainer1@gmail.com", "953000111", memberTrainer.Id);
         var session = await CreateSession("Morning Yoga", room.Id, trainer.Id);
         var participant = await CreateMember("Participante-One", "password123", gym.Id);
         var subscription = await CreateSubscription(SubstriptionType.Plus, participant.Id);
@@ -43,7 +45,7 @@ public class CreateBookingTests
         );
 
         // Act
-        var httpResponse = await _client.PostAsJsonAsync("Bookings", request);
+        var httpResponse = await _client.PostAsJsonAsync(ApiEndPoints.Bookings.Create, request);
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -52,7 +54,7 @@ public class CreateBookingTests
         var resourceId = await httpResponse.Content.ReadFromJsonAsync<ResourceIdentifier>();
         resourceId.Should().NotBeNull();
         resourceId.Id.Should().NotBeEmpty();
-        httpResponse.Headers.Location!.PathAndQuery.Should().Be($"/Bookings/{resourceId.Id}");
+        httpResponse.Headers.Location.PathAndQuery.Should().Be($"{ApiEndPoints.Bookings.Base}/{resourceId.Id}");
     }
 
     private async Task<GymResponse> CreateGym(string name, string address)
@@ -113,15 +115,15 @@ public class CreateBookingTests
 
         return memberResponse;
     }
-    
-    private async Task<TrainerResponse> CreateTrainer(string name, string email, Guid memberId)
+
+    private async Task<TrainerResponse> CreateTrainer(string name, string email, string phone, Guid memberId)
     {
         // Arrange
         var request = new CreateTrainerRequest(
             Name: name,
-            Phone: "953000111",
+            Phone: phone,
             Email: email,
-            Specialization: "Yoga",
+            Specialization: "Body Builder",
             MemberId: memberId
         );
 
@@ -185,18 +187,106 @@ public class CreateBookingTests
 
     private async Task<bool> AddRoomToSubscription(Guid subscriptionId, Guid roomId)
     {
-        // Arrange
-        var request = new RoomSubscriptionRequest(SubscriptionId: subscriptionId, RoomId: roomId);
-
         // Act
-        var httpResponse = await _client.PutAsJsonAsync($"Subscriptions/{subscriptionId}/Rooms", request);
+        var httpResponse = await _client.PutAsync($"{ApiEndPoints.Subscriptions.Base}/{subscriptionId}/Rooms/{roomId}", null);
+        // Assert
+        httpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var resourceId = await httpResponse.Content.ReadFromJsonAsync<ResourceIdentifier>();
+        resourceId.Should().NotBeNull();
+
+        return resourceId is not null;
+    }
+
+    [Fact]
+    public async Task CancelBooking_WhenIdIsValid_ReturnsOK()
+    {
+        // Arrange
+        var gym = await CreateGym("Gym-One", "Luanda");
+        var room = await CreateRoom("Room-One", gym.Id);
+        var memberTrainer = await CreateMember("Trainer-One", "password123", gym.Id);
+        var trainer = await CreateTrainer("Trainer-One", "trainer1@gmail.com", "953000111", memberTrainer.Id);
+        var session = await CreateSession("Session 1", room.Id, trainer.Id);
+        var participant = await CreateMember("Participante-One", "password123", gym.Id);
+        var subscription = await CreateSubscription(SubstriptionType.Plus, participant.Id);
+        await AddRoomToSubscription(subscription.Id, room.Id);
+
+        var request = new CreateBookingRequest(
+            MemberId: participant.Id,
+            SessionId: session.Id
+        );
+        var httpResponse = await _client.PostAsJsonAsync(ApiEndPoints.Bookings.Create, request);
+        var resourceId = await httpResponse.Content.ReadFromJsonAsync<ResourceIdentifier>();
+        resourceId.Should().NotBeNull();
+        resourceId.Id.Should().NotBeEmpty();
+
+        httpResponse = await _client.PutAsync($"{ApiEndPoints.Bookings.Base}/{resourceId.Id}/Cancel", null);
+        // Assert
+        httpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var response = await _client.GetFromJsonAsync<BookingResponse>($"{ApiEndPoints.Bookings.Base}/{resourceId?.Id}");
+        response.Should().BeOfType<BookingResponse>();
+        response.Status.Should().Be(BookingStatusType.Canceled);
+
+    }
+
+    [Fact]
+    public async Task GetBooking_WithInvalidId_ReturnsNotFound()
+    {
+
+        var httpResponse = await _client.GetAsync($"{ApiEndPoints.Bookings.Base}/{Guid.NewGuid()}");
+        httpResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        
+        var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();        
+        problemDetails.Should().NotBeNull();
+        problemDetails.Status.Should().Be(StatusCodes.Status404NotFound);
+    }
+
+    [Fact]
+    public async Task ListAllBookings_ReturnOkWithBookings()
+    {
+        var gym = await CreateGym("Gym-One", "Luanda");
+        var room = await CreateRoom("Room-One", gym.Id);
+        var memberTrainer = await CreateMember("Trainer-One", "password123", gym.Id);
+        var trainer = await CreateTrainer("Trainer-One", "trainer1@gmail.com", "953000111", memberTrainer.Id);
+        var session = await CreateSession("Session 1", room.Id, trainer.Id);
+        var participant1 = await CreateMember("Participante-One", "password123", gym.Id);
+        var subscription1 = await CreateSubscription(SubstriptionType.Plus, participant1.Id);
+        await AddRoomToSubscription(subscription1.Id, room.Id);
+        await CreateBooking(session.Id, participant1.Id);
+
+        var participant2 = await CreateMember("Participante-Two", "password123", gym.Id);
+        var subscription2 = await CreateSubscription(SubstriptionType.Plus, participant2.Id);
+        await AddRoomToSubscription(subscription2.Id, room.Id);
+        await CreateBooking(session.Id, participant2.Id);
+
+        // Act        
+        var httpResponse = await _client.GetAsync($"{ApiEndPoints.Bookings.List}");
+        var response = await httpResponse.Content.ReadFromJsonAsync<ListBookingResponse>();
 
         // Assert
         httpResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-  
+        response.Should().NotBeNull();
+        response.Should().BeOfType<ListBookingResponse>();
+        response.Data?.Count().Should().Be(2);
+    }
+        
+    private async Task<BookingResponse> CreateBooking(Guid sessionId, Guid memberId)
+    {
+        var request = new CreateBookingRequest(
+            MemberId: memberId,
+            SessionId: sessionId
+        );
+
+        // Act
+        var httpResponse = await _client.PostAsJsonAsync($"{ApiEndPoints.Bookings.Base}", request);
+
+        httpResponse.StatusCode.Should().Be(HttpStatusCode.Created);
         var resourceId = await httpResponse.Content.ReadFromJsonAsync<ResourceIdentifier>();
         resourceId.Should().NotBeNull();
-        
-        return resourceId is not null;
+
+        var response = await _client.GetFromJsonAsync<BookingResponse>($"{ApiEndPoints.Bookings.Base}/{resourceId.Id}");
+        response.Should().NotBeNull();
+
+        return response;
     }
 }

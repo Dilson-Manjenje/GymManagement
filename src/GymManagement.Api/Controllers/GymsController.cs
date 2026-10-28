@@ -18,6 +18,8 @@ using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByGym;
 using GymManagement.Application.Rooms.Queries.ListRoomsByGym;
 using GymManagement.Application.Trainers.Queries.ListTrainersByGym;
 using GymManagement.Api.Common;
+using GymManagement.Application.Bookings.Queries.ListBookingsByGym;
+using GymManagement.Contracts.Bookings;
 
 namespace GymManagement.Api.Controllers;
 
@@ -44,7 +46,7 @@ public class GymsController : ApiBaseController
       error => HandleErrors(result.Errors));    
   }
 
-  [HttpGet("{id:guid}")]
+  [HttpGet(ApiEndPoints.Gyms.Get)]
   public async Task<IActionResult> GetGym(Guid id, CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new GetGymQuery(id), cancellationToken);
@@ -55,7 +57,8 @@ public class GymsController : ApiBaseController
   }
 
 
-  [HttpGet("List")]
+  //[HttpGet("List")]
+  [HttpGet(ApiEndPoints.Gyms.List)]
   public async Task<IActionResult> ListAllGyms(CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new ListGymsQuery(), cancellationToken);
@@ -65,7 +68,7 @@ public class GymsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpDelete("{id:guid}")]
+  [HttpDelete(ApiEndPoints.Gyms.Delete)]
   public async Task<IActionResult> DeleteGym(Guid id, CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new DeleteGymCommand(id), cancellationToken);
@@ -75,7 +78,7 @@ public class GymsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpPut("{id:guid}")]
+  [HttpPut(ApiEndPoints.Gyms.Update)]
   public async Task<IActionResult> UpdateGym([FromRoute] Guid id, GymRequest request, CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new UpdateGymCommand(id, request.Name, request.Address), cancellationToken);
@@ -85,7 +88,8 @@ public class GymsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{gymId:guid}/Rooms")]
+  //[HttpGet("{gymId:guid}/Rooms")]
+  [HttpGet(ApiEndPoints.Gyms.Rooms)]
   public async Task<IActionResult> ListRooms([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new ListRoomsByGymQuery(GymId: gymId), cancellationToken);
@@ -95,7 +99,8 @@ public class GymsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
   
-  [HttpGet("{gymId:guid}/Trainers")]
+  //[HttpGet("{gymId:guid}/Trainers")]
+  [HttpGet(ApiEndPoints.Gyms.Trainers)]
   public async Task<IActionResult> ListTrainers([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new ListTrainersByGymQuery(GymId: gymId), cancellationToken);
@@ -106,7 +111,8 @@ public class GymsController : ApiBaseController
   }
 
 
-  [HttpGet("{gymId:guid}/Sessions")]
+  //[HttpGet("{gymId:guid}/Sessions")]
+  [HttpGet(ApiEndPoints.Gyms.Sessions)]
   public async Task<IActionResult> ListSessions(Guid gymId, CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new ListSessionsByGymQuery(GymId: gymId), cancellationToken);
@@ -116,7 +122,8 @@ public class GymsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{gymId:guid}/Members")]
+  //[HttpGet("{gymId:guid}/Members")]
+  [HttpGet(ApiEndPoints.Gyms.Members)]
   public async Task<IActionResult> ListMembers([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
   {
     var result = await _mediator.Send(new ListMembersByGymQuery(GymId: gymId), cancellationToken);
@@ -126,15 +133,26 @@ public class GymsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  
-    [HttpGet("{gymId:guid}/Subscriptions")]
-    public async Task<IActionResult> ListSubscriptions([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
-    {
-        var result = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gymId), cancellationToken);
 
-        return result.MatchFirst(
-          subscriptions => Ok(new ListSubscriptionsResponse(subscriptions.Select(subs => ContractMappings.MapToSubscriptionResponse(subs)))),
-          error => HandleErrors(result.Errors));
-    }
+  //[HttpGet("{gymId:guid}/Subscriptions")]
+  [HttpGet(ApiEndPoints.Gyms.Subscriptions)]
+  public async Task<IActionResult> ListSubscriptions([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
+  {
+    var result = await _mediator.Send(new ListSubscriptionsByGymQuery(GymId: gymId), cancellationToken);
+
+    return result.MatchFirst(
+      subscriptions => Ok(new ListSubscriptionsResponse(subscriptions.Select(subs => ContractMappings.MapToSubscriptionResponse(subs)))),
+      error => HandleErrors(result.Errors));
+  }
+
+  [HttpGet(ApiEndPoints.Gyms.Bookings)]
+  public async Task<IActionResult> ListBookings([FromRoute] Guid gymId, CancellationToken cancellationToken = default)
+  {
+    var result = await _mediator.Send(new ListBookingsByGymQuery(GymId: gymId), cancellationToken);
+
+    return result.MatchFirst(
+      bookings => Ok(new ListBookingResponse(bookings.Select(booking => ContractMappings.MapToBookingResponse(booking)))),
+      error => HandleErrors(result.Errors));
+  }
 
 }

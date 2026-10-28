@@ -41,7 +41,7 @@ public class TrainersController : ApiBaseController
       
   }
 
-  [HttpGet("{id:guid}")]
+  [HttpGet(ApiEndPoints.Trainers.Get)]
   public async Task<IActionResult> GetTrainer(Guid id)
   {
     var result = await _mediator.Send(new GetTrainerQuery(id));
@@ -51,7 +51,7 @@ public class TrainersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("List")]
+  [HttpGet(ApiEndPoints.Trainers.List)]
   public async Task<IActionResult> ListAllTrainers()
   {
     var result = await _mediator.Send(new ListTrainersQuery());
@@ -61,7 +61,7 @@ public class TrainersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpPut("{id:guid}")]
+  [HttpPut(ApiEndPoints.Trainers.Update)]
   public async Task<IActionResult> Update([FromRoute] Guid id, UpdateTrainerRequest request)
   {
     var cmd = new UpdateTrainerCommand(Id: id,
@@ -77,8 +77,8 @@ public class TrainersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
   
-  [HttpDelete("{id:guid}")]
-  public async Task<IActionResult> RemoveTrainer(Guid id)
+  [HttpDelete(ApiEndPoints.Trainers.Delete)]
+  public async Task<IActionResult> DeleteTrainer(Guid id)
   {
     var result = await _mediator.Send(new DeleteTrainerCommand(id));
 
@@ -87,7 +87,7 @@ public class TrainersController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{trainerId:guid}/Sessions")]
+  [HttpGet(ApiEndPoints.Trainers.Sessions)]  
   public async Task<IActionResult> ListSessions(Guid trainerId)
   {
     var result = await _mediator.Send(new ListSessionsByTrainerQuery(TrainerId: trainerId));

@@ -26,7 +26,7 @@ public class SubscriptionsController : ApiBaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateSubscription(CreateSubscriptionRequest request)
+    public async Task<IActionResult> CreateSubscription([FromBody] CreateSubscriptionRequest request)
     {
         // TODO: Move this validation to Application, removing api from accessing the domain
         if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
@@ -52,7 +52,7 @@ public class SubscriptionsController : ApiBaseController
                        detail: $"Subscription type '{subscriptionType}' is invalid.");
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet(ApiEndPoints.Subscriptions.Get)]
     public async Task<IActionResult> GetSubscription(Guid id)
     {
         var result = await _mediator.Send(new GetSubscriptionQuery(id));
@@ -63,7 +63,7 @@ public class SubscriptionsController : ApiBaseController
       );
     }
     
-    [HttpDelete("{id:guid}")]
+    [HttpDelete(ApiEndPoints.Subscriptions.Delete)]
     public async Task<IActionResult> DeleteSubscription(Guid id)
     {
         var result = await _mediator.Send(new DeleteSubscriptionCommand(id));
@@ -73,18 +73,18 @@ public class SubscriptionsController : ApiBaseController
           error => HandleErrors(result.Errors));
     }
 
-    [HttpPut("{id:guid}/Disable")]
+    [HttpPut(ApiEndPoints.Subscriptions.Disable)]
     public async Task<IActionResult> DisableSubscription(Guid id)
     {
         //TODO: Create background job or windows service to disable all end subscription everyday
         var result = await _mediator.Send(new DisableSubscriptionCommand(id));
 
         return result.MatchFirst(
-          id => Ok(new { id = id }),
+          id => Ok(new ResourceIdentifier(id)),
           error => HandleErrors(result.Errors));
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut(ApiEndPoints.Subscriptions.Update)]
     public async Task<IActionResult> UpdateSubscription([FromRoute] Guid id, UpdateSubscriptionRequest request)
     {
         if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
@@ -96,11 +96,11 @@ public class SubscriptionsController : ApiBaseController
         var result = await _mediator.Send(new UpdateSubscriptionCommand(id, subscriptionType));
 
         return result.MatchFirst(
-          id => Ok(new { Id = id }),
+          id => Ok(new ResourceIdentifier(id)),
           error => HandleErrors(result.Errors));
     }
 
-    [HttpGet("List")]
+    [HttpGet(ApiEndPoints.Subscriptions.List)]
     public async Task<IActionResult> ListSubscriptions()
     {
         var result = await _mediator.Send(new ListSubscriptionsQuery());
@@ -112,35 +112,36 @@ public class SubscriptionsController : ApiBaseController
 
     }
 
-    [HttpPut("{subscriptionId:guid}/rooms/")]
-    public async Task<IActionResult> AddRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
+    [HttpPut(ApiEndPoints.Subscriptions.RoomById)]
+    public async Task<IActionResult> AddRoom([FromRoute] Guid subscriptionId, [FromRoute] Guid roomId)
     {
         var result = await _mediator.Send(new AddRoomToSubscriptionCommand(SubscriptionId: subscriptionId,
-                                                                           RoomId: request.RoomId));
+                                                                           RoomId: roomId));
 
         return result.MatchFirst(
-          id => Ok(new { id }),
+          id => Ok(new ResourceIdentifier(id)),
           error => HandleErrors(result.Errors));
     }
 
-    [HttpDelete("{subscriptionId:guid}/rooms")]
-    public async Task<IActionResult> RemoveRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
+    [HttpDelete(ApiEndPoints.Subscriptions.RoomById)]
+    public async Task<IActionResult> RemoveRoom([FromRoute] Guid subscriptionId,
+                                                [FromRoute] Guid roomId)
     {
         var result = await _mediator.Send(new RemoveRoomFromSubscriptionCommand(SubscriptionId: subscriptionId,
-                                                                              RoomId: request.RoomId));
+                                                                              RoomId: roomId));
 
-        return result.MatchFirst<IActionResult>(
+        return result.MatchFirst(
          _ => NoContent(),
-         error => HandleErrors(result.Errors));
+         _ => HandleErrors(result.Errors));
     }
 
-    [HttpGet("{subscriptionId:guid}/rooms")]
+    [HttpGet(ApiEndPoints.Subscriptions.Rooms)]
     public async Task<IActionResult> ListRooms([FromRoute] Guid subscriptionId)
     {
         var result = await _mediator.Send(new ListRoomsInSubscriptionQuery(SubscriptionId: subscriptionId));
 
         return result.MatchFirst(
           rooms => Ok(new ListRoomsResponse(rooms.Select(room => ContractMappings.MapToRoomResponse(room)))),
-          error => HandleErrors(result.Errors));
+          _ => HandleErrors(result.Errors));
     }
 }

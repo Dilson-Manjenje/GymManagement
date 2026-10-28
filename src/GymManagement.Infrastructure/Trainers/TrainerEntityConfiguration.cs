@@ -20,14 +20,14 @@ public class TrainerEntityConfiguration : IEntityTypeConfiguration<Trainer>
               builder.Property(t => t.Email)
                      .HasMaxLength(100);
 
-              builder.HasIndex(t => t.Email)
+              builder.HasIndex(t => new { t.GymId, t.Email})
                      .IsUnique();
-
+                     
               builder.Property(t => t.Phone)
                      .HasMaxLength(15)
                      .IsRequired();
 
-              builder.HasIndex(t => t.Phone)
+              builder.HasIndex(t => new {t.GymId, t.Phone})
                      .IsUnique();
 
               builder.Property(t => t.Specialization)

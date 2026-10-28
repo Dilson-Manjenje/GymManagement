@@ -37,6 +37,7 @@ using GymManagement.Application.Bookings.Queries.ListBookings;
 using GymManagement.Application.Bookings.Queries.ListBookingsByGym;
 using GymManagement.Application.Bookings.Queries.ListBookingsByMember;
 using GymManagement.Application.Bookings.Queries.ListBookingsBySession;
+using GymManagement.Application.Bookings.Queries.ListActiveBookingsBySession;
 
 namespace GymManagement.Application.SubcutaneousTests.Bookings;
 
@@ -624,21 +625,40 @@ public class BookingAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
         bookings2.Count().Should().Be(2);
         bookings2.Should().BeOfType<List<BookingDto>>();
     }
-    
+
     [Fact]
     public async Task ListBookingsBySession_ReturnCorrectBookings()
-    {        
+    {
         var member2 = await CreateMember(_gym.Id, "Member 2");
         var subscription2 = await CreateSubscription(SubscriptionType.Basic, member2.Id);
         // var session2 = await CreateSession(room2.Id, trainer2.Id, "Session 2");
         await CreateBooking(_session.Id, member2.Id, _room.Id, subscription2.Id);
-   
+
         var listResult1 = await _mediator.Send(new ListBookingsBySessionQuery(SessionId: _session.Id));
         listResult1.IsError.Should().BeFalse();
         var bookings1 = listResult1.Value.ToList();
 
         // Assert        
         bookings1.Count().Should().Be(2);
+        bookings1.Should().BeOfType<List<BookingDto>>();
+    }
+    
+    [Fact]
+    public async Task ListActiveBookingsBySession_ReturnCorrectBookings()
+    {        
+        var member2 = await CreateMember(_gym.Id, "Member 2");
+        var subscription2 = await CreateSubscription(SubscriptionType.Basic, member2.Id);
+        await CreateBooking(_session.Id, member2.Id, _room.Id, subscription2.Id);
+
+        var cancelBookingResult = await _mediator.Send(new CancelBookingCommand(Id: _booking.Id));
+        cancelBookingResult.IsError.Should().BeFalse();
+   
+        var listResult1 = await _mediator.Send(new ListActiveBookingsBySessionQuery(SessionId: _session.Id));
+        listResult1.IsError.Should().BeFalse();
+        var bookings1 = listResult1.Value.ToList();
+
+        // Assert        
+        bookings1.Count().Should().Be(1);
         bookings1.Should().BeOfType<List<BookingDto>>();
     }
 }

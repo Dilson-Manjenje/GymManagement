@@ -7,13 +7,14 @@
 @gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
 @gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
 @topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
+@victoryGym = c8089dac-530a-4207-b631-3359333a2a6f
 
 ###
 GET  http://{{host}}/Gyms/{{gymIdQuibuma}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Gyms/List
+GET  http://{{host}}/Gyms
 Content-Type: {{jsonContentType}}
 
 ###
@@ -33,8 +34,10 @@ GET  http://{{host}}/Gyms/{{gymIdQuibuma}}/Subscriptions
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Gyms/{{gymIdFightSociety}}/Sessions
+GET  http://{{host}}/Gyms/{{victoryGym}}/Sessions
 Content-Type: {{jsonContentType}}
 
-
+###
+GET  http://{{host}}/Gyms/{{victoryGym}}/Bookings
+Content-Type: {{jsonContentType}}
 

@@ -16,8 +16,8 @@ public class GymManagementDbContext : DbContext, IUnitOfWork
 {
     private readonly IPublisher _publisher;
 
-    public DbSet<Gym> Gyms { get; set; } = null!;
-    public DbSet<Room> Rooms { get; set; } = null!;
+    public DbSet<Gym> Gyms => Set<Gym>();
+    public DbSet<Room> Rooms => Set<Room>();
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<Trainer> Trainers { get; set; } = null!;
     public DbSet<Subscription> Subscriptions { get; set; } = null!;

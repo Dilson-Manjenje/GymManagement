@@ -12,11 +12,11 @@
 
 
 ###
-GET  http://{{host}}/Rooms/{{roomId}}
+GET  http://{{host}}/Rooms/098a1557-3898-4f5a-a636-3607657bc0e6
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Rooms/List
+GET  http://{{host}}/Rooms
 Content-Type: {{jsonContentType}}
 
 ###

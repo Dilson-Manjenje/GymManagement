@@ -383,18 +383,18 @@ public class MembersAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
         // Assert        
         members.Count().Should().Be(3);
         members.Should().BeOfType<List<MemberDto>>();
-    }    
+    }
 
     [Fact]
     public async Task ListMembersByGym_ReturnCorrectMembers()
     {
         // Arrange 
         var gym2 = await CreateGym("Gym-Two", "Luanda");
-        
+
         await CreateMember(gym2.Id, "Member2");
         await CreateMember(gym2.Id, "Member3");
         await CreateMember(gym2.Id, "Member4");
-        
+
         // Act
         var list1Result = await _mediator.Send(new ListMembersByGymQuery(GymId: _gym.Id));
         list1Result.IsError.Should().BeFalse();
@@ -410,5 +410,27 @@ public class MembersAppTests(MediatorFactory mediatorFactory) : IAsyncLifetime
 
         members2.Count().Should().Be(3);
         members2.Should().BeOfType<List<MemberDto>>();
+    }
+    
+    [Fact]
+    public async Task ListMembersByGym_WhenGymDontExist_ReturnNotFoundErrors()
+    {
+        // Arrange 
+               
+        // Act
+        var list1Result = await _mediator.Send(new ListMembersByGymQuery(GymId: _gym.Id));
+        list1Result.IsError.Should().BeFalse();
+        var members1 = list1Result.Value.ToList();
+
+        var gymId = Guid.NewGuid();
+        var list2Result = await _mediator.Send(new ListMembersByGymQuery(GymId: gymId));
+        list2Result.IsError.Should().BeTrue();
+        
+        // Assert        
+        members1.Count().Should().Be(2);
+        members1.Should().BeOfType<List<MemberDto>>();
+
+        list2Result.IsError.Should().BeTrue();
+        list2Result.FirstError.Should().Be(GymErrors.GymNotFound(gymId));
     }
 }
