@@ -9,6 +9,7 @@
 @gymIdFightSociety = 3dd38597-65f5-40be-8d7a-6b6bed350b9d	
 @gymZ1 = e7f2d4bf-b428-433a-bd41-9d824923c9bb
 @topFitnessGym = 740d338b-a8b7-4e2d-8ccb-65ee1ae778ca
+@victoryGym = c8089dac-530a-4207-b631-3359333a2a6f
 
 @quibumaBodyRoom = 40a171f7-5230-4474-b49f-9cf25a50c9e0
 @fightKickRoom = 16b36cd2-c7f8-4c80-8b37-12ecdba3cc23	
@@ -24,7 +25,7 @@ GET  http://{{host}}/Sessions/{{sessionId}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Sessions/List
+GET  http://{{host}}/Sessions
 Content-Type: {{jsonContentType}}
 
 
@@ -33,7 +34,7 @@ GET  http://{{host}}/Sessions/UpCommingSessions/{{gymIdQuibuma}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Sessions/0d84fec0-f029-448e-a71b-8bad4b1829b9/Bookings
+GET  http://{{host}}/Sessions/916ac788-4400-4b9b-ac9c-551311c28c7d/Bookings
 Content-Type: {{jsonContentType}}
 
 

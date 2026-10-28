@@ -14,17 +14,14 @@ public class DeleteSubscriptionCommandHandler : IRequestHandler<DeleteSubscripti
 {
     private readonly ISubscriptionsRepository _subscriptionsRepository;
     public readonly IBookingsRepository _bookingsRepository;
-    private readonly IMembersRepository _membersRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public DeleteSubscriptionCommandHandler(IUnitOfWork unitOfWork,
                                             ISubscriptionsRepository subscriptionsRepository,
-                                            IMembersRepository membersRepository,
                                             IBookingsRepository bookingsRepository)
     {
         _subscriptionsRepository = subscriptionsRepository;
         _unitOfWork = unitOfWork;
-        _membersRepository = membersRepository;
         _bookingsRepository = bookingsRepository;
     }
 

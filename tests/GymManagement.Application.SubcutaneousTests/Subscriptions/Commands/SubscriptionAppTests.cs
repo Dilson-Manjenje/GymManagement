@@ -35,6 +35,7 @@ using GymManagement.Application.Subscriptions.Queries.ListSubscriptions;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByMember;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionsByGym;
 using GymManagement.Application.Subscriptions.Queries.ListSubscriptionRooms;
+using GymManagement.Application.Rooms.Commands.DisableRoom;
 
 namespace GymManagement.Application.SubcutaneousTests.Subscriptions;
 
@@ -592,6 +593,27 @@ public class SubscriptionAppTests(MediatorFactory mediatorFactory)
         // Assert             
         result2.IsError.Should().BeTrue();
         result2.FirstError.Should().Be(SubscriptionErrors.RoomAlreadyAssociated(roomId: room.Id));
+    }
+
+    [Fact]
+    public async Task AddRoom_WhenRoomIsNotAvailable_ReturnRoomIsNotAvailableError()
+    {
+        var gym = await CreateGym("Gym-One");
+        var room = await CreateRoom(gym.Id, "Swimming", 2);
+        var member = await CreateMember(gym.Id);
+        var subscription = await CreateSubscription(SubscriptionType.Plus, member.Id);
+
+        var disableCmd = new DisableRoomCommand(Id: room.Id);
+        var disableResult = await _mediator.Send(disableCmd);
+        disableResult.IsError.Should().BeFalse();
+
+        var addRoomCmd = new AddRoomToSubscriptionCommand(SubscriptionId: subscription.Id, RoomId: room.Id);
+        var addResult = await _mediator.Send(addRoomCmd);
+        addResult.IsError.Should().BeTrue();
+
+        // Assert             
+        addResult.IsError.Should().BeTrue();
+        addResult.FirstError.Should().Be(RoomErrors.RoomIsNotIsAvailable(roomId: room.Id));
     }
 
     [Fact]

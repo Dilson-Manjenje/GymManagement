@@ -13,7 +13,7 @@ GET  http://{{host}}/Gyms/{{gymIdQuibuma}}
 Content-Type: {{jsonContentType}}
 
 ###
-GET  http://{{host}}/Gyms/List
+GET  http://{{host}}/Gyms
 Content-Type: {{jsonContentType}}
 
 ###

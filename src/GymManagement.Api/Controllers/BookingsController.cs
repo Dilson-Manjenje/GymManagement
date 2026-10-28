@@ -34,7 +34,7 @@ public class BookingsController : ApiBaseController
         error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{id:guid}")]
+  [HttpGet(ApiEndPoints.Bookings.Get)]
   public async Task<IActionResult> GetBooking(Guid id)
   {
     var result = await _mediator.Send(new GetBookingQuery(Id: id));
@@ -44,7 +44,7 @@ public class BookingsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("List")]
+  [HttpGet(ApiEndPoints.Bookings.List)]
   public async Task<IActionResult> ListAll()
   {
     var result = await _mediator.Send(new ListBookingsQuery());
@@ -54,7 +54,7 @@ public class BookingsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpPut("{bookingId:guid}/Cancel")]
+  [HttpPut(ApiEndPoints.Bookings.Cancel)]
   public async Task<IActionResult> Cancel([FromRoute] Guid bookingId)
   {
     var result = await _mediator.Send(new CancelBookingCommand(Id: bookingId));

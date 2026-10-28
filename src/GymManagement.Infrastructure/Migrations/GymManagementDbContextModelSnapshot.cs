@@ -212,7 +212,6 @@ namespace GymManagement.Infrastructure.Migrations
             modelBuilder.Entity("GymManagement.Domain.Subscriptions.SubscriptionRooms", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("CreationDate")
@@ -278,15 +277,13 @@ namespace GymManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("GymId");
-
                     b.HasIndex("MemberId")
                         .IsUnique();
 
-                    b.HasIndex("Phone")
+                    b.HasIndex("GymId", "Email")
+                        .IsUnique();
+
+                    b.HasIndex("GymId", "Phone")
                         .IsUnique();
 
                     b.ToTable("Trainers");

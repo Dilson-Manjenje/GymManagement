@@ -63,7 +63,7 @@ public class SubscriptionsController : ApiBaseController
       );
     }
     
-    [HttpDelete("{id:guid}")]
+    [HttpDelete(ApiEndPoints.Subscriptions.Delete)]
     public async Task<IActionResult> DeleteSubscription(Guid id)
     {
         var result = await _mediator.Send(new DeleteSubscriptionCommand(id));
@@ -73,7 +73,7 @@ public class SubscriptionsController : ApiBaseController
           error => HandleErrors(result.Errors));
     }
 
-    [HttpPut("{id:guid}/Disable")]
+    [HttpPut(ApiEndPoints.Subscriptions.Disable)]
     public async Task<IActionResult> DisableSubscription(Guid id)
     {
         //TODO: Create background job or windows service to disable all end subscription everyday
@@ -84,7 +84,7 @@ public class SubscriptionsController : ApiBaseController
           error => HandleErrors(result.Errors));
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut(ApiEndPoints.Subscriptions.Update)]
     public async Task<IActionResult> UpdateSubscription([FromRoute] Guid id, UpdateSubscriptionRequest request)
     {
         if (!DomainSubscriptionType.TryFromName(request.SubscriptionType.ToString(),
@@ -100,7 +100,7 @@ public class SubscriptionsController : ApiBaseController
           error => HandleErrors(result.Errors));
     }
 
-    [HttpGet("List")]
+    [HttpGet(ApiEndPoints.Subscriptions.List)]
     public async Task<IActionResult> ListSubscriptions()
     {
         var result = await _mediator.Send(new ListSubscriptionsQuery());
@@ -112,7 +112,7 @@ public class SubscriptionsController : ApiBaseController
 
     }
 
-    [HttpPut("{subscriptionId:guid}/rooms/")]
+    [HttpPut(ApiEndPoints.Subscriptions.Rooms)]
     public async Task<IActionResult> AddRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
     {
         var result = await _mediator.Send(new AddRoomToSubscriptionCommand(SubscriptionId: subscriptionId,
@@ -123,7 +123,7 @@ public class SubscriptionsController : ApiBaseController
           error => HandleErrors(result.Errors));
     }
 
-    [HttpDelete("{subscriptionId:guid}/rooms")]
+    [HttpDelete(ApiEndPoints.Subscriptions.Rooms)]
     public async Task<IActionResult> RemoveRoom([FromRoute] Guid subscriptionId, RoomSubscriptionRequest request)
     {
         var result = await _mediator.Send(new RemoveRoomFromSubscriptionCommand(SubscriptionId: subscriptionId,
@@ -134,7 +134,7 @@ public class SubscriptionsController : ApiBaseController
          error => HandleErrors(result.Errors));
     }
 
-    [HttpGet("{subscriptionId:guid}/rooms")]
+    [HttpGet(ApiEndPoints.Subscriptions.Rooms)]
     public async Task<IActionResult> ListRooms([FromRoute] Guid subscriptionId)
     {
         var result = await _mediator.Send(new ListRoomsInSubscriptionQuery(SubscriptionId: subscriptionId));

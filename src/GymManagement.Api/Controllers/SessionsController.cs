@@ -42,7 +42,7 @@ public class SessionsController : ApiBaseController
         error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{id:guid}")]
+  [HttpGet(ApiEndPoints.Sessions.Get)]
   public async Task<IActionResult> GetSession(Guid id)
   {
     var result = await _mediator.Send(new GetSessionQuery(id));
@@ -52,7 +52,7 @@ public class SessionsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("List")]
+  [HttpGet(ApiEndPoints.Sessions.List)]
   public async Task<IActionResult> ListAllSessions()
   {
     var result = await _mediator.Send(new ListSessionsQuery());
@@ -62,7 +62,7 @@ public class SessionsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("UpCommingSessions/{gymId:guid}")]
+  [HttpGet(ApiEndPoints.Sessions.UpCommingSessions)]
   public async Task<IActionResult> ListUpCommingSessions(Guid gymId)
   {
     var result = await _mediator.Send(new ListUpComingSessionsQuery(GymId: gymId));
@@ -72,7 +72,7 @@ public class SessionsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpDelete("{id:guid}")]
+  [HttpDelete(ApiEndPoints.Sessions.Delete)]
   public async Task<IActionResult> DeleteSession(Guid id)
   {
     var result = await _mediator.Send(new DeleteSessionCommand(id));
@@ -82,7 +82,7 @@ public class SessionsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpPut("{id:guid}")]
+  [HttpPut(ApiEndPoints.Sessions.Update)]
   public async Task<IActionResult> UpdateSession([FromRoute] Guid id, UpdateSessionRequest request)
   {
     var cmd = new UpdateSessionCommand(Id: id,
@@ -99,7 +99,7 @@ public class SessionsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{sessionId:guid}/Bookings")]
+  [HttpGet(ApiEndPoints.Sessions.Bookings)]
   public async Task<IActionResult> ListActiveBookings([FromRoute] Guid sessionId)
   {
     var result = await _mediator.Send(new ListBookingsBySessionQuery(SessionId: sessionId));
@@ -109,7 +109,7 @@ public class SessionsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
   
-  [HttpPut("{sessionId:guid}/Cancel")]
+  [HttpPut(ApiEndPoints.Sessions.Cancel)]
   public async Task<IActionResult> Cancel([FromRoute] Guid sessionId)
   {
     var result = await _mediator.Send(new CancelSessionCommand(Id: sessionId));
@@ -119,7 +119,7 @@ public class SessionsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpPut("{sessionId:guid}/Finalize")]
+  [HttpPut(ApiEndPoints.Sessions.Finalize)]
   public async Task<IActionResult> Finalize([FromRoute] Guid sessionId)
   {
     var result = await _mediator.Send(new FinalizeSessionCommand(Id: sessionId));

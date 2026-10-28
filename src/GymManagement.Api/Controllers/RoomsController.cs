@@ -37,7 +37,7 @@ public class RoomsController : ApiBaseController
         error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{id:guid}")]
+  [HttpGet(ApiEndPoints.Rooms.Get)]
   public async Task<IActionResult> GetRoom(Guid id)
   {
     var result = await _mediator.Send(new GetRoomQuery(id));
@@ -48,7 +48,7 @@ public class RoomsController : ApiBaseController
   }
 
 
-  [HttpGet("List")]
+  [HttpGet(ApiEndPoints.Rooms.List)]
   public async Task<IActionResult> ListAllRooms()
   {
     var result = await _mediator.Send(new ListRoomsQuery());
@@ -58,7 +58,7 @@ public class RoomsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpDelete("{id:guid}")]
+  [HttpDelete(ApiEndPoints.Rooms.Delete)]
   public async Task<IActionResult> DisableRoom(Guid id)
   {
     var result = await _mediator.Send(new DisableRoomCommand(id));
@@ -68,7 +68,7 @@ public class RoomsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpPut("{id:guid}")]
+  [HttpPut(ApiEndPoints.Rooms.Update)]
   public async Task<IActionResult> UpdateRoomm([FromRoute] Guid id, UpdateRoomRequest request)
   {
     var cmd = new UpdateRoomCommand(id,
@@ -82,7 +82,7 @@ public class RoomsController : ApiBaseController
       error => HandleErrors(result.Errors));
   }
 
-  [HttpGet("{roomId:guid}/Sessions")]
+  [HttpGet(ApiEndPoints.Rooms.Sessions)]
   public async Task<IActionResult> ListSessions(Guid roomId)
   {
     var result = await _mediator.Send(new ListSessionsByRoomQuery(RoomId: roomId));
